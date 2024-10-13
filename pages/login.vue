@@ -41,7 +41,7 @@
       </button>
     </div>
   </div>
-  <button @click="testfunc()">asd</button>
+
 </template>
 
 <script lang="ts" setup>
@@ -129,6 +129,7 @@ console.log(data)
     flex-wrap: wrap;
     flex-direction: column;
     user-select: none;
+    animation: popUp 1s ease-out;
   }
 
   .loginFelirat {
@@ -333,15 +334,17 @@ console.log(data)
   opacity: 1;
 }
 
-
-
-</style>
-
-<style>
-  body {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    min-height: 100vh;
+@keyframes popUp {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
   }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+
 </style>
