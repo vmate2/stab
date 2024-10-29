@@ -1,7 +1,5 @@
 <template>
-  <head>
     <title>Stáb - {{ trimmedpath || 'Főoldal'}}</title>
-  </head>
   <div>
     <nav class="navbar">
       <div class="navcontainer">

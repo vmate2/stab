@@ -17,5 +17,8 @@
     "prisma": "^5.20.0",
     "vue": "latest",
     "vue-router": "latest"
+  },
+  "devDependencies": {
+    "wrangler": "^3.81.0"
   }
 }

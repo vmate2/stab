@@ -98,7 +98,7 @@ async function genAcc(role: string, name: string) {
   const role = "admin"; // Example role
   const name = "vmate"; // Example name
   const userId = await genAcc(role, name);
-  console.log("Generated User ID:", userId);
+  //console.log("Generated User ID:", userId);
 })();
 
 /*async function insertUser() {
