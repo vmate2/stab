@@ -129,7 +129,7 @@ const expandList = () => {
 }
 
 a:-webkit-any-link {
-    color: black;
+    color: inherit;
     cursor: pointer;
     text-decoration: none;
 }

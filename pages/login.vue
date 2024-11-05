@@ -56,12 +56,6 @@ const username = ref('');
 const password = ref('');
 
 
-const testfunc = async () => {
-  console.log(await $fetch('/api/login', {
-    method: 'POST',
-    body: {type: 'test'}
-  }))
-}
 
 
 function baseDec(val: string) {
@@ -119,7 +113,6 @@ console.log(data)
     min-height: 550px;
     max-height: 600px;
     border: 2px solid black;
-    margin-top: 20vh;
     border-radius: 10px;
     display: flex;
     align-items: center;

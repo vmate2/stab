@@ -2,7 +2,7 @@
   <div class="container">
     <div class="cont">
       <h1 class="error-code">404</h1>
-      <p class="error-message">Az oldal <span>{{ route.fullPath }}</span> nem található!</p>
+      <div class="error-message">Az oldal <span>{{ route.fullPath }}</span> nem található!</div>
       <NuxtLink to="/" class="backtohome">Vissza a főoldalra</NuxtLink>
     </div>
   </div>
@@ -47,6 +47,7 @@
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(10px);
   animation: popUp 1s ease-out;
+  background-color: transparent;
 }
 
 /* Error code styling */
@@ -61,8 +62,9 @@
 /* Error message styling */
 .error-message {
   font-size: 1.4rem;
-  margin-top: -5px;
+  margin-bottom: 26px;
   color: #e0e0e0;
+  z-index: 2;
 }
 
 .error-message span {

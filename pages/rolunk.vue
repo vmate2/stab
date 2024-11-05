@@ -43,7 +43,7 @@ layout: 'main'
   .container {
     width: 100vw;
     min-height: 100vh;
-    height: calc(fit-content);
+    height: fit-content;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
     <div class="jelentkezes">Jelentkezés</div>
     <div class="jelentkezescont floatIn" ref="jelentkezesCont">
       <div class="group" v-if="notyetsucess">

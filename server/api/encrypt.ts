@@ -8,6 +8,8 @@ export default defineEventHandler(async (event) => {
       // Await the result of encPassword to get the resolved value
       const encryptedPassword = await encPassword(baseDec(body.password));
       return { encryptedPassword }; // Return the encrypted password
+    case 'encComms':
+      return encryptComms(body.data);
   }
 });
 
@@ -70,4 +72,8 @@ export function baseEnc(val: string) {
   const hexValue = Buffer.from(shiftedBytes).toString('hex');
 
   return hexValue;
+}
+
+async function encryptComms(data:any) {
+  
 }
