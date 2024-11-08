@@ -89,6 +89,7 @@ cursor: pointer;
 
 .buttoncont {
   user-select: none;
+  text-wrap: nowrap;
 }
 
 .buttoncont > a {
@@ -149,7 +150,7 @@ cursor: pointer;
   body {
     background-color: #333333;
     color: white;
-    overflow-y: hidden;
+    overflow: hidden;
   }
   .categorycont {
     width: 100%;
@@ -162,5 +163,6 @@ cursor: pointer;
     flex-direction: column;
     align-items: start;
     row-gap: 20px;
+    width: fit-content;
   }
 </style>

@@ -13,9 +13,13 @@ export default defineEventHandler(async (event) => {
           }
         }));
       }
-  
+    case 'getStabtagokForClient': 
+    const data = await getStabtagokForClient(body.data);
+    return data;
+    case 'addStabtag':
+      return await addStabtag(body.data);
     default:
-      break;
+      return true;
   }
 })
 
@@ -88,3 +92,65 @@ async function sha256(message:string) {
 
   return hashHex;
 }
+
+async function getStabtagokForClient(data:any) {
+  const db = hubDatabase();
+
+}
+
+// Assuming `hubDatabase` is a function that sets up and returns the database connection
+
+export const addStabtag = async (data: any) => {
+  // Call the database connection function
+  const db = hubDatabase();
+
+  // Extract data from the request body
+  const { 
+    vnev, 
+    knev, 
+    dob, 
+    stabcash, 
+    userid, 
+    acclvl, 
+    kezeltsponzorok, 
+    email, 
+    phone, 
+    pfp, 
+    last_login, 
+    bio, 
+    school, 
+    assigned_tasks, 
+    city, 
+    attendance,
+    last_updated 
+  } = data;
+
+  console.log(data)
+  const query = `
+  INSERT INTO stabtagok (
+    vnev, knev, dob, stabcash, userid, acclvl, kezeltsponzorok, email, phone,
+    pfp, last_login, bio, school, assigned_tasks, city, attendance, last_updated
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
+
+  // Set the parameters to bind to the query
+  const params = [
+    vnev, knev, dob, stabcash, userid, acclvl, kezeltsponzorok, email, phone,
+    pfp, last_login, bio, school, assigned_tasks, city, attendance, last_updated
+  ];
+
+  try {
+    // Execute the prepared query with the bound parameters
+    const result = await db.prepare(query).bind(...params).run();
+    
+    // Return a successful response
+    return { status: 200, body: { message: 'Staff added successfully!' } };
+  } catch (error) {
+    // Log the error for debugging purposes
+    console.error('Error inserting staff:', error);
+    
+    // Return an error response
+    return { status: 500, body: { message: 'Error inserting staff' } };
+  }
+};
+

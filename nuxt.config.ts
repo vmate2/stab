@@ -1,13 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   
   modules: ['@nuxthub/core'],
   
   nitro: {
     experimental: {
-      openAPI: true,  // Enables OpenAPI functionality
+      openAPI: false,  // Enables OpenAPI functionality
     },
   },
   
