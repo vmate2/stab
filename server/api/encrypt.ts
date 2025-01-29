@@ -1,79 +1,58 @@
-import crypto from 'crypto';
+import CryptoJS from 'crypto-js';
+import jwt from 'jsonwebtoken';
+
+
+const runtimeConfig = useRuntimeConfig();
+const secretKey = runtimeConfig.public.secretKey;
+const jwtSecret = runtimeConfig.jwtSecret;
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-
-  switch (body.type) {
-    case 'encPassword':
-      // Await the result of encPassword to get the resolved value
-      const encryptedPassword = await encPassword(baseDec(body.password));
-      return { encryptedPassword }; // Return the encrypted password
-    case 'encComms':
-      return encryptComms(body.data);
+  // Verify the JWT
+  const authHeader = getHeader(event, 'Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw createError({ statusCode: 401, message: 'Unauthorized' });
   }
+
+  const token = authHeader.split(' ')[1];
+  try {
+    jwt.verify(token, jwtSecret); // Verify the token
+  } catch (error) {
+    throw createError({ statusCode: 401, message: 'Invalid token' });
+  }
+
+  // Process the encrypted message
+  const body = await readBody(event);
+  const decryptedMessage = decryptMessage(body.encryptedMessage);
+  console.log('Decrypted Message:', decryptedMessage);
+
+  // Encrypt the response
+  const responseMessage = 'Hello from the server!';
+  const encryptedResponse = encryptMessage(responseMessage);
+
+  return { encryptedResponse };
 });
 
-async function encPassword(initPass: string) {
-  const secretKey: any = process.env.SHA256KEY;
-
-  const hexPass = Buffer.from(initPass, 'utf8').toString('hex');
-
-  const binPass = hexToBinary(hexPass);
-
-  const halfLength = Math.floor(binPass.length / 2);
-  const firstHalf = binPass.slice(0, halfLength);
-  const secondHalf = binPass.slice(halfLength);
-
-  const invertedFirstHalf = invertBinary(firstHalf);
-
-  const modifiedBinPass = invertedFirstHalf + secondHalf;
-
-  // Await the result of encryptPassword
-  const encrypted = await encryptPassword(modifiedBinPass, secretKey); 
-
-  return encrypted; // Return the encrypted password
+function encryptMessage(message: string) {
+  return CryptoJS.AES.encrypt(message, secretKey).toString();
 }
 
-function hexToBinary(hex: string) {
-  return hex.split('')
-    .map((char) => parseInt(char, 16).toString(2).padStart(4, '0'))
-    .join('');
+function decryptMessage(encryptedMessage: string) {
+  const bytes = CryptoJS.AES.decrypt(encryptedMessage, secretKey);
+  return bytes.toString(CryptoJS.enc.Utf8);
 }
 
-function invertBinary(bin: string) {
-  return bin.split('')
-    .map((bit) => (bit === '0' ? '1' : '0'))
-    .join('');
-}
+import { generateKeyPairSync } from 'crypto';
 
-async function encryptPassword(password: string, key: string) {
-  const hash = crypto.createHmac('sha256', key)
-    .update(password)
-    .digest('hex');
-
-  return hash; // Return the hash directly
-}
-
-export function baseDec(val: string) {
-  const bytes = Buffer.from(val, 'hex');
-
-  const shiftedBytes = bytes.map(byte => byte - 8);
-  
-  const utf8String = Buffer.from(shiftedBytes).toString('utf8');
-
-  return utf8String;
-}
-
-export function baseEnc(val: string) {
-  const bytes = Buffer.from(val, 'utf8');
-
-  const shiftedBytes = bytes.map(byte => byte + 8);
-  
-  const hexValue = Buffer.from(shiftedBytes).toString('hex');
-
-  return hexValue;
-}
-
-async function encryptComms(data:any) {
-  
+export function generateKeyPair() {
+  return generateKeyPairSync('rsa', {
+    modulusLength: 2048, // Key size
+    publicKeyEncoding: {
+      type: 'spki',
+      format: 'pem',
+    },
+    privateKeyEncoding: {
+      type: 'pkcs8',
+      format: 'pem',
+    },
+  });
 }

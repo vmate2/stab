@@ -1,13 +1,13 @@
 <template>
   <div>
-    
+    <NavMenu></NavMenu>
   </div>
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-layout: 'stab'
-});
+import NavMenu from '~/components/navMenu.vue';
+
+
 </script>
 
 <style>

@@ -30,11 +30,14 @@ const poszt = ref<kiirasClient | null>(null);
 }
 
 poszt.value = {
-  cim: 'Stábgyűlés',
-  content: 'Ez egy felhívó kiírás! Sok minden fontos információ van benne.',
+  cim: 'Fontos információk',
+  content: `Diáknap: Április 16. \n Témánk: Élmények \n Témavilág: Társasjátékok \n`,
   ido: formatDate(2021, 3, 10)
 };
 
+
+const user = useState('user')
+  console.log('USER: ', user.value)
 
 definePageMeta({
 layout: 'stab'
@@ -43,6 +46,11 @@ layout: 'stab'
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+.txtarea {
+  resize: none;
+  width: 70%;
+}
 
 .contentMain {
   width: 100%;
@@ -54,7 +62,7 @@ layout: 'stab'
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
-  padding-bottom: 10vh; 
+  padding-bottom: 10vh;
   gap: 80px;
 }
 
@@ -70,18 +78,17 @@ layout: 'stab'
   width: 8px;
   margin-left: 10px;
 }
+
 .contentMain::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3); /* Track color */
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
 }
 
 .contentMain::-webkit-scrollbar-thumb {
-  background-color: #66B2FF; /* Thumb color */
+  background-color: #66B2FF;
   border-radius: 10px;
-  border: 2px solid rgba(0, 0, 0, 0.3); /* Optional: gives a bordered look */
+  border: 2px solid rgba(0, 0, 0, 0.3);
 }
-
-/* Firefox scrollbar styling */
 
 .infoCont {
   min-width: 30%;
@@ -100,30 +107,34 @@ layout: 'stab'
   height: fit-content;
   max-width: 60vw;
   max-height: max-content;
-  font-size: clamp(20px, 1vw, 80px);
+  font-size: clamp(16px, 3vw, 300px); /* Responsive font size */
 }
 
 .ido {
-width: 100%;
-text-align: end;
-position: relative;
-height: fit-content;
-user-select: none;
+  width: 100%;
+  text-align: end;
+  position: relative;
+  height: fit-content;
+  user-select: none;
+  color: rgb(168, 168, 168);
+  font-size: clamp(14px, 1.5vw, 20px); /* Responsive font size */
 }
 
 .cim {
-  font-size: 3em;
+  font-size: clamp(24px, 4vw, 480px); /* Responsive font size */
   font-family: "Poppins", sans-serif;
   margin-bottom: 15px;
   user-select: none;
+  color: rgb(224, 224, 224);
 }
 
 .content {
-  font-size: 1.5em;
+  font-size: clamp(16px, 2vw, 36px); /* Responsive font size */
   font-family: 'Courier New', Courier, monospace;
   font-weight: 600;
   margin-bottom: 10px;
   word-wrap: wrap;
+  white-space: pre-line;
+  color: rgb(206, 206, 206);
 }
-
 </style>

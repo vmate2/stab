@@ -18,10 +18,39 @@ export default defineEventHandler(async (event) => {
     return data;
     case 'addStabtag':
       return await addStabtag(body.data);
+    case 'createTransaction': 
+    return await createTrans(body.data);
+    case 'queryPolorendeles':
+      return queryPolorendeles();
     default:
       return true;
   }
 })
+
+async function createTrans(data:object) {
+  if (!data) {
+    return false;
+  }
+  console.log(data);
+  const db = hubDatabase();
+  if (data.comment) {
+  const query = `INSERT INTO tranzakciok (title, type, category, amount, comment) VALUES (?, ?, ?, ?, ?)`;
+  const params = [data.transTitle, data.transType, data.category, data.osszeg, data.comment]
+  } else {
+  const query = `INSERT INTO tranzakciok (title, type, category, amount) VALUES (?, ?, ?, ?)`;
+  const params = [data.transTitle, data.transType, data.category, data.osszeg]
+  }
+
+
+}
+
+const queryPolorendeles= async () => {
+  const db = hubDatabase();
+  const query = `SELECT * FROM polorendeles`;
+  const result = await db.prepare(query).all();
+  console.log(result);
+  return result;
+}
 
 const checkDB = async (ip: any) => {
   const db = hubDatabase();
@@ -154,3 +183,25 @@ export const addStabtag = async (data: any) => {
   }
 };
 
+type uzenet = {
+  id: number;
+  from: string;
+  time: string;
+  title: string;
+  text: string;
+  voteTitle?: string;
+  votechoices?: Array<string>;
+  progresses?: Array<number>;
+  images?: Array<string>;
+};
+
+
+// Example: Mapping database data to the factory function
+function toClient(data: { id:number, from:string, time:string, title:string, text:string, voteTitle?:string, voteChoices:Array<string>, progresses:Array<number>, images?: Array<string>  }): uzenet {
+return data;
+}
+
+// Example usage:
+const dbData = { id: 2, from: 'Varga Máté', time: '2023.02.30', title: 'cim', text: 'hosszu szoveg', voteTitle: 'xd', voteChoices: ['da', 'dd'], progresses: [1, 99]};
+const user = toClient(dbData);
+//onsole.log(user)

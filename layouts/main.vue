@@ -39,7 +39,7 @@
       <div class="navListItem navListLastItem"><NuxtLink to="/login">Bejelentkezés</NuxtLink></div>
       </div>
     </nav>
-    <div class="mainCont">
+    <div class="mainCont" @click="isExpanded = false">
       <slot />
     </div>
     <footer class="scrolling-footer">

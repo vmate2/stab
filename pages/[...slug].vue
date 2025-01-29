@@ -1,4 +1,5 @@
 <template>
+<div class="newbody">
   <div class="container">
     <div class="cont">
       <h1 class="error-code">404</h1>
@@ -6,6 +7,7 @@
       <NuxtLink to="/" class="backtohome">Vissza a főoldalra</NuxtLink>
     </div>
   </div>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -13,19 +15,21 @@
 </script>
 
 <style>
-  body {
-    margin: 0;
+</style>
+
+<style scoped>
+/* Container for centering content */
+
+.newbody {
+  margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
     height: 100vh;
     background-color: rgb(75, 75, 75); /* Kept your grey background */
     overflow: hidden;
     color: white;
-  }
-</style>
+}
 
-<style scoped>
-/* Container for centering content */
 .container {
   display: flex;
   align-items: center;
