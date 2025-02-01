@@ -75,7 +75,7 @@ const expandList = () => {
 
 </script>
 
-<style>
+<style scoped>
 
 .navListItem {
   text-align: center;

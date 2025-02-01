@@ -1,16 +1,13 @@
 <template>
-  <mainFrame>
+  <div>
     
-  </mainFrame>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import mainFrame from '~/components/mainFrame.vue';
 definePageMeta({
-  layout: 'new',
+layout: 'profile'
 });
-
-
 </script>
 
 <style>

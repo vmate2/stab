@@ -1,0 +1,86 @@
+a:not(.link, .btn, :has(span.iconify:only-child), :has(img:only-child))::after {
+    content: "";
+    height: 0.10em;
+    width: 100%;
+
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+
+    background-color: currentColor;
+
+    transform: scaleX(0);
+    transform-origin: left;
+
+    transition: transform .3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+a:not(.link, .btn, :has(span.iconify:only-child), :has(img:only-child)):hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+
+
+
+
+
+
+a {
+    position: relative;
+  }
+
+:root {
+    --text-primary-color: #e9e9e9;
+    --text-secondary-color: rgb(180, 180, 180);
+    --font-size: 16px;
+    --border: 2px solid white;
+    --border-radius-outer: 12px;
+    --border-radius-inner: 10px;
+    --background-primary-color: #333333;
+    --background-secondary-color: #AAAAAA;
+    --padding-basic: 6px;
+    --primary-font: 'Courier New', Courier, monospace;
+    --font-weight: 700;
+  }
+
+    body {
+      background-color: rgb(48, 48, 48); 
+    }
+    
+
+  * {
+   user-select: none;
+   padding: 0;
+   padding-inline: 0;
+   scroll-padding: 0;
+   padding-block: 0;
+   margin: 0;
+   margin-inline: 0;
+   margin-block: 0;
+   margin-trim: 0;
+   left: 0;
+   top: 0;
+   color: inherit;
+   text-decoration: none;
+  }
+
+  
+  .text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(1.4rem, 3vw, 2.5rem); /* Scales between 1rem and 2.5rem */
+    color: var(--text-primary-color);
+    font-weight: 700;
+    width: fit-content;
+    height: fit-content;
+  }
+
+  .marginTop {
+    margin-top: 20px;
+  }
+
+  .lbl {
+    color: var(--text-secondary-color);
+    font-size: 1.5rem;
+    opacity: 0.4;
+  }

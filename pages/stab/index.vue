@@ -3,7 +3,7 @@
     <div class="contentMain">
       <div class="infoCont">
         <div class="cim">{{ poszt?.cim }}</div>
-        <div class="content">{{ poszt?.content }}</div>
+        <div class="content2">{{ poszt?.content }}</div>
         <div class="ido">{{ poszt?.ido }}</div>
       </div>
     </div>
@@ -40,7 +40,7 @@ const user = useState('user')
   console.log('USER: ', user.value)
 
 definePageMeta({
-layout: 'stab'
+layout: 'new'
 });
 </script>
 
@@ -128,7 +128,7 @@ layout: 'stab'
   color: rgb(224, 224, 224);
 }
 
-.content {
+.content2 {
   font-size: clamp(16px, 2vw, 36px); /* Responsive font size */
   font-family: 'Courier New', Courier, monospace;
   font-weight: 600;

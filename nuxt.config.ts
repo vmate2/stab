@@ -48,4 +48,7 @@ export default defineNuxtConfig({
   routeRules: {
     '/stab/**': { appMiddleware: 'auth' }, // Apply auth middleware to all /stab/ routes
   },
+  css: [
+    '~/assets/css/main.css',
+  ],
 });

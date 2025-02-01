@@ -1,11 +1,13 @@
 <template>
   <div>
-    {{ route.path }}
+    adatok
   </div>
 </template>
 
 <script lang="ts" setup>
-const route = useRoute()
+definePageMeta({
+layout: 'profile'
+});
 </script>
 
 <style>
