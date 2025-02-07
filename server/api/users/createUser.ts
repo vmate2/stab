@@ -1,3 +1,6 @@
+import { Prisma, PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient;
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
@@ -58,20 +61,22 @@ async function encryptPassword(password: string) {
 }
 
 async function store(id: string, username: string, hashedpass: string) {
-  const db = hubDatabase();
 
   try {
-    const query = db.prepare(`
-      INSERT INTO users (id, username, password)
-      VALUES (?, ?, ?);
-    `);
+    const newUser = await prisma.users.create({
+      data: {
+        uuid: id,
+        username: username,
+        password: hashedpass,
+      },
+    });
 
-    await query.bind(id, username, hashedpass).run();
-
-    return { success: true, message: 'User stored successfully.' };
+    console.log('Inserted user:', newUser);
+    return {success: true}
   } catch (error) {
-    console.error('Error storing user:', error);
-    return { success: false, message: 'Failed to store user.' };
+    console.error('Error inserting user:', error);
+  } finally {
+    await prisma.$disconnect();
   }
 };
 
@@ -93,13 +98,15 @@ const posztRegex = nameRegex;
 
   if (nameRegex.test(vnev) && nameRegex.test(knev) && posztRegex.test(poszt) && emailRegex.test(email) && phoneRegex.test(telefonszam) && email.length > 10 && email.length < 120 && telefonszam.length < 15 && vnev.length < 20 && knev.length < 20) {
     try {
-      const db = hubDatabase();
-      const query = db.prepare(`
-        INSERT INTO stabtagok (vnev, knev, userid, poszt, email, phone)
-        VALUES (?, ?, ?, ?, ?, ?);
-      `);
-
-      await query.bind(vnev, knev, id, poszt, email, telefonszam).run();
+      const result = await prisma.stabtagok.create({
+        data: {
+          uuid: id,
+          name: nev,
+          post: poszt,
+          email: email,
+          phone: telefonszam,
+        },
+      });
       return {success: true, message: 'Sikeresen létrehozva!'}
     } catch (e) {
       console.error(e)

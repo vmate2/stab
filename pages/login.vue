@@ -48,7 +48,9 @@
         </svg>
       </div>
     </div>
-    <button @click="del()">delete</button>
+    <button @click="del()">del</button>
+    <div v-if="pending">Loading...</div>
+    <div v-if="error">{{ errormsg }}</div>
   </div>
 </template>
 
@@ -60,9 +62,7 @@ definePageMeta({
 const passHidden = ref(false);
 const inputType = ref("password");
 
-import CryptoJS from 'crypto-js';
 import { ref, onMounted } from 'vue';
-import { useEncryption } from '~/composables/useEncryption';
 
 const runtimeConfig = useRuntimeConfig();
 const secretKey = runtimeConfig.public.secretKey;
@@ -73,6 +73,9 @@ const rememberMe = ref(true);
 const isLoggedIn = ref(false);
 let token = '';
 const tokenCookie = useCookie('token')
+const errormsg = ref();
+const pending = ref();
+const error = ref();
 
 // Check for a stored token on component mount
 onMounted(() => {
@@ -88,34 +91,50 @@ onMounted(() => {
 
 
 
-const { encrypt } = useEncryption();
-
 async function login() {
   try {
+    pending.value = true;
+    error.value = null;
+
     const body = {
-      username: username.value,
-      password: password.value,
+      username: btoa(username.value),
+      password: btoa(password.value),
     };
-
-    // Convert the body to a JSON string
-    const bodyString = JSON.stringify(body);
-
-    // Encrypt the JSON string
-    const encryptedBody = await encrypt(bodyString);
-
-    // Send the encrypted body to the server
-    const { data } = await useFetch('/api/login', {
+    console.log('SENDING');
+    const response = await useFetch('/api/login', {
       method: 'POST',
-      body: {
-        encryptedData: encryptedBody, // Send the encrypted data
-      },
+      body
     });
 
-    console.log('Server response:', data.value);
-  } catch (error) {
-    console.error('Error during login:', error);
+    console.log(response);
+  
+    
+    if (response.error.value) alert(response.error.value || 'An unknown error occurred');
+    errormsg.value = response.error;
+    pending.value = response.pending;
+    error.value = response.error;
+
+    console.log('RECIEVED')
+
+    if (response.data.value) {
+      tokenCookie.value = response.data.value;
+      console.log(response.data.value);
+      
+      console.log(tokenCookie.value)
+      navigateTo('/stab/');
+    }
+  } catch (err) {
+    console.error('Error during login:', err);
+    error.value = err;
+  } finally {
+    pending.value = false;
   }
 }
+
+const del = () => {
+  tokenCookie.value = undefined;
+}
+
 </script>
 
 <style scoped>

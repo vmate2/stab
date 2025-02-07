@@ -42,6 +42,34 @@ const userProfile = ref({
 });
 
 
+const user = useState('user');  // Assuming user state is managed by `useState`
+  const token:any = useState('token');
+  console.log('USER: ', user.value);
+  console.log('TOKEN: ', token.value);
+
+onMounted(async () => {
+  
+
+  // Redirect to login if the user is not found
+  if (!user.value) {
+    navigateTo('/login');
+  }
+
+  console.log('fetching');
+  
+  // Fetch user data
+});
+const { data, pending, error, refresh } = await useFetch('/api/users', {
+    method: 'GET',
+    headers: {
+      token: token.value
+    }
+  });
+
+  console.log(data.value);
+
+
+
 </script>
 
 <style>

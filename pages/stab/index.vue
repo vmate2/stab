@@ -36,8 +36,6 @@ poszt.value = {
 };
 
 
-const user = useState('user')
-  console.log('USER: ', user.value)
 
 definePageMeta({
 layout: 'new'

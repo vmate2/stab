@@ -1,80 +1,81 @@
-import bcrypt from 'bcryptjs';
-import { read } from 'fs';
-import { SignJWT, jwtVerify } from 'jose';
+import { SignJWT, jwtVerify  } from 'jose';
+import { Prisma, PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient;
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-
   try {
-    // Forward the encrypted data to the encryption endpoint
-    const { decryptedMessage } = await $fetch('/api/encryption', {
-      method: 'POST',
-      body: {
-        encryptedMessage: body.encryptedData, // Forward the encrypted data
-      },
-    });
+    console.log('HERE')
+    const body = await readBody(event);
+    console.log(body)
+    const username = atob(body.username);
+    const password = atob(body.password);
 
-    // Parse the decrypted data into an object
-    const { username, password } = decryptedMessage;
+    console.log(username, password);
 
-    // Validate the credentials
     const user = await validateCredentials(username, password);
-
-    if (user) {
-      // Generate a JWT token
-      const runtimeConfig = useRuntimeConfig();
-      const secretKey = new TextEncoder().encode(runtimeConfig.public.jwtSecret);
-
-      const token = await new SignJWT({ userId: user.id, username: user.username })
-        .setProtectedHeader({ alg: 'HS256' }) // Algorithm
-        .setIssuedAt() // Current time
-        .setExpirationTime('1h') // Token expires in 1 hour
-        .sign(secretKey); // Sign with the secret key
-
-      console.log('JWT Token:', token);
-
-      // Verify the token (optional, for debugging)
-      const { payload } = await jwtVerify(token, secretKey);
-      console.log('Decoded JWT Token:', payload);
-
-      return { token };
-    } else {
-      throw createError({ statusCode: 401, message: 'Invalid credentials' });
+    if (!user) {
+      throw createError({ statusCode: 401, statusMessage: 'Hibás felhasználónév!' });
     }
-  } catch (error) {
+
+    const runtimeConfig = useRuntimeConfig();
+    const secretKey = new TextEncoder().encode(runtimeConfig.public.jwtSecret);
+    console.log('SECRET: ', secretKey)
+
+    const token = await new SignJWT({ userId: user.id, username: user.username })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('1d')
+      .sign(secretKey);
+
+    console.log('JWT Token:', token);
+
+    const { payload } = await jwtVerify(token, secretKey);
+    console.log('Decoded JWT Token:', payload);
+
+    return { token };
+  } catch (error: any) {
     console.error('Error during login:', error);
-    throw createError({ statusCode: 500, message: 'Internal Server Error' });
+    if (error.statusCode === 401) {
+      throw error;  // Rethrow 401 error for invalid credentials
+    } else {
+      throw createError({ statusCode: 500, statusMessage: 'Internal Server Error' });
+    }
   }
 });
-async function validateCredentials(username: string, password: string) {
-  const db = hubDatabase();
-  console.log('Database connection:', db); // Log the database connection
 
+async function validateCredentials(username: string, password: string) {
   try {
-    //// Fetch the user from the database
-    const user = await db.prepare(`
-      SELECT * FROM users WHERE username = ?;
-    `)
-      .bind(username)
-      .first();
-    if (!user) {
-      return null; // User not found
-    }
+    const user = await prisma.users.findFirst({
+      where: { username },
+      select: { id: true, uuid: true, username: true },
+    });
+
+    if (!user) return null;
+
+    console.log('User data:', user);
+
+    // Verify password correctness
     const isValid = await $fetch('/api/encrypt-password', {
       method: 'POST',
-      headers: {
-        key: useRuntimeConfig().secret_header
-      },
-      body: {type: 'verify', password: password, hashedPassword: user.password}
-    })
-    console.log(isValid)
-    if (isValid) {
-      return user; // Password matches
-    } else {
-      return null; // Password does not match
+      headers: { key: useRuntimeConfig().secret_header },
+      body: { type: 'verify', password, id: user.uuid },
+    });
+
+    if (isValid === false) {
+      // If password is invalid, throw 401 Unauthorized
+      throw createError({
+        statusCode: 401,
+        statusMessage: 'Hibás jelszó!', // Incorrect password
+      });
     }
+
+    console.log(isValid);
+    return user;  // If password is valid, return the user
+
   } catch (error) {
     console.error('Error validating credentials:', error);
-    throw createError({ statusCode: 500, message: 'Internal server error' });
+    // Catch unexpected errors (e.g., DB issues, encryption problems)
+    throw createError({ statusCode: 401, statusMessage: 'Helytelen jelszo!' });
   }
 }

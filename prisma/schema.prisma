@@ -7,3 +7,27 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
+model Stabtagok {
+  id        Int     @id @default(autoincrement())
+  uuid      String  @unique
+  name      String
+  dob       DateTime?
+  school    String?
+  paidcash  Int?
+  post      String
+  email     String  @unique
+  phone     String @unique
+  city      String?
+
+  @@map("stabtagok")
+}
+
+model users {
+  id              Int      @id @default(autoincrement())
+  uuid            String   @unique
+  username        String
+  password        String
+  createdAt       DateTime @default(now()) 
+  modifiedAt      DateTime @updatedAt
+}

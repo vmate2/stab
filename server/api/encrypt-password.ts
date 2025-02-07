@@ -1,12 +1,15 @@
 import bcrypt from 'bcryptjs';
-
+import { Prisma, PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient;
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const key = getRequestHeader(event, 'key')
   if (body.type == 'verify') {
+    console.log('HERE')
     if (key === useRuntimeConfig().secret_header) {
       const pepper = useRuntimeConfig().pepper;
-      return await verifyPassword(body.password, body.hashedPassword, pepper);
+      console.log( body)
+      return await verifyPassword(body.password, pepper, body.id);
     } else {
       throw createError({
         statusCode: 401,
@@ -43,8 +46,21 @@ async function hashPassword(password: string, pepper: string) {
   return hashedPassword;
 }
 
-async function verifyPassword(password: string, hashedPassword: string, pepper: string) {
+async function verifyPassword(password: string, pepper: string, id: string) {
+  const user = await prisma.users.findUnique({
+    where: { uuid: id },
+    select: { password: true },
+  });
+
+  if (!user) {
+    console.log("User not found");
+    return false;
+  }
+
+  console.log(password, user.password, pepper);
+
   const pepperedPassword = password + pepper;
-  const isMatch = await bcrypt.compareSync(pepperedPassword, hashedPassword);
+  const isMatch = await bcrypt.compare(pepperedPassword, user.password);
+
   return isMatch;
 }
