@@ -9,6 +9,9 @@ export default defineNuxtConfig({
     experimental: {
       openAPI: false,  // Enables OpenAPI functionality
     },
+    output: {
+      publicDir: '.output/public'
+    }
   },
   
   app: {
