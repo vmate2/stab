@@ -160,7 +160,6 @@ import { onMounted, popScopeId } from 'vue';
 import { ref, nextTick } from 'vue';
 import jelentkezes from '~/server/api/jelentkezes';
 import { onBeforeUnmount, watch } from 'vue';
-import e from 'express';
 import { UNABLE_TO_FIND_POSTINSTALL_TRIGGER_JSON_SCHEMA_ERROR } from '@prisma/client/scripts/postinstall.js';
 import { generateKey } from 'crypto';
 

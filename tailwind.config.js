@@ -1,14 +1,16 @@
 /** @type {import('tailwindcss').Config} */
-export const corePlugins = {
-  preflight: false,
+export default {
+  corePlugins: {
+    preflight: false,
+  },
+  content: [
+    './components/**/*.{vue,js,ts}',
+    './layouts/**/*.vue',
+    './pages/**/*.vue',
+    './app.vue',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
 };
-export const content = [
-  './components/**/*.{vue,js}',
-  './layouts/**/*.vue',
-  './pages/**/*.vue',
-  './app.vue',
-];
-export const theme = {
-  extend: {},
-};
-export const plugins = [];

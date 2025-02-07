@@ -812,67 +812,66 @@ const deleteUser = (id: number) => {
 };
 
 
-import * as XLSX from 'xlsx';
 
-const exportToExcel = () => {
-  // Add headers manually
-  const headers = ['ID', 'Név', 'Pozíció', 'Email', 'Telefonszám', 'Fizetett stábcash', 'Iskola', 'Város'];
-  const data = people.value.map(person => [
-    person.id,
-    person.name,
-    person.position,
-    person.email,
-    person.phone,
-    person.paid,
-    person.school,
-    person.city,
-  ]);
-
-  // Combine headers and data
-  const worksheetData = [headers, ...data];
-
-  // Create a worksheet
-  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-  // Auto-adjust column widths
-  const colWidths = headers.map((_, colIndex) => {
-    let maxWidth = headers[colIndex].length; // Start with header width
-    worksheetData.forEach(row => {
-      const cellValue = row[colIndex]?.toString() || '';
-      if (cellValue.length > maxWidth) {
-        maxWidth = cellValue.length;
-      }
-    });
-    return { wch: maxWidth }; // Add some padding
-  });
-
-  worksheet['!cols'] = colWidths;
-
-  // Create a workbook and append the worksheet
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Stábtagok');
-
-  // Generate a binary string from the workbook
-  const binaryString = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
-
-  // Convert the binary string to a Blob
-  const blob = new Blob([s2ab(binaryString)], { type: 'application/octet-stream' });
-
-  // Create a download link and trigger the download
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'Stábtagok.xlsx';
-  link.click();
-  URL.revokeObjectURL(url);
-};
-
-// Utility function to convert a string to an ArrayBuffer
-const s2ab = (s: string) => {
-  const buf = new ArrayBuffer(s.length);
-  const view = new Uint8Array(buf);
-  for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
-  return buf;
-};
+//const exportToExcel = () => {
+//  // Add headers manually
+//  const headers = ['ID', 'Név', 'Pozíció', 'Email', 'Telefonszám', 'Fizetett stábcash', 'Iskola', 'Város'];
+//  const data = people.value.map(person => [
+//    person.id,
+//    person.name,
+//    person.position,
+//    person.email,
+//    person.phone,
+//    person.paid,
+//    person.school,
+//    person.city,
+//  ]);
+//
+//  // Combine headers and data
+//  const worksheetData = [headers, ...data];
+//
+//  // Create a worksheet
+//  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+//
+//  // Auto-adjust column widths
+//  const colWidths = headers.map((_, colIndex) => {
+//    let maxWidth = headers[colIndex].length; // Start with header width
+//    worksheetData.forEach(row => {
+//      const cellValue = row[colIndex]?.toString() || '';
+//      if (cellValue.length > maxWidth) {
+//        maxWidth = cellValue.length;
+//      }
+//    });
+//    return { wch: maxWidth }; // Add some padding
+//  });
+//
+//  worksheet['!cols'] = colWidths;
+//
+//  // Create a workbook and append the worksheet
+//  const workbook = XLSX.utils.book_new();
+//  XLSX.utils.book_append_sheet(workbook, worksheet, 'Stábtagok');
+//
+//  // Generate a binary string from the workbook
+//  const binaryString = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+//
+//  // Convert the binary string to a Blob
+//  const blob = new Blob([s2ab(binaryString)], { type: 'application/octet-stream' });
+//
+//  // Create a download link and trigger the download
+//  const url = URL.createObjectURL(blob);
+//  const link = document.createElement('a');
+//  link.href = url;
+//  link.download = 'Stábtagok.xlsx';
+//  link.click();
+//  URL.revokeObjectURL(url);
+//};
+//
+//// Utility function to convert a string to an ArrayBuffer
+//const s2ab = (s: string) => {
+//  const buf = new ArrayBuffer(s.length);
+//  const view = new Uint8Array(buf);
+//  for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+//  return buf;
+//};
 
 </script>
