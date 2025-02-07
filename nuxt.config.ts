@@ -1,16 +1,15 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-08',
   devtools: { enabled: false },
   
-  modules: ['@nuxthub/core'],
+  // modules: ['@nuxthub/core'],  //! Remove if not needed
   
   nitro: {
     experimental: {
-      openAPI: false,  // Enables OpenAPI functionality
+      openAPI: false,  // Disables OpenAPI functionality
     },
     output: {
-      publicDir: '.output/public'
+      publicDir: 'dist'  // Set output directory to dist for static export
     }
   },
   
@@ -29,14 +28,12 @@ export default defineNuxtConfig({
     }
   },
   
-  hub: {
-    database: true  // Enables the database feature in NuxtHub
-  },
   postcss: {
     plugins: {
       autoprefixer: {},
     },
   },
+  
   runtimeConfig: {
     public: {
       secretKey: process.env.SECRET_KEY,
@@ -47,9 +44,11 @@ export default defineNuxtConfig({
     pepper: process.env.PEPPER,
     privateKey: process.env.PRIVATE_KEY,
   },
+  
   routeRules: {
     '/stab/**': { appMiddleware: 'auth' }, // Apply auth middleware to all /stab/ routes
   },
+  
   css: [
     '~/assets/css/main.css',
   ],
