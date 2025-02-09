@@ -8,9 +8,6 @@ export default defineNuxtConfig({
     experimental: {
       openAPI: false,  // Disables OpenAPI functionality
     },
-    output: {
-      publicDir: 'dist'  // Set output directory to dist for static export
-    }
   },
   
   app: {
