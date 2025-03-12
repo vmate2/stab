@@ -1,5 +1,5 @@
 import { SignJWT, jwtVerify  } from 'jose';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient;
 
@@ -28,18 +28,17 @@ export default defineEventHandler(async (event) => {
       .setExpirationTime('1d')
       .sign(secretKey);
 
-    console.log('JWT Token:', token);
 
     const { payload } = await jwtVerify(token, secretKey);
-    console.log('Decoded JWT Token:', payload);
-
+    console.log('token verified');
+    
     return { token };
   } catch (error: any) {
     console.error('Error during login:', error);
     if (error.statusCode === 401) {
       throw error;  // Rethrow 401 error for invalid credentials
     } else {
-      throw createError({ statusCode: 500, statusMessage: 'Internal Server Error' });
+      throw createError({ statusCode: 500, statusMessage: 'Intrernal Server Error' });
     }
   }
 });

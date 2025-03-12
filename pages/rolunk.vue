@@ -27,17 +27,13 @@ layout: 'main'
 });
 </script>
 
-<style>
+<style scoped>
   .leirasCont {
     background-color: red;
     position: relative;
     width: 30vw;
     min-height: 30dvh;
     margin-bottom: 20vh;
-  }
-
-  body {
-    overflow-x: hidden;
   }
 
   .container {
@@ -47,10 +43,6 @@ layout: 'main'
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-  }
-
-  body {
-    overflow-x: hidden;
   }
   .row0 {
     width: 100vw;

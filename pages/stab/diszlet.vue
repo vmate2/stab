@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 definePageMeta({
-layout: 'stab'
+layout: 'new'
 });
 </script>
 

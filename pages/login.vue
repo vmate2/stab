@@ -1,19 +1,21 @@
 <template>
   <div>
     <div class="loginCont" :class="{ animateClose: isLoggedIn }">
-      <div v-if="!isLoggedIn">
+      <div v-if="!isLoggedIn" class="container">
         <div class="loginFelirat">Bejelentkezés</div>
         <div class="group">
-          <input required type="text" class="input" spellcheck="false" v-model="username">
+          <input required type="text" class="input" spellcheck="false" v-model="username" autocomplete="username">
           <span class="highlight"></span>
           <span class="bar"></span>
           <label>Felhasználónév</label>
         </div>
-        <div class="group">
-          <input required :type="inputType" class="input" spellcheck="false" v-model="password">
-          <span class="highlight"></span>
-          <span class="bar"></span>
-          <label>Jelszó</label>
+        <div class="group" style="display: flex; align-items: center; flex-direction: row; flex-wrap: wrap;">
+          <div>
+            <input required :type="inputType" class="input" spellcheck="false" v-model="password" autocomplete="current-password">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>Jelszó</label>
+          </div>
           <div v-if="!passHidden" class="viewPass" @click="passHidden = true; inputType = 'text'">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -26,15 +28,9 @@
             </svg>
           </div>
         </div>
-        <button class="animated-button" @click="login()">
-          <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
-          </svg>
-          <span class="text">Bejelentkezés</span>
-          <span class="circle"></span>
-          <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
-          </svg>
+        <button class="button" data-text="Awesome">
+          <span class="actual-text">&nbsp;bejelentkezés&nbsp;</span>
+          <span aria-hidden="true" class="hover-text">&nbsp;bejelentkezés&nbsp;</span>
         </button>
       </div>
       <div v-if="isLoggedIn">
@@ -48,7 +44,6 @@
         </svg>
       </div>
     </div>
-    <button @click="del()">del</button>
     <div v-if="pending">Loading...</div>
     <div v-if="error">{{ errormsg }}</div>
   </div>
@@ -59,20 +54,15 @@ definePageMeta({
   layout: 'main'
 });
 
+import { ref, onMounted } from 'vue';
+const { $notify } = useNuxtApp();
+
 const passHidden = ref(false);
 const inputType = ref("password");
-
-import { ref, onMounted } from 'vue';
-
-const runtimeConfig = useRuntimeConfig();
-const secretKey = runtimeConfig.public.secretKey;
-
 const username = ref('');
 const password = ref('');
-const rememberMe = ref(true);
 const isLoggedIn = ref(false);
-let token = '';
-const tokenCookie = useCookie('token')
+const tokenCookie = useCookie('token');
 const errormsg = ref();
 const pending = ref();
 const error = ref();
@@ -81,15 +71,12 @@ const error = ref();
 onMounted(() => {
   const storedToken = tokenCookie.value;
   if (storedToken) {
-    token = storedToken;
     isLoggedIn.value = true;
   }
-  if (isLoggedIn.value == true) {
-    navigateTo('/stab/')
+  if (isLoggedIn.value) {
+    navigateTo('/stab/');
   }
 });
-
-
 
 async function login() {
   try {
@@ -100,27 +87,18 @@ async function login() {
       username: btoa(username.value),
       password: btoa(password.value),
     };
-    console.log('SENDING');
     const response = await useFetch('/api/login', {
       method: 'POST',
       body
     });
 
-    console.log(response);
-  
-    
-    if (response.error.value) alert(response.error.value || 'An unknown error occurred');
+    if (response.error.value) $notify(response.error.value || 'An unknown error occurred', 'warning');
     errormsg.value = response.error;
     pending.value = response.pending;
     error.value = response.error;
 
-    console.log('RECIEVED')
-
     if (response.data.value) {
       tokenCookie.value = response.data.value;
-      console.log(response.data.value);
-      
-      console.log(tokenCookie.value)
       navigateTo('/stab/');
     }
   } catch (err) {
@@ -134,7 +112,6 @@ async function login() {
 const del = () => {
   tokenCookie.value = undefined;
 }
-
 </script>
 
 <style scoped>
@@ -158,6 +135,13 @@ const del = () => {
   }
 }
 
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
 
 .animateClose {
   min-width: 0px !important;
@@ -166,7 +150,6 @@ const del = () => {
   height: 100px !important;
   opacity: 0 !important;
 }
-
 
 .loginCont {
   background-color: rgba(0, 0, 0, 0.2);
@@ -188,7 +171,7 @@ const del = () => {
   user-select: none;
   animation: popUp 1s ease-out;
   position: relative;
-  top: -20vh;
+  top: -10vh;
   transition: all 1.5s ease;
 }
 
@@ -203,13 +186,14 @@ const del = () => {
   height: 25px;
   position: relative;
   bottom: 30px;
-  left: 230px;
+  left: -20px;
   cursor: pointer;
 }
 
 .group {
   position: relative;
   margin-top: 100px;
+  max-width: 100%;
 }
 
 .input {
@@ -289,6 +273,49 @@ label {
   animation: inputHighlighter 0.3s ease;
 }
 
+.button {
+  margin: 0;
+  height: auto;
+  background: transparent;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+/* button styling */
+.button {
+  --border-right: 6px;
+  --text-stroke-color: rgba(255,255,255,0.6);
+  --animation-color: #37FF8B;
+  --fs-size: 2em;
+  letter-spacing: 3px;
+  text-decoration: none;
+  font-size: var(--fs-size);
+  font-family: "Arial";
+  position: relative;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text-stroke-color);
+}
+/* this is the text, when you hover on button */
+.hover-text {
+  position: absolute;
+  box-sizing: border-box;
+  content: attr(data-text);
+  color: var(--animation-color);
+  width: 0%;
+  inset: 0;
+  border-right: var(--border-right) solid var(--animation-color);
+  overflow: hidden;
+  transition: 0.5s;
+  -webkit-text-stroke: 1px var(--animation-color);
+}
+/* hover */
+.button:hover .hover-text {
+  width: 100%;
+  filter: drop-shadow(0 0 23px var(--animation-color))
+}
+
 @keyframes inputHighlighter {
   from {
     background: #5264AE;
@@ -297,95 +324,6 @@ label {
     width: 0;
     background: transparent;
   }
-}
-
-.animated-button {
-  margin-top: 75px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 16px 36px;
-  border: 4px solid;
-  border-color: transparent;
-  font-size: 16px;
-  background-color: inherit;
-  border-radius: 100px;
-  font-weight: 600;
-  color: greenyellow;
-  box-shadow: 0 0 0 2px greenyellow;
-  cursor: pointer;
-  overflow: hidden;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.animated-button svg {
-  position: absolute;
-  width: 24px;
-  fill: greenyellow;
-  z-index: 9;
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.animated-button .arr-1 {
-  right: 16px;
-}
-
-.animated-button .arr-2 {
-  left: -25%;
-}
-
-.animated-button .circle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
-  background-color: greenyellow;
-  border-radius: 50%;
-  opacity: 0;
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.animated-button .text {
-  position: relative;
-  z-index: 1;
-  transform: translateX(-12px);
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.animated-button:hover {
-  box-shadow: 0 0 0 12px transparent;
-  color: #212121;
-  border-radius: 12px;
-}
-
-.animated-button:hover .arr-1 {
-  right: -25%;
-}
-
-.animated-button:hover .arr-2 {
-  left: 16px;
-}
-
-.animated-button:hover .text {
-  transform: translateX(12px);
-}
-
-.animated-button:hover svg {
-  fill: #212121;
-}
-
-.animated-button:active {
-  scale: 0.95;
-  box-shadow: 0 0 0 4px greenyellow;
-}
-
-.animated-button:hover .circle {
-  width: 220px;
-  height: 220px;
-  opacity: 1;
 }
 
 @keyframes popUp {

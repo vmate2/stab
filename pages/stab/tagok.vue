@@ -4,9 +4,6 @@
     <div class="searchFrame" ref="searchFrame">
       <div class="searchCont">
         <input type="text" name="SearchStabtag" v-model="searchquery" class="search" placeholder="Stábtagok keresése">
-        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 24 24" style="position: relative; right: 7%; cursor: pointer;" @click="search()">
-          <path d="M 9 2 C 5.1458514 2 2 5.1458514 2 9 C 2 12.854149 5.1458514 16 9 16 C 10.747998 16 12.345009 15.348024 13.574219 14.28125 L 14 14.707031 L 14 16 L 20 22 L 22 20 L 16 14 L 14.707031 14 L 14.28125 13.574219 C 15.348024 12.345009 16 10.747998 16 9 C 16 5.1458514 12.854149 2 9 2 z M 9 4 C 11.773268 4 14 6.2267316 14 9 C 14 11.773268 11.773268 14 9 14 C 6.2267316 14 4 11.773268 4 9 C 4 6.2267316 6.2267316 4 9 4 z"></path>
-        </svg>
         <svg width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor: pointer; position: relative; right: 2%;" v-if="!filterExtended" @click="toggleFilter()">
           <path d="M3 4.6C3 4.03995 3 3.75992 3.10899 3.54601C3.20487 3.35785 3.35785 3.20487 3.54601 3.10899C3.75992 3 4.03995 3 4.6 3H19.4C19.9601 3 20.2401 3 20.454 3.10899C20.6422 3.20487 20.7951 3.35785 20.891 3.54601C21 3.75992 21 4.03995 21 4.6V6.33726C21 6.58185 21 6.70414 20.9724 6.81923C20.9479 6.92127 20.9075 7.01881 20.8526 7.10828C20.7908 7.2092 20.7043 7.29568 20.5314 7.46863L14.4686 13.5314C14.2957 13.7043 14.2092 13.7908 14.1474 13.8917C14.0925 13.9812 14.0521 14.0787 14.0276 14.1808C14 14.2959 14 14.4182 14 14.6627V17L10 21V14.6627C10 14.4182 10 14.2959 9.97237 14.1808C9.94787 14.0787 9.90747 13.9812 9.85264 13.8917C9.7908 13.7908 9.70432 13.7043 9.53137 13.5314L3.46863 7.46863C3.29568 7.29568 3.2092 7.2092 3.14736 7.10828C3.09253 7.01881 3.05213 6.92127 3.02763 6.81923C3 6.70414 3 6.58185 3 6.33726V4.6Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -175,7 +172,7 @@ body {
   max-width: 600px;
   min-height: 5vh;
   position: relative;
-  top: 10dvh;
+  top: 0;
   user-select: none;
   display: flex;
   flex-direction: column;
@@ -252,18 +249,22 @@ select {
 /* Table Container */
 .tableContainer {
   width: 90%;
-  max-width: 1200px;
   position: relative;
-  top: 10vh;
 }
 
 .listRow {
   width: 100%;
-  height: 5vh;
   display: grid;
-  grid-template-columns:repeat(7, 2fr) 1fr 1fr;
+  grid-template-columns: repeat(7, 2fr) 1fr 1fr;
   align-items: center;
-  background-color: #797979;
+  justify-items: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem; /* Default font size */
+  border-bottom: 1px solid black;
+  user-select: text !important;
+  min-height: auto;
+  height: fit-content;
+  overflow: visible;
 }
 
 .listRow.even {
@@ -296,17 +297,15 @@ select {
 
 .listCont2 {
   width: 100%;
-  background-color: transparent;
+  height: auto;
+  background-color: gray;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  position: relative;
-  border: 2px solid white;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  transition: all 0.3s;
+  max-height: 80vh; /* Ensures the body doesn't overflow */
+  overflow-y: auto; /* Allows scrolling only on the Y-axis */
+  overflow-x: hidden; /* Ensures no horizontal scrolling */
 }
 
 .headerRow {
@@ -429,8 +428,9 @@ select {
   }
 
   .listRow {
-    grid-template-columns:repeat(7, 2fr) 1fr 1fr;
-    font-size: 12px;
+    grid-template-columns: 1fr; /* Egy oszlopra váltás mobilon */
+    text-align: center;
+    font-size: 0.9em; /* Smaller font size for smaller screens */
   }
 
   .listItem {
@@ -453,8 +453,13 @@ select {
 
 @media (max-width: 480px) {
   .listRow {
-    grid-template-columns:repeat(7, 2fr) 1fr 1fr;
-    font-size: 10px;
+    grid-template-columns: 1fr; /* Egy oszlopra váltás mobilon */
+    text-align: center;
+    font-size: 0.9em;
+  }
+
+  .headerRow {
+    display: none;
   }
 
   .listItem {
@@ -571,8 +576,11 @@ select {
 
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'stab'
+  layout: 'new'
 });
+
+const { $notify } = useNuxtApp();
+const { $showDialog } = useNuxtApp();
 
 const nev = ref('');
 const poszt = ref('');
@@ -685,11 +693,14 @@ const addnewtag = async () => {
     const response:any = await createNewTag(nev.value, poszt.value, email.value, telefonszam.value);
     console.log('asdasdasdasd')
     if (response.success === true) {
-      closeAdd()
-      displayCreds();
+      //closeAdd()
+      //TODO refresh list after adding new tag to list
+      //TODO show success message
+      //TODO show error message
+      //TODO show loading spinner 
     } else {
       alert('Valami probléma történt, próbáld újra később!');
-      closeAdd()
+      //closeAdd()
     }
   } else {
     alert('Tölts ki minden mezőt!');
@@ -697,7 +708,7 @@ const addnewtag = async () => {
 };
 
 async function createNewTag(nev: string, poszt: string, email: string, telefonszam: any) {
-  const response = await $fetch<createUserResponse>('/api/users/createUser', {
+  const {data, status, error} = await useFetch<createUserResponse>('/api/users/createUser', {
     method: 'POST',
     body: {
       nev,
@@ -706,14 +717,16 @@ async function createNewTag(nev: string, poszt: string, email: string, telefonsz
       telefonszam
     }
   });
-  console.log(response);
-
-  if (response.message) {
-    console.error(response.message);
-    return response;
-  } else {
-    return response;
+  console.log(data);
+  while (status.value === 'pending') {
+    console.log('loading');
   }
+  if (error.value) {
+    $notify("Sikertelen hozzáadás!", "error");
+    return { success: false };
+  } else {
+    return { success: true };
+}
 }
 
 interface createUserResponse {
@@ -745,7 +758,7 @@ const search = () => {
 const cities = [
   { value: 'Békécsaba', label: 'Békécsaba' },
   { value: 'Békés', label: 'Békés' },
-  { value: 'gyula', label: 'Gyula' },
+  { value: 'Gyula', label: 'Gyula' },
   { value: 'Mezőkovácsháza', label: 'Mezőkovácsháza' },
   { value: 'Medgyesegyháza', label: 'Medgyesegyháza' },
   { value: 'Orosháza', label: 'Orosháza' },
@@ -756,6 +769,24 @@ const cities = [
   { value: 'Sarkad', label: 'Sarkad' },
   { value: 'Doboz', label: 'Doboz' },
   { value: 'Kamut', label: 'Kamut' },
+  { value: 'Dévaványa', label: 'Dévaványa' },
+  { value: 'Csorvás', label: 'Csorvás' },
+  { value: 'Tótkomlós', label: 'Tótkomlós' },
+  { value: 'Vésztő', label: 'Vésztő' },
+  { value: 'Battonya', label: 'Battonya' },
+  { value: 'Mezőberény', label: 'Mezőberény' },
+  { value: 'Gyomaendrőd', label: 'Gyomaendrőd' },
+  { value: 'Újkígyós', label: 'Újkígyós' },
+  { value: 'Kétegyháza', label: 'Kétegyháza' },
+  { value: 'Nagyszénás', label: 'Nagyszénás' },
+  { value: 'Békésszentandrás', label: 'Békésszentandrás' },
+  { value: 'Körösladány', label: 'Körösladány' },
+  { value: 'Köröstarcsa', label: 'Köröstarcsa' },
+  { value: 'Körösújfalu', label: 'Körösújfalu' },
+  { value: 'Körösladány', label: 'Körösladány' },
+  { value: 'Körösnagyharsány', label: 'Körösnagyharsány' },
+  { value: 'Körösújfalu', label: 'Körösújfalu' },
+  { value: 'Körösújfalu', label: 'Körösújfalu' },
 ];
 
 const sortedCities = cities.sort((a, b) => a.label.localeCompare(b.label));
@@ -791,87 +822,6 @@ const closeAdd = () => {
   return true;
 }
 
-const displayCreds = () => {
 
-}
-
-const editUser = (id: number) => {
-  const user = people.value.find(person => person.id === id);
-  if (user) {
-    // Open a modal or form to edit the user
-    alert(`Szerkesztés: ${user.name}`);
-    // Implement your edit logic here
-  }
-};
-
-const deleteUser = (id: number) => {
-  if (confirm('Biztosan törölni szeretnéd ezt a stábtagot?')) {
-    people.value = people.value.filter(person => person.id !== id);
-    alert('Stábtag törölve!');
-  }
-};
-
-
-
-//const exportToExcel = () => {
-//  // Add headers manually
-//  const headers = ['ID', 'Név', 'Pozíció', 'Email', 'Telefonszám', 'Fizetett stábcash', 'Iskola', 'Város'];
-//  const data = people.value.map(person => [
-//    person.id,
-//    person.name,
-//    person.position,
-//    person.email,
-//    person.phone,
-//    person.paid,
-//    person.school,
-//    person.city,
-//  ]);
-//
-//  // Combine headers and data
-//  const worksheetData = [headers, ...data];
-//
-//  // Create a worksheet
-//  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-//
-//  // Auto-adjust column widths
-//  const colWidths = headers.map((_, colIndex) => {
-//    let maxWidth = headers[colIndex].length; // Start with header width
-//    worksheetData.forEach(row => {
-//      const cellValue = row[colIndex]?.toString() || '';
-//      if (cellValue.length > maxWidth) {
-//        maxWidth = cellValue.length;
-//      }
-//    });
-//    return { wch: maxWidth }; // Add some padding
-//  });
-//
-//  worksheet['!cols'] = colWidths;
-//
-//  // Create a workbook and append the worksheet
-//  const workbook = XLSX.utils.book_new();
-//  XLSX.utils.book_append_sheet(workbook, worksheet, 'Stábtagok');
-//
-//  // Generate a binary string from the workbook
-//  const binaryString = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
-//
-//  // Convert the binary string to a Blob
-//  const blob = new Blob([s2ab(binaryString)], { type: 'application/octet-stream' });
-//
-//  // Create a download link and trigger the download
-//  const url = URL.createObjectURL(blob);
-//  const link = document.createElement('a');
-//  link.href = url;
-//  link.download = 'Stábtagok.xlsx';
-//  link.click();
-//  URL.revokeObjectURL(url);
-//};
-//
-//// Utility function to convert a string to an ArrayBuffer
-//const s2ab = (s: string) => {
-//  const buf = new ArrayBuffer(s.length);
-//  const view = new Uint8Array(buf);
-//  for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
-//  return buf;
-//};
 
 </script>

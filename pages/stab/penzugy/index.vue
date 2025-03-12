@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'stab',
+  layout: 'new',
   middleware: 'auth',
 });
 

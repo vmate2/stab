@@ -11,6 +11,8 @@
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue';
+
 type kiirasClient = {
   cim: string;
   content: string;
@@ -19,27 +21,46 @@ type kiirasClient = {
 
 const poszt = ref<kiirasClient | null>(null);
 
-  const formatDate = (year:number, month:number, day:number) => {
+const formatDate = (year:number, month:number, day:number) => {
   const date = new Date(year, month, day);
   const formatteddate = date.toLocaleDateString('hu-HU', {
     year: 'numeric',
-  month: 'long', // Short month (e.g., "Jan")
-  day: '2-digit'  // Day with leading zero if needed (e.g., "01")
-});
+    month: 'long', // Short month (e.g., "Jan")
+    day: '2-digit'  // Day with leading zero if needed (e.g., "01")
+  });
   return formatteddate;
 }
 
 poszt.value = {
   cim: 'Fontos információk',
-  content: `Diáknap: Április 16. \n Témánk: Élmények \n Témavilág: Társasjátékok \n`,
+  content: `Diáknap: Április 16. \n Témánk: Társasjátékok \n Témavilág: Társasjátékok \n`,
   ido: formatDate(2021, 3, 10)
 };
 
-
-
 definePageMeta({
-layout: 'new'
+  layout: 'new'
 });
+
+//const { $notify } = useNuxtApp();
+//const { $showDialog } = useNuxtApp();
+//
+//const handleDialog = async () => {
+//  if (!$showDialog) {
+//    console.error('$showDialog is undefined! Check the plugin.');
+//    return;
+//  }
+//  const result = await $showDialog('xsd', 'asd', ['Yes'], false);
+//  console.log('Dialog result:', result);
+//};
+//
+//const showNotification = () => {
+//  if (!$notify) {
+//    console.error('$notify is undefined! Check the plugin.');
+//    return;
+//  }
+//  $notify('Hello from anywhere!', 'info');
+//};
+
 </script>
 
 <style>

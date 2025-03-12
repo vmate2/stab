@@ -203,7 +203,7 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 /* General Styles */
 body {
   overflow: hidden;

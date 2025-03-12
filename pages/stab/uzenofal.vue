@@ -80,7 +80,7 @@
 
 <script lang="ts" setup>
 definePageMeta({
-layout: 'stab'
+layout: 'new'
 });
 const addPostCont = ref(null);
 const addPostRef  = ref(null);

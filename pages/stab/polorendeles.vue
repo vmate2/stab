@@ -86,7 +86,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: 'stab'
+  layout: 'new'
 });
 import { ref, computed } from 'vue';
 

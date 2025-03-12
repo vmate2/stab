@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 
 definePageMeta({
-layout: 'main'
+  layout: 'main'
 });
 
 

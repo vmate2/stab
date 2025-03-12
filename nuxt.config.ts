@@ -49,4 +49,12 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css',
   ],
+  imports: {
+    dirs: ['types'] // Ensure Nuxt loads custom types
+  },
+  plugins: [
+    '~/plugins/dialog.ts',
+    '~/plugins/notifications.ts',
+    // other plugins
+  ],
 });

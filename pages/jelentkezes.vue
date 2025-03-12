@@ -166,26 +166,13 @@ import { generateKey } from 'crypto';
 // Ref to control the visibility of the popup
 const popupVisible = ref(false);
 
-// Function to handle body scroll based on popup visibility
-const handleBodyScroll = () => {
-  if (popupVisible.value) {
-    document.body.style.overflow = 'hidden'; // Prevent body scrolling when popup is visible
-  } else {
-    document.body.style.overflow = 'auto'; // Re-enable body scrolling when popup is hidden
-  }
-};
 // Function to toggle popup visibility
 const togglePopup = () => {
   popupVisible.value = !popupVisible.value;
 };
 
-// Watch for changes in popup visibility and adjust body scroll
-watch(popupVisible, handleBodyScroll);
 
-// Clean up body scroll style on component unmount
-onBeforeUnmount(() => {
-  document.body.style.overflow = 'auto';
-});
+
 
 const onCaptchaSuccess = (token: string) => {
   captchasuccess.value = true;
@@ -335,7 +322,7 @@ const confirmed = async () => {
 
 </script>
 
-<style>
+<style scoped>
 
 .refusedCont {
   width: 100vw;

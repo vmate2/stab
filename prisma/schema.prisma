@@ -31,3 +31,21 @@ model users {
   createdAt       DateTime @default(now()) 
   modifiedAt      DateTime @updatedAt
 }
+
+model szponzorok {
+  id              Int      @id @default(autoincrement())
+  name            String
+  email           String?
+  phone           String?
+  contact         String?
+  success         String
+  desc            String?
+}
+
+model polorendeles {
+  id              Int      @id @default(autoincrement())
+  name            String
+  phone           String
+  felirat         String?
+  paid            Boolean
+}
