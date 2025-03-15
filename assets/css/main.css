@@ -33,20 +33,19 @@ a {
 :root {
     --text-primary-color: #e9e9e9;
     --text-secondary-color: rgb(180, 180, 180);
+    --text-tertiary-color: #990F02;
     --font-size: 16px;
     --border: 2px solid white;
     --border-radius-outer: 12px;
     --border-radius-inner: 10px;
-    --background-primary-color: #333333;
+    --background-primary-color: rgb(48, 48, 48);
     --background-secondary-color: #AAAAAA;
+    --background-trietary-color: #420C09;
     --padding-basic: 6px;
     --primary-font: 'Courier New', Courier, monospace;
     --font-weight: 700;
   }
 
-    body {
-      background-color: rgb(48, 48, 48); 
-    }
     
 
  *  {

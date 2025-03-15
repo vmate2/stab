@@ -1,52 +1,38 @@
 <template>
-  <div>
-    <div class="loginCont" :class="{ animateClose: isLoggedIn }">
-      <div v-if="!isLoggedIn" class="container">
-        <div class="loginFelirat">Bejelentkezés</div>
-        <div class="group">
-          <input required type="text" class="input" spellcheck="false" v-model="username" autocomplete="username">
+  <div class="loginCont">
+    <form class="login" @submit.prevent="login()">
+      <div class="group" id="usernameGroup"  aria-autocomplete="both" style="display: flex;">
+        <div class="inputGroup">
+          <input required="" type="text" class="input" v-model="username">
           <span class="highlight"></span>
           <span class="bar"></span>
           <label>Felhasználónév</label>
         </div>
-        <div class="group" style="display: flex; align-items: center; flex-direction: row; flex-wrap: wrap;">
-          <div>
-            <input required :type="inputType" class="input" spellcheck="false" v-model="password" autocomplete="current-password">
-            <span class="highlight"></span>
-            <span class="bar"></span>
-            <label>Jelszó</label>
-          </div>
-          <div v-if="!passHidden" class="viewPass" @click="passHidden = true; inputType = 'text'">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
-          </div>
-          <div v-else class="viewPass" @click="passHidden = false; inputType = 'password'">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-            </svg>
-          </div>
+        <div class="viewPass"></div>
+      </div>
+      <div class="group" id="passwordGroup"  aria-autocomplete="both" style="display: flex;" >
+        <div class="inputGroup">
+          <input required="" :type="inputType" class="input" v-model="password">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label>Jelszó</label>
         </div>
+        <div class="viewPass" v-if="!passHidden" @click="passHidden = !passHidden; inputType = 'text'">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </div>
+        <div class="viewPass" v-if="passHidden" @click="passHidden = !passHidden; inputType = 'password'">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M2.99902 3L20.999 21M9.8433 9.91364C9.32066 10.4536 8.99902 11.1892 8.99902 12C8.99902 13.6569 10.3422 15 11.999 15C12.8215 15 13.5667 14.669 14.1086 14.133M6.49902 6.64715C4.59972 7.90034 3.15305 9.78394 2.45703 12C3.73128 16.0571 7.52159 19 11.9992 19C13.9881 19 15.8414 18.4194 17.3988 17.4184M10.999 5.04939C11.328 5.01673 11.6617 5 11.9992 5C16.4769 5 20.2672 7.94291 21.5414 12C21.2607 12.894 20.8577 13.7338 20.3522 14.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </div>
+      </div>
+      <div class="group" id="buttonGroup" aria-controls="loginButton">
         <button class="button" data-text="Awesome">
-          <span class="actual-text">&nbsp;bejelentkezés&nbsp;</span>
-          <span aria-hidden="true" class="hover-text">&nbsp;bejelentkezés&nbsp;</span>
+            <span class="actual-text">&nbsp;Bejelentkezés&nbsp;</span>
+            <span aria-hidden="true" class="hover-text">&nbsp;Bejelentkezés&nbsp;</span>
         </button>
       </div>
-      <div v-if="isLoggedIn">
-        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 120 120">
-          <ellipse cx="60" cy="64.5" opacity=".35" rx="48" ry="48.5"></ellipse>
-          <ellipse cx="60" cy="60.5" fill="#44bf00" rx="48" ry="48.5"></ellipse>
-          <polygon points="53.303,88 26.139,60.838 33.582,53.395 53.303,73.116 86.418,40 93.861,47.443" opacity=".35"></polygon>
-          <g>
-            <polygon fill="#85ff5e" points="53.303,84 26.139,56.838 33.582,49.395 53.303,69.116 86.418,36 93.861,43.443"></polygon>
-          </g>
-        </svg>
-      </div>
-    </div>
-    <div v-if="pending">Loading...</div>
-    <div v-if="error">{{ errormsg }}</div>
+    </form>
   </div>
+    
 </template>
 
 <script setup>
@@ -120,6 +106,13 @@ const del = () => {
     width: 90vw;
     height: auto;
   }
+  nav {
+    position: absolute;
+  }
+
+  .button {
+    --fs-size: 1.45rem !important;
+  }
 }
 
 @keyframes close {
@@ -133,6 +126,15 @@ const del = () => {
     height: 5px;
     opacity: 0;
   }
+}
+
+.login {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
 }
 
 .container {
@@ -163,9 +165,7 @@ const del = () => {
   border-radius: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
   font-size: 20px;
-  text-shadow: black 2px 2px;
   flex-wrap: wrap;
   flex-direction: column;
   user-select: none;
@@ -173,6 +173,7 @@ const del = () => {
   position: relative;
   top: -10vh;
   transition: all 1.5s ease;
+  padding: 0.5%;
 }
 
 .loginFelirat {
@@ -185,8 +186,8 @@ const del = () => {
   width: 25px;
   height: 25px;
   position: relative;
-  bottom: 30px;
-  left: -20px;
+  top: 8px;
+  left: -25px;
   cursor: pointer;
 }
 
@@ -194,6 +195,7 @@ const del = () => {
   position: relative;
   margin-top: 100px;
   max-width: 100%;
+  width: fit-content;
 }
 
 .input {
@@ -296,6 +298,7 @@ label {
   text-transform: uppercase;
   color: transparent;
   -webkit-text-stroke: 1px var(--text-stroke-color);
+  margin-top: 15%;
 }
 /* this is the text, when you hover on button */
 .hover-text {
