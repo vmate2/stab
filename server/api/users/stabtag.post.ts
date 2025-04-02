@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export default defineEventHandler(async (event) => {
   // Log message
   console.log('Fetching user data...');
-
+  const body = await readBody(event);
   // Get the token from the request headers (it can be in 'Authorization' or 'token')
   const token:any = event.node.req.headers['token'] || event.node.req.headers['authorization']?.split(' ')[1];
 
@@ -30,13 +30,13 @@ export default defineEventHandler(async (event) => {
     // Log the decoded payload (you can use it as needed)
     console.log('Decoded Payload:', payload);
 
-    // Your logic here, for example, returning user info
-    const dataUser = await prisma.stabtagok.findMany();
-    //TODO const dataPolo = await prisma.polorendeles.findMany();
-    
-    // Combine the arrays using concat or spread operator
-    //TODO const data = [...dataUser, ...dataPolo]; // Using spread operator to merge arrays
-    const data = dataUser; //? Placeholder functionality
+    return await prisma.stabtagok.findUnique({
+      where: {
+        uuid: body.uuid,
+      },
+    });
+
+
     
   } catch (error:any) {
     console.error('Token verification error:', error);

@@ -30,6 +30,7 @@ model users {
   password        String
   createdAt       DateTime @default(now()) 
   modifiedAt      DateTime @updatedAt
+  config          Json @default("{\"lang\": \"hu\", \"theme\": \"dark\", \"notificationsound\": true, \"keepLoggedIn\": true}")
 }
 
 model szponzorok {
@@ -38,7 +39,7 @@ model szponzorok {
   email           String?
   phone           String?
   contact         String?
-  success         String
+  status          String
   desc            String?
 }
 

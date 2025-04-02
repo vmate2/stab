@@ -39,7 +39,6 @@ export default defineEventHandler(async (event) => {
     const polorendeles = await prisma.polorendeles.findMany();
 
     const data = {users: users, sponsors:sponsors, polorendeles: polorendeles}
-    console.log(data)
 
     return data;
     

@@ -4,7 +4,12 @@
       <div class="dialog-content">
         <h3>{{ dialog.title }}</h3>
         <p>{{ dialog.message }}</p>
-        <input v-if="dialog.input" v-model="dialog.inputValue" type="text" class="dialog-input" />
+        <div v-if="dialog.inputs" class="dialog-inputs">
+          <div v-for="(input, index) in dialog.inputs" :key="index" class="dialog-input-group">
+            <label :for="'input-' + index">{{ input.label }}</label>
+            <input v-model="input.value" :id="'input-' + index" type="text" class="dialog-input" />
+          </div>
+        </div>
         <div class="dialog-buttons">
           <button v-for="(button, index) in dialog.buttons" :key="index" @click="handleButtonClick(button)">
             {{ button }}
@@ -18,19 +23,25 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
-const dialog = useState<{ show: boolean; title: string; message: string; buttons: string[]; input: boolean; inputValue: string; resolve?: (value: any) => void }>('dialog', () => ({
+const dialog = useState<{
+  show: boolean;
+  title: string;
+  message: string;
+  buttons: string[];
+  inputs?: { label: string; value: string }[];
+  resolve?: (value: any) => void;
+}>('dialog', () => ({
   show: false,
   title: '',
   message: '',
   buttons: [],
-  input: false,
-  inputValue: ''
+  inputs: []
 }));
 
 const handleButtonClick = (button: string) => {
   dialog.value.show = false;
-  dialog.value.resolve?.({ button, inputValue: dialog.value.inputValue });
-  dialog.value = { show: false, title: '', message: '', buttons: [], input: false, inputValue: '' };
+  dialog.value.resolve?.({ button, inputs: dialog.value.inputs || [] });
+  dialog.value = { show: false, title: '', message: '', buttons: [], inputs: [] };
 };
 
 watch(
@@ -82,6 +93,18 @@ watch(
 .dialog-content p {
   font-size: 1.2rem;
   color: #ccc;
+}
+
+.dialog-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dialog-input-group label {
+  font-size: 1rem;
+  color: #ccc;
+  margin-bottom: 0.5rem;
 }
 
 .dialog-input {

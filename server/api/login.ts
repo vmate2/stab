@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     const secretKey = new TextEncoder().encode(runtimeConfig.public.jwtSecret);
     console.log('SECRET: ', secretKey)
 
-    const token = await new SignJWT({ userId: user.id, username: user.username })
+    const token = await new SignJWT({ userId: user.uuid, username: user.username })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setExpirationTime('1d')
@@ -32,7 +32,10 @@ export default defineEventHandler(async (event) => {
     const { payload } = await jwtVerify(token, secretKey);
     console.log('token verified');
     
-    return { token };
+    console.log(user);
+    
+
+    return { token};
   } catch (error: any) {
     console.error('Error during login:', error);
     if (error.statusCode === 401) {

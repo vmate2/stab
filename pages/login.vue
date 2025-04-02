@@ -32,7 +32,7 @@
       </div>
     </form>
   </div>
-    
+    <Spinner v-if="pending" />
 </template>
 
 <script setup>
@@ -70,8 +70,8 @@ async function login() {
     error.value = null;
 
     const body = {
-      username: btoa(username.value),
-      password: btoa(password.value),
+      username: btoa(username.value.trim()),
+      password: btoa(password.value.trim()),
     };
     const response = await useFetch('/api/login', {
       method: 'POST',
@@ -85,6 +85,8 @@ async function login() {
 
     if (response.data.value) {
       tokenCookie.value = response.data.value;
+      console.log(response.data.value.firstLogin);
+      
       navigateTo('/stab/');
     }
   } catch (err) {
