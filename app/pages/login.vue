@@ -49,6 +49,7 @@ const username = ref('');
 const password = ref('');
 const isLoggedIn = ref(false);
 const tokenCookie = useCookie('token');
+const refreshTokenCookie = useCookie('refreshToken');
 const errormsg = ref();
 const pending = ref();
 const error = ref();
@@ -84,8 +85,8 @@ async function login() {
     error.value = response.error;
 
     if (response.data.value) {
-      tokenCookie.value = response.data.value;
-      console.log(response.data.value.firstLogin);
+      tokenCookie.value = response.data.value.accessToken;
+      refreshTokenCookie.value = response.data.value.refreshToken;
       
       navigateTo('/stab/');
     }

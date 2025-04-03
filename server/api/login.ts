@@ -34,8 +34,15 @@ export default defineEventHandler(async (event) => {
     
     console.log(user);
     
+    const refreshToken = await new SignJWT({ userId: user.uuid, secretValue: runtimeConfig.public.secretValue, accessToken: token })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('30d')
+      .sign(secretKey);
 
-    return { token};
+
+
+    return { accessToken: token, refreshToken: refreshToken};
   } catch (error: any) {
     console.error('Error during login:', error);
     if (error.statusCode === 401) {

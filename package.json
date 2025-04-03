@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@cloudflare/d1": "^1.4.1",
-    "@nuxt/kit": "^3.14.159",
+    "@nuxt/kit": "^3.16.2",
     "@nuxthub/core": "^0.8.17",
     "@prisma/client": "^6.4.1",
     "bcryptjs": "^3.0.2",
@@ -26,7 +26,7 @@
     "node": "^23.9.0",
     "nodemailer": "^6.10.0",
     "npm": "^11.0.0",
-    "nuxt": "^3.15.4",
+    "nuxt": "^3.16.2",
     "paseto": "^3.1.4",
     "three": "^0.174.0",
     "vite": "^6.1.0",

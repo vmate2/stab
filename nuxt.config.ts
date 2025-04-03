@@ -40,6 +40,7 @@ export default defineNuxtConfig({
     secret_header: process.env.SECRET_HEADER,
     pepper: process.env.PEPPER,
     privateKey: process.env.PRIVATE_KEY,
+    secretValue: process.env.SECRET_VALUE,
   },
   
   routeRules: {
@@ -57,4 +58,7 @@ export default defineNuxtConfig({
     '~/plugins/notifications.ts',
     // other plugins
   ],
+  future: {
+    compatibilityVersion: 4,
+  },
 });

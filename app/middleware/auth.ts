@@ -9,9 +9,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   // Get the token from the cookie
-  const tokenCookie = useCookie('token') as Ref<{
-    token: string ; value: { token: string | undefined} 
-}>;
+  const tokenCookie = useCookie('token');
   
   if (!tokenCookie.value) {
     return navigateTo('/login');
@@ -24,22 +22,26 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const secretKey = new TextEncoder().encode(runtimeConfig.public.jwtSecret);
 
     // Decode token (optional for logging or inspection)
-    const decoded = decodeJwt(tokenCookie.value.token);
+
+    console.log(tokenCookie.value);
+    const decoded = decodeJwt(tokenCookie.value);
 
     // Verify the JWT token's authenticity
-    const { payload } = await jwtVerify(tokenCookie.value.token, secretKey);
+    
+
+    const { payload } = await jwtVerify(tokenCookie.value, secretKey);
     
 
     // Set the authenticated user data and token using the composable
     const { setUser } = useAuth();
     
-    setUser(payload, tokenCookie.value.token);
+    setUser(payload, tokenCookie.value);
     
   } catch (error: any) {
     // Handle specific errors for expired or invalid tokens
     if (error.code === 'ERR_JWT_EXPIRED') {
       // Clear the expired token cookie
-      tokenCookie.value = { token: '', value: { token: undefined } };
+      tokenCookie.value = undefined;
 
       // Clear the authenticated user data
       const { clearUser } = useAuth();

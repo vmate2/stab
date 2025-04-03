@@ -26,6 +26,7 @@
       </form>
     </div>
   </main-frame>
+  <spinner v-if="loading"></spinner>
 </template>
 
 <script lang="ts" setup>
@@ -39,9 +40,11 @@ const newPassword = ref('');
 const errors = ref<{ username?: string; password?: string }>({});
 const currentUser = ref();
 currentUser.value = await inject('currentUser');
+
 const passwordHidden = ref(true);
 const passType = ref('password');
 
+const loading = ref(false);
 // Computed validation rules
 const usernameValid = computed(() => /^[a-zA-Z0-9_]{3,}$/.test(newUsername.value));
 
@@ -63,7 +66,11 @@ const allValid = computed(() =>
   passwordValid.value.special
 );
 
-const setNewData = () => {
+
+
+const setNewData = async () => {
+  try {
+    loading.value = true;
   errors.value = {};
 
   if (!usernameValid.value) {
@@ -75,10 +82,50 @@ const setNewData = () => {
   
   if (Object.keys(errors.value).length > 0) return;
 
-  console.log('New Username:', newUsername.value);
-  console.log('New Password:', newPassword.value);
+  const response = await $fetch('/api/users/', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${currentUser.value.accessToken}`,
+    },
+    body: {
+      uuid: currentUser.value.uuid,
+      username: newUsername.value,
+      password: newPassword.value,
+    },
+  });
+
+  console.log(response);
+  
+
+  currentUser.value.username = newUsername.value;
+  currentUser.value.password = newPassword.value;
   $notify('Adatok sikeresen frissítve!', 'success');
+
+
+
+  } catch (error) {
+    console.error('Error setting new data:', error);
+    $notify('Hiba történt az adatok frissítésekor!', 'error');
+    
+  } finally {
+    loading.value = false;
+  }
+  // Reset the form
+  newUsername.value = '';
+  newPassword.value = '';
+  passwordHidden.value = true;
+  passType.value = 'password';
+  errors.value = {};
+  // Update the local storage
+  updateUser();
 };
+
+const updateUser = async () => {
+
+  localStorage.setItem('currentUser', JSON.stringify(currentUser.value));
+  
+}
 </script>
 
 <style scoped>
