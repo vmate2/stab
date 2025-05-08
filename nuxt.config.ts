@@ -63,4 +63,13 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
+  vite: {
+    build: {
+      rollupOptions: {
+        external: [
+          '/public/img/logo.jpeg' // Explicitly add the problematic file to external
+        ]
+      }
+    }
+  }
 });
