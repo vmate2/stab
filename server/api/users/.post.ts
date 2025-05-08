@@ -8,6 +8,17 @@ export default defineEventHandler(async (event) => {
   // Log message
   console.log('Fetching user data...');
   const body = await readBody(event);
+  console.log(body);
+  
+
+  const referer = getHeader(event, 'referer')
+  const origin = getHeader(event, 'origin')
+  const ua = getHeader(event, 'user-agent')
+
+  console.log('Referer:', referer)
+  console.log('Origin:', origin)
+  console.log('User-Agent:', ua)
+
   // Get the token from the request headers (it can be in 'Authorization' or 'token')
   const token:any = event.node.req.headers['token'] || event.node.req.headers['authorization']?.split(' ')[1];
   console.log("TOKEN: ", token);
@@ -22,16 +33,21 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const runtimeConfig = useRuntimeConfig();
+    
 
-    // Ensure the secret key is encoded as Uint8Array
-    const secretKey = new TextEncoder().encode(runtimeConfig.public.jwtSecret);
-
-    // Verify the JWT token's authenticity
-    const { payload } = await jwtVerify(token, secretKey);
-
-    // Log the decoded payload (you can use it as needed)
-    console.log('Decoded Payload:', payload);
+    const payload = $fetch('/api/verifyJWT', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!payload) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: 'Unauthorized: Invalid token',
+      });
+    }
 
     const dat = await prisma.users.findUnique({
       where: {

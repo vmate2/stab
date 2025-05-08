@@ -13,6 +13,18 @@
       <p>Server Response: {{ serverResponse }}</p>
       <button @click="logout">Logout</button>
     </div>
+    <div>
+      <fieldset>
+        <legend style="display: flex; flex-direction: column;">Login
+          <input v-model="username" placeholder="Username" />
+          <input v-model="password" type="password" placeholder="Password" />
+          <label>
+            <input type="checkbox" v-model="rememberMe" /> Remember Me
+          </label>
+          <button @click="login">Login</button>
+        </legend>
+      </fieldset>
+    </div>
   </div>
 </template>
 

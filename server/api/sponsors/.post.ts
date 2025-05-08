@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
       id: sponsor.id,
       name: sponsor.name,
       phone: sponsor.phone ? String(sponsor.phone) : null,
-      success: sponsor.success,
+      status: sponsor.status,
     }));
 
     await prisma.szponzorok.createMany({

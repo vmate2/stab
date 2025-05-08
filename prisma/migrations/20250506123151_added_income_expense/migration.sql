@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "stabcash" ADD COLUMN     "expense" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "income" INTEGER NOT NULL DEFAULT 0;

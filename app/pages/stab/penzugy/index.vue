@@ -51,6 +51,7 @@ body {
   overflow: hidden;
   margin: 0;
   padding: 0;
+  
 }
 
 a {
@@ -65,6 +66,7 @@ a {
   align-items: center;
   justify-content: center;
   gap: 5vw;
+  z-index: 1;
 }
 
 .selectable {
@@ -88,6 +90,7 @@ a {
   font-weight: 500;
   text-shadow: 2px 2px black;
   color: white !important; /* Ensure text is readable on the background */
+  box-shadow: rgba(0, 0, 0, 0.74) 10px 10px 20px 1px;
 }
 
 .selectable:hover {

@@ -3,8 +3,10 @@ import CryptoJS from 'crypto-js';
 export default defineEventHandler(async (event) => {
   const token = getHeader(event, 'Authorization')?.split(' ')[1]; // Get the token from the Authorization header
 
+  
+
   if (!token) {
-    throw createError({ statusCode: 401, message: 'No token provided' });
+    throw createError({ statusCode: 401, message: 'No token provided', statusMessage: 'Unauthorized' });
   }
 
   try {
@@ -25,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
     return { user };
   } catch (error) {
-    throw createError({ statusCode: 401, message: 'Invalid token' });
+    throw createError({ statusCode: 401, message: 'Invalid token', statusMessage: 'Unauthorized' });
   }
 });
 

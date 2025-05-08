@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const runtimeConfig = useRuntimeConfig();
-    const secretKey = new TextEncoder().encode(runtimeConfig.public.jwtSecret);
+    const secretKey = new TextEncoder().encode(runtimeConfig.jwtSecret);
 
     const { payload } = await jwtVerify(token, secretKey);
 
@@ -35,7 +35,9 @@ export default defineEventHandler(async (event) => {
         uuid:true
       }
     });
+    
     const sponsors = await prisma.szponzorok.findMany();
+
     const polorendeles = await prisma.polorendeles.findMany();
 
     const data = {users: users, sponsors:sponsors, polorendeles: polorendeles}
@@ -53,12 +55,14 @@ export default defineEventHandler(async (event) => {
     } else if (error.code === 'ERR_JWS_INVALID') {
       throw createError({
         statusCode: 401,
-        statusMessage: 'Hozzáférés megtagadva! Hibás token!',
+        statusMessage: 'Hozzáférés megtagadva! Hibás tokenss!',
       });
     } else {
+      console.log(error);
+      
       throw createError({
-        statusCode: 401,
-        statusMessage: 'Hozzáférés megtagadva! Hibás token!',
+        statusCode: 500,
+        statusMessage: error.message,
       });
     }
   }

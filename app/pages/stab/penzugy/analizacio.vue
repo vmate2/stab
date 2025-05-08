@@ -6,6 +6,11 @@
 
 <script lang="ts" setup>
 
+definePageMeta({
+  layout: 'penzugy',
+  middleware: 'auth',
+});
+
 </script>
 
 <style>

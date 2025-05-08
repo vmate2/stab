@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 
 const runtimeConfig = useRuntimeConfig();
-const secretKey = runtimeConfig.public.secretKey;
+const secretKey = runtimeConfig.secretKey;
 const jwtSecret = runtimeConfig.jwtSecret;
 
 export default defineEventHandler(async (event) => {

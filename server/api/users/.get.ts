@@ -19,25 +19,25 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const runtimeConfig = useRuntimeConfig();
-
-    // Ensure the secret key is encoded as Uint8Array
-    const secretKey = new TextEncoder().encode(runtimeConfig.public.jwtSecret);
-
-    // Verify the JWT token's authenticity
-    const { payload } = await jwtVerify(token, secretKey);
-
-    // Log the decoded payload (you can use it as needed)
-    console.log('Decoded Payload:', payload);
-
-    // Your logic here, for example, returning user info
-    const dataUser = await prisma.stabtagok.findMany();
-    //TODO const dataPolo = await prisma.polorendeles.findMany();
-    
-    // Combine the arrays using concat or spread operator
-    //TODO const data = [...dataUser, ...dataPolo]; // Using spread operator to merge arrays
-    const data = dataUser; //? Placeholder functionality
-    
+    //const runtimeConfig = useRuntimeConfig();
+//
+    //// Ensure the secret key is encoded as Uint8Array
+    //const secretKey = new TextEncoder().encode(runtimeConfig.jwtSecret);
+//
+    //// Verify the JWT token's authenticity
+    //const { payload } = await jwtVerify(token, secretKey);
+//
+    //// Log the decoded payload (you can use it as needed)
+    //console.log('Decoded Payload:', payload);
+//
+    //// Your logic here, for example, returning user info
+    //const dataUser = await prisma.stabtagok.findMany();
+    ////TODO const dataPolo = await prisma.polorendeles.findMany();
+    //
+    //// Combine the arrays using concat or spread operator
+    ////TODO const data = [...dataUser, ...dataPolo]; // Using spread operator to merge arrays
+    //const data = dataUser; //? Placeholder functionality
+    //
   } catch (error:any) {
     console.error('Token verification error:', error);
 

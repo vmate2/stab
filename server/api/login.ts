@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const runtimeConfig = useRuntimeConfig();
-    const secretKey = new TextEncoder().encode(runtimeConfig.public.jwtSecret);
+    const secretKey = new TextEncoder().encode(runtimeConfig.jwtSecret);
     console.log('SECRET: ', secretKey)
 
     const token = await new SignJWT({ userId: user.uuid, username: user.username })
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     
     console.log(user);
     
-    const refreshToken = await new SignJWT({ userId: user.uuid, secretValue: runtimeConfig.public.secretValue, accessToken: token })
+    const refreshToken = await new SignJWT({ userId: user.uuid, secretValue: runtimeConfig.secretValue })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setExpirationTime('30d')

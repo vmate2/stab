@@ -154,7 +154,7 @@ onMounted(() => {
 
 
 
-<style>
+<style scoped>
     .mainFrame {
       display: grid;
       width: 100vw;

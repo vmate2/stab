@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     const runtimeConfig = useRuntimeConfig();
 
     // Ensure the secret key is encoded as Uint8Array
-    const secretKey = new TextEncoder().encode(runtimeConfig.public.jwtSecret);
+    const secretKey = new TextEncoder().encode(runtimeConfig.jwtSecret);
 
     // Verify the JWT token's authenticity
     const { payload } = await jwtVerify(token, secretKey);

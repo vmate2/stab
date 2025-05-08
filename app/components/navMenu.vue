@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 const isSideMenuOpen = ref(false);              //
-;                                               //
+                                               //
 const toggleSideMenu = () => {                  //  Hambuger menu logic
   isSideMenuOpen.value = !isSideMenuOpen.value; //
 };                                              //
@@ -33,7 +33,6 @@ const toggleSideMenu = () => {                  //  Hambuger menu logic
   color: var(--text-primary-color);
   background-color: var(--background-primary-color);
   width: fit-content;
-  height: 40vh;
   min-width: fit-content;
   max-width: 220px;
   min-height: fit-content;
@@ -52,6 +51,7 @@ const toggleSideMenu = () => {                  //  Hambuger menu logic
   transition: all 0.5s;
   display: flex;
   flex-direction: column;
+  z-index: 1000;
 }
 
 .navContainer > :last-child {
@@ -115,7 +115,7 @@ const toggleSideMenu = () => {                  //  Hambuger menu logic
     top: 50px;
   }
 
-  .active {
+  .navContainer.active {
     left: 0px;
   }
 

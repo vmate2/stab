@@ -14,7 +14,7 @@ model Stabtagok {
   name      String
   dob       DateTime?
   school    String?
-  paidcash  Int?
+  paidcash  Int     @default(0)
   post      String
   email     String  @unique
   phone     String @unique
@@ -49,4 +49,22 @@ model polorendeles {
   phone           String
   felirat         String?
   paid            Boolean
+}
+
+model transactions {
+  id              String @unique 
+  type            Int
+  amount          Int
+  category        String
+  title           String
+  desc            String?
+  date            DateTime @default(now())
+  userId          String
+}
+
+model stabcash {
+  id              Int    @id
+  balance         BigInt
+  income          Int @default(0)
+  expense         Int @default(0)
 }

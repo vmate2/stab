@@ -30,22 +30,74 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
+const audioMap = ref<{ [key: string]: HTMLAudioElement }>({});
+
 // Reactive state for notifications
 const notifications = useState<{ message: string; type: string; show: boolean; shouldDisplay: boolean }[]>('notifications');
 
 // Watch for changes in notifications and set shouldDisplay based on show value with a delay
 watch(
   () => notifications.value,
-  (newNotifications) => {
-    // Delay setting the shouldDisplay value by 150ms for each notification
+  (newNotifications, oldNotifications) => {
     newNotifications.forEach((notif, index) => {
+      // Csak akkor játsszon le hangot, ha egy új elem került bele vagy show true-ra váltott
+      console.log('triggered 1');
+      console.log(typeof window !== 'undefined');
+      
+      
+      if (
+        typeof window !== 'undefined' &&
+        notif.show
+      ) {
+        
+        const config =  JSON.parse(localStorage.getItem('currentUser')).config;
+        console.log(config.notificationsound);
+        
+        if (config.notificationsound) {
+          console.log('Notification sound is enabled in user settings.');
+          
+          const audio = audioMap.value[notif.type] ?? new Audio(`/sounds/${notif.type}.mp3`);
+          audio.currentTime = 0;
+          audio.volume = 0.1; // Set volume to 50%
+          audio.play().catch(err => console.warn('Autoplay prevented:', err));
+        } else {
+          console.log('Notification sound is disabled in user settings.');
+        }
+      }
+
+      // Animáció trigger (késleltetve)
       setTimeout(() => {
-        notif.shouldDisplay = notif.show; // Set shouldDisplay to true if show is true
-      }, 150); // 150ms delay for each notification
+        notif.shouldDisplay = notif.show;
+      }, 150);
     });
   },
-  { immediate: true } // Run immediately to handle the initial state
+  { immediate: true }
 );
+
+onMounted(() => {
+  audioMap.value = {
+    info: new Audio('/sounds/info.mp3'),
+    warning: new Audio('/sounds/warning.mp3'),
+    error: new Audio('/sounds/error.mp3'),
+    success: new Audio('/sounds/success.mp3'),
+  };
+
+  // Az első kattintás aktiválja a hangokat (böngésző policy miatt)
+  window.addEventListener('click', () => {
+    setupAudio();
+  }, { once: true });
+});
+
+
+
+function setupAudio() {
+  Object.values(audioMap.value).forEach(audio => {
+    if (audio instanceof HTMLAudioElement) {
+      audio.load(); // vagy audio.play().then(() => audio.pause())
+    }
+  });
+}
+
 
 console.log('Rendering notifications:', notifications.value); // Debugging
 </script>
