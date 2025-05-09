@@ -1,4 +1,5 @@
 import { useDecodeJWT } from "@/composables/decodeJWT";
+import { useAuth } from "@/composables/useAuth";
 
 export class User {
   id?: number;
@@ -33,6 +34,10 @@ export class User {
         },
         body: { refreshToken },
       });
+
+      const { setUser } = useAuth();
+      setUser(null, response.accessToken); // Update token in state
+
       return response.accessToken;
     } catch (err) {
       console.error("Error renewing access token:", err);
@@ -43,51 +48,65 @@ export class User {
   /** Fetch user data using accessToken, with token renewal if needed */
   static async fetchUser(accessToken: any): Promise<User | null> {
     try {
-      console.log('ACCESS TOKEN: ', accessToken.value);
+      console.warn("Fetching user data...");
+      
+      const { setUser } = useAuth();
+      console.log('STILL HERE1');
+      
       const token = typeof accessToken === "string" ? accessToken : accessToken.value;
-      const { userId } = await useDecodeJWT(token);
-      const uuid = userId;
+      console.log('STILL HERE2');
+      console.log("TOKEN: ", token);
 
-      try {
-
-        console.log("AccessToken in fetchUser: ", token);
-        
-
-        const userdata = await $fetch<User>("/api/users/", {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            "origin": "http://localhost:3000/user.ts",
-          },
-          body: { uuid },
+    const payload = await $fetch("/api/verifyJWT", {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.warn("Payload:", payload);
+      if (!payload) {
+        throw createError({
+          statusCode: 401,
+          statusMessage: "Unauthorized: Invalid token",
         });
+      }
+      console.warn("Decoded JWT:", payload);
+      
+      
+      const uuid = payload.payload.userId;
+      console.warn("UUID: ", uuid);
+      
+      const userdata = await $fetch<User>("/api/users/", {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "origin": "http://localhost:3000/user.ts",
+        },
+        body: { uuid },
+      });
 
-        if (import.meta.client) {
-          localStorage.setItem("currentUser", JSON.stringify(userdata));
-        }
+      setUser(userdata, token); // Update user and token in state
 
-        return new User(userdata);
-      } catch (err: any) {
-        // Check if the error is due to token expiration
-        if (err.response?.status === 401) {
-          console.warn("Access token expired. Attempting to renew...");
-          const newAccessToken = await this.renewAccessToken(localStorage.getItem("refreshToken") || "");
+      return new User(userdata);
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        console.warn("Access token expired. Attempting to renew...");
+        const { token } = useAuth();
+        if (token.value) {
+          const newAccessToken = await this.renewAccessToken(token.value);
           if (newAccessToken) {
-            if (import.meta.client) {
-              localStorage.setItem("accessToken", newAccessToken);
-            }
             return await this.fetchUser(newAccessToken); // Retry with the new token
           }
+        } else {
+          console.error("Token is null or undefined. Cannot renew access token.");
         }
-        throw err;
       }
-    } catch (err) {
       console.error("Error fetching user by UUID:", err);
       return null;
     }
   }
-
 
   /** Get only necessary fields for the current user */
   static async currentUser(accessToken: string): Promise<Partial<User> | null> {
@@ -182,12 +201,8 @@ export class User {
 
   /** Log out user by clearing tokens */
   logOut(): void {
-    this.accessToken = undefined;
-    this.refreshToken = undefined;
-    
-    if (import.meta.client) {
-      localStorage.removeItem("currentuUser");
-    }
+    const { clearUser } = useAuth();
+    clearUser(); // Clear user and token state
     console.log("User logged out and tokens cleared.");
   }
 }

@@ -11,14 +11,6 @@ export default defineEventHandler(async (event) => {
   console.log(body);
   
 
-  const referer = getHeader(event, 'referer')
-  const origin = getHeader(event, 'origin')
-  const ua = getHeader(event, 'user-agent')
-
-  console.log('Referer:', referer)
-  console.log('Origin:', origin)
-  console.log('User-Agent:', ua)
-
   // Get the token from the request headers (it can be in 'Authorization' or 'token')
   const token:any = event.node.req.headers['token'] || event.node.req.headers['authorization']?.split(' ')[1];
   console.log("TOKEN: ", token);
@@ -35,13 +27,18 @@ export default defineEventHandler(async (event) => {
   try {
     
 
-    const payload = $fetch('/api/verifyJWT', {
+    const payload = await $fetch('/api/verifyJWT', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
+    console.warn('PAYLOAD COMING');
+    
+    console.warn('Payload:', payload);
+    
+
     if (!payload) {
       throw createError({
         statusCode: 401,
