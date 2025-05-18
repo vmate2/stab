@@ -19,18 +19,16 @@
         <div>
           <div @click="emitAction('import')" class="text">Importálás</div>
           <div @click="emitAction('export')" class="text">Exportálás</div>
-          <client-only>
           <div v-for="(button, index) in customButtons" :key="`custom-button-${index}`" @click="emitAction('buttonClick', button.name)" class="text">{{ button.label }}</div>
-          </client-only>
           <div></div> 
         </div>
       </div>
     </div>
-    <div class="table-wrapper">
-      <table class="custom-table" ref="container">
+    <div class="table-wrapper" >
+      <table class="custom-table" @scroll.passive="onScroll" ref="container">
           <thead>
               <tr>
-                  <th v-for="(item, index) in tableData.head || []" :key="index" @click="sortTable(index)">
+                  <th v-for="(item, index) in tableData.head || []" :key="index" @click="sortTable(index)"   :style="{ width: columnPercents[index] }">
                       {{ item.text || '' }}
                       <span v-if="sortColumn === index">
                           {{ sortOrder === 'asc' ? '▲' : sortOrder === 'desc' ? '▼' : '' }}
@@ -41,19 +39,40 @@
               </tr>
           </thead>
           <tbody>
-              <tr class="add-row">
-                  <td :colspan="tableData.head.length + 2 + customButtons.length" class="add-row-cell">
-                      <button @click="emitAction('add', '')" class="add-row-button">Új hozzáadása</button>
-                  </td>
-              </tr>
-              <tr v-for="(item, index) in filteredData" :key="index">
-                  <td v-for="(subItem, subIndex) in (tableData.head || [])" :key="subIndex">
-                      {{ item?.[subItem.value]?.value || item?.[subItem.value] || ' ' }}
-                  </td>
-                  <td v-if="jogosult" class="clickable" @click="emitAction('modify', item)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></td>
-                  <td v-if="jogosult" class="clickable" @click="emitAction('delete', item)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></td>
-              </tr>
+            <tr class="add-row">
+              <td :colspan="tableData.head.length + 2 + customButtons.length" class="add-row-cell">
+                <button @click="emitAction('add', '')" class="add-row-button">Új hozzáadása</button>
+              </td>
+            </tr>
+            <!-- spacer top -->
+            <tr style="height: 0" aria-hidden="true">
+              <td :colspan="tableData.head.length + 2 + customButtons.length" :style="{ height: `${topSpacerHeight}px` }"></td>
+            </tr>
+            <tr
+              v-for="(item, i) in visibleRows"
+              :key="startIndex + i"
+            >
+              <td
+                v-for="(subItem, subIndex) in tableData.head"
+                :key="subIndex"
+                ref="setColumnRef"
+                :style="{ width: columnPercents[subIndex] }"
+              >
+                {{ item?.[subItem.value]?.value || item?.[subItem.value] || ' ' }}
+              </td>
+              <td v-if="jogosult" class="clickable" @click="emitAction('modify', item)">
+                M
+              </td>
+              <td v-if="jogosult" class="clickable" @click="emitAction('delete', item)">
+                X
+              </td>
+            </tr>
+            <!-- spacer bottom -->
+            <tr style="height: 0" aria-hidden="true">
+              <td :colspan="tableData.head.length + 2 + customButtons.length" :style="{ height: `${bottomSpacerHeight}px` }"></td>
+            </tr>
           </tbody>
+
       </table>
     </div>
   </div>
@@ -62,9 +81,13 @@
 
 <script lang="ts" setup>
 
+
 const container = ref<HTMLElement | null>(null);
 const seventyVh = ref(0);
 const showScrollButton = ref(false);
+
+const visibleRowCount = ref(0);
+const bufferRowCount = ref(0);
 
 onMounted(() => {
   seventyVh.value = window.innerHeight * 0.7;
@@ -75,6 +98,19 @@ onMounted(() => {
       const height = container.value.offsetHeight;
       showScrollButton.value = height > seventyVh.value;
     }
+    const table = container.value;
+    if (table) {
+      const tableHeight = table.clientHeight;
+      const rowHeight = 44; // átlagos érték (px)
+      visibleRowCount.value = Math.floor(tableHeight / rowHeight);
+      if (visibleRowCount.value <= 5) {
+        bufferRowCount.value = 2;
+      } else {
+        bufferRowCount.value = Math.floor(visibleRowCount.value * 0.3); // 30% buffer
+      }
+      console.log(`Látható sorok száma: ${visibleRowCount.value}, Buffer sorok száma: ${bufferRowCount.value}`);
+    }
+    columnWidths.value = columnRefs.value.map(el => el?.offsetWidth || 0);
   });
 });
 
@@ -220,6 +256,51 @@ const getUniqueColumnValues = (columnKey: string) => {
   return Array.from(uniqueValues) as string[];
 };
 
+const scrollTop = ref(0);
+
+const rowHeight = 44; // px
+const startIndex = ref(0);
+
+const onScroll = () => {
+  console.log(`Scroll event triggered`);
+  
+  if (container.value) {
+    console.log(`Scroll position: ${container.value.scrollTop}`);
+    
+    scrollTop.value = container.value.scrollTop;
+    startIndex.value = Math.floor(scrollTop.value / rowHeight);
+  }
+};
+
+
+const visibleRows = computed(() => {
+  const from = Math.max(0, startIndex.value - bufferRowCount.value);
+  const to = from + visibleRowCount.value + bufferRowCount.value * 2;
+  return filteredData.value.slice(from, to);
+});
+
+const topSpacerHeight = computed(() => {
+  return Math.max(0, (startIndex.value - bufferRowCount.value) * rowHeight);
+});
+
+const bottomSpacerHeight = computed(() => {
+  const remaining = filteredData.value.length - (startIndex.value + visibleRowCount.value + bufferRowCount.value);
+  return Math.max(0, remaining * rowHeight);
+});
+
+const columnWidths = ref<number[]>([]); // pixel értékek
+const columnPercents = computed(() => {
+  const total = columnWidths.value.reduce((a, b) => a + b, 0);
+  return columnWidths.value.map(w => `${(w / total) * 100}%`);
+});
+const columnRefs = ref<Array<HTMLElement | null>>([]);
+
+function setColumnRef(el: HTMLElement | null) {
+  if (el && !columnRefs.value.includes(el)) {
+    columnRefs.value.push(el);
+  }
+}
+
 </script>
 
 <style scoped>
@@ -334,8 +415,8 @@ const getUniqueColumnValues = (columnKey: string) => {
 .custom-table th, .custom-table td {
   border: 1px solid #ddd;
   padding: 8px;
-  word-wrap: break-word; /* Ensures content wraps within cells */
-  width: 1%; /* Forces cells to distribute evenly across the table width */
+  word-wrap: break-word;
+  min-width: 30%; /* vagy ami az adatokhoz ésszerű */
 }
 
 .custom-table th {

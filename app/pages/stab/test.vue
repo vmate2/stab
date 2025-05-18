@@ -12,14 +12,39 @@
 
     ></customTable>
   </div>
+  <div @click="fetchData()">FETCH</div>
+  <div>{{ fethedData }}</div>
 </template>
 
 <script lang="ts" setup>
+
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  const socket = new WebSocket('ws://localhost:3001');
+
+  socket.addEventListener('open', () => {
+    console.log('Connected to WebSocket server');
+    socket.send('Hello Server!');
+  });
+
+  socket.addEventListener('message', (event) => {
+    console.log('Message from server:', event.data);
+  });
+});
+
+
 import customTable from '~/components/customTable.vue';
 
 definePageMeta({
   layout: 'new'
 });
+
+const fethedData = ref('')
+
+async function fetchData() {
+    fethedData.value = await (await fetch("http://localhost:8080")).text();
+}
 
 const tableData = ref({
   head: [

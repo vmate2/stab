@@ -5,6 +5,7 @@
         <div class="cim">{{ poszt?.cim }}</div>
         <div class="content2">{{ poszt?.content }}</div>
         <div class="ido">{{ poszt?.ido }}</div>
+            <button @click="updateProfile">Update Profile</button>
       </div>
     </div>
   </div>
@@ -60,6 +61,26 @@ definePageMeta({
 //  }
 //  $notify('Hello from anywhere!', 'info');
 //};
+// Frontend kód
+
+
+const updateProfile = async () => {
+  const userData = { username: 'john_doe', email: 'john@example.com' }
+
+  // Logolás az API végponton keresztül
+  const response = await $fetch('/api/log', {
+    method: 'POST',
+    body: {
+      level: 'log',
+      title: 'User Action',
+      type: 'ProfileUpdated',
+      userData: { userData },
+    },
+  })
+  console.log(response);
+  
+  // További műveletek (pl. API hívás)
+}
 
 </script>
 
