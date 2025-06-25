@@ -41,6 +41,7 @@ model szponzorok {
   contact         String?
   status          String
   desc            String?
+  type            String  @default("money")
 }
 
 model polorendeles {
@@ -74,8 +75,8 @@ model Log {
   title     String
   type      String
   level     String
-  data      Json
-  userId    Int?
+  data      Json?
+  userId    String?
   username  String?
   ip        String?
   timestamp DateTime @default(now())

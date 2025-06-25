@@ -2,19 +2,19 @@
   <div>
     <client-only>
       <customTable 
-      :tableData="tableData" 
-      :current-user="currentUser" 
-      :customButtons="customButtons" 
-      @cell-click="handleCellClick" 
-      @buttonClick="handleCustomButtonClick"
-      @modify="handleModify"
-      @delete="handleDelete"
-      @add="handleAdd"
-      @import="handleImport"
-      @export="handleExport"
-
-    ></customTable>
-  </client-only>
+        v-if="currentUserResolved"
+        :tableData="tableData" 
+        :current-user="currentUserResolved" 
+        :customButtons="customButtons" 
+        @cell-click="handleCellClick" 
+        @buttonClick="handleCustomButtonClick"
+        @modify="handleModify"
+        @delete="handleDelete"
+        @add="handleAdd"
+        @import="handleImport"
+        @export="handleExport"
+      />
+    </client-only>
   </div>
   <spinner v-if="loading"></spinner>
 </template>
@@ -22,6 +22,7 @@
 
 <script lang="ts" setup>
 import customTable from '~/components/customTable.vue';
+import { ref, onMounted } from 'vue';
 const { $notify, $showDialog } = useNuxtApp();
 definePageMeta({
   layout: 'new'
@@ -32,11 +33,10 @@ const loading = ref(false);
 const { token }: any = useAuth();
 console.log(token);
 
-const currentUser = ref(
-  User.currentUser(token)
-)
-
-
+const currentUserResolved = ref<Partial<User> | null>(null);
+onMounted(async () => {
+  currentUserResolved.value = await User.currentUser(token);
+});
 
 const handleCellClick = (row: any) => {
   console.log('Row clicked:', row);
@@ -95,6 +95,9 @@ const handleEditCash = async () => {
           paidcash: newValue
         });
       }
+      else {
+        continue;
+      }
       
       //// send the modified users to the server
 
@@ -117,6 +120,17 @@ const handleEditCash = async () => {
       }
       if (data.value) {
         console.log('Sikeres módosítás:', data.value);
+        console.log('Modified user:', user.name, 'from', userpaidcash, 'to', newValue);
+        
+        log.modification({
+          title: 'Stabcash change',
+          type: 'cashchange',
+          data: {
+            from: userpaidcash,
+            to: newValue,
+            onUser: user.name,
+          }
+        });
       } else {
         $notify('Hiba történt a mentés során!', 'error');
         return;

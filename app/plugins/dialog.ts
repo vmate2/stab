@@ -10,7 +10,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       dropdownopts?: Array<{ value: string; default: boolean }>;
       color?: string;
       textcolor?: string;
-      value?: string;
+      value?: any;
+      accepts?: string;
     }>;
     buttons: Array<{
       label: string;
@@ -46,6 +47,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       dropdownopts?: Array<{ value: string; default: boolean }>;
       color?: string;
       textcolor: string;
+      accepts?: string;
     }>;
     buttons?: Array<{
       label: string;

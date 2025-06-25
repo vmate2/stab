@@ -1,6 +1,6 @@
 export default defineNuxtPlugin((nuxtApp) => {
     const notifications = useState<{ message: string; type: string; show: boolean }[]>('notifications', () => []);
-  
+    
     const displayNotification = (message: string, type: string = 'info') => {
       console.log('Adding notification:', message);
       

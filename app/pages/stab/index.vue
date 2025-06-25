@@ -5,7 +5,6 @@
         <div class="cim">{{ poszt?.cim }}</div>
         <div class="content2">{{ poszt?.content }}</div>
         <div class="ido">{{ poszt?.ido }}</div>
-            <button @click="updateProfile">Update Profile</button>
       </div>
     </div>
   </div>
@@ -13,6 +12,10 @@
 
 <script lang="ts" setup>
 import { inject } from 'vue';
+
+const {sendMessage, onMessage, socket} = useWebSocket()
+
+const route = useRoute();
 
 type kiirasClient = {
   cim: string;
@@ -34,8 +37,8 @@ const formatDate = (year:number, month:number, day:number) => {
 
 poszt.value = {
   cim: 'Fontos információk',
-  content: `Diáknap: Április 16. \n Témánk: Társasjátékok \n Témavilág: Társasjátékok \n`,
-  ido: formatDate(2021, 3, 10)
+  content: `Gara: október 1. hete. \n Témánk: Sorsok \n Témavilág: Kaszinó \n`,
+  ido: formatDate(2025, 6, 17)
 };
 
 definePageMeta({
@@ -64,23 +67,6 @@ definePageMeta({
 // Frontend kód
 
 
-const updateProfile = async () => {
-  const userData = { username: 'john_doe', email: 'john@example.com' }
-
-  // Logolás az API végponton keresztül
-  const response = await $fetch('/api/log', {
-    method: 'POST',
-    body: {
-      level: 'log',
-      title: 'User Action',
-      type: 'ProfileUpdated',
-      userData: { userData },
-    },
-  })
-  console.log(response);
-  
-  // További műveletek (pl. API hívás)
-}
 
 </script>
 

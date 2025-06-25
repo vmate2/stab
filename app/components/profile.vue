@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 const link = ref();
 const hasPenzugyperms = ref(true);
@@ -60,6 +60,9 @@ link.value = `/stab/user/${props.profile.uuid}`;
 const { $supabase } = useNuxtApp();
 const balance = ref<string>('0');
 
+// Store channel ref for cleanup
+const channel = ref<any>(null);
+
 // Első betöltés adatbázisból
 onMounted(async () => {
   const { data, error } = await $supabase
@@ -72,8 +75,7 @@ onMounted(async () => {
     balance.value = data.balance.toString(); // biztosítva, hogy string típusú legyen
   }
 
-  // Realtime frissítés
-  const channel = $supabase
+  channel.value = $supabase
     .channel('realtime:stabcash')
       .on(
         'postgres_changes',
@@ -88,11 +90,13 @@ onMounted(async () => {
         }
       )
       .subscribe();
+});
 
-  // Ne felejts el tisztítani a csatornát, ha a komponens elhagyja a DOM-ot
-  onBeforeUnmount(() => {
-    channel.unsubscribe();
-  });
+// Cleanup channel on unmount
+onBeforeUnmount(() => {
+  if (channel.value) {
+    channel.value.unsubscribe();
+  }
 });
 </script>
 

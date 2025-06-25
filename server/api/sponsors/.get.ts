@@ -3,9 +3,6 @@ import { PrismaClient } from "@prisma/client";
 const p = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  console.log(body);
-  
   const token:any = event.node.req.headers['token'] || event.node.req.headers['authorization']?.split(' ')[1];
 
   if (!token) {
@@ -25,23 +22,18 @@ export default defineEventHandler(async (event) => {
     });
 
     if (response) {
-      const result = await p.szponzorok.create({
-        data: {
-          name: body.name,
-          status: body.status,
-          email: body.email || null,
-          phone: body.phone || null,
-        }
-      });
-      return result;
-    } else {
-      return false;
+      const result = await p.szponzorok.findMany();
+      if (result && result.length > 0) {
+        return result;
+      } else {
+        return false;
+      }
     }
 
 
 
+
   } catch (e: any) {
-  console.error('Error in sponsors post handler:', e);
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal Server Error',

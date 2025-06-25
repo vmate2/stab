@@ -1,5 +1,7 @@
 import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 export default async () => {
   const server = createServer();
@@ -7,14 +9,44 @@ export default async () => {
   const wss = new WebSocketServer({ server });
 
   wss.on('connection', (ws) => {
-    console.log('Client connected');
 
-    ws.on('message', (message) => {
-      console.log('Received:', message.toString());
-      ws.send(`Echo: ${message}`);
+    ws.on('message', async (message) => {
+      
+    try {
+      console.warn('Received message:', message.toString());
+      
+      const msg = JSON.parse(message.toString());
+      console.log(message.toString());
+      console.log(msg.username.toString(), msg.userId);
+      
+      const result = await prisma.log.create(
+      {
+        data: {
+          title: msg.title,
+          type: msg.type,
+          level: msg.level,
+          data: msg.data || null,
+          ip: msg.ip? msg.ip : null,
+          username: msg.username? msg.username : null,
+          userId: msg.userId? msg.userId : null,
+        }
+      }
+    )
+    console.log(result);
+    
+    console.error('Log saved to database:', result);
+
+    ws.send(JSON.stringify({ result: result }));
+
+    } catch (error) {
+      console.error('Error parsing message:', error);
+      ws.send(JSON.stringify({ error: 'Invalid message format' }));
+      return;
+    }
+
+
+
     });
-
-    ws.send('Hello from server!');
   });
 
   server.listen(3001, () => {

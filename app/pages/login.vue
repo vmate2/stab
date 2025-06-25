@@ -88,7 +88,7 @@ async function login() {
       tokenCookie.value = response.data.value.accessToken;
       refreshTokenCookie.value = response.data.value.refreshToken;
       
-      navigateTo('/stab/');
+      navigateTo({ path: '/stab/', query: { fromlogin: 'true' } });
     }
   } catch (err) {
     console.error('Error during login:', err);
@@ -98,9 +98,6 @@ async function login() {
   }
 }
 
-const del = () => {
-  tokenCookie.value = undefined;
-}
 </script>
 
 <style scoped>

@@ -28,7 +28,7 @@
       <table class="custom-table" @scroll.passive="onScroll" ref="container">
           <thead>
               <tr>
-                  <th v-for="(item, index) in tableData.head || []" :key="index" @click="sortTable(index)"   :style="{ width: columnPercents[index] }">
+                  <th v-for="(item, index) in tableData.head || []" :key="index" @click="sortTable(index)"   :style="{ width: columnPercents[index], textAlign: item.center ? 'center' : 'left' }">
                       {{ item.text || '' }}
                       <span v-if="sortColumn === index">
                           {{ sortOrder === 'asc' ? '▲' : sortOrder === 'desc' ? '▼' : '' }}
@@ -55,16 +55,15 @@
               <td
                 v-for="(subItem, subIndex) in tableData.head"
                 :key="subIndex"
-                ref="setColumnRef"
-                :style="{ width: columnPercents[subIndex] }"
+                :style="{ width: columnPercents[subIndex], textAlign: subItem.center ? 'center' : 'left' }"
               >
                 {{ item?.[subItem.value]?.value || item?.[subItem.value] || ' ' }}
               </td>
               <td v-if="jogosult" class="clickable" @click="emitAction('modify', item)">
-                M
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
               </td>
               <td v-if="jogosult" class="clickable" @click="emitAction('delete', item)">
-                X
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 7H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6 10L7.70141 19.3578C7.87432 20.3088 8.70258 21 9.66915 21H14.3308C15.2974 21 16.1257 20.3087 16.2986 19.3578L18 10" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
               </td>
             </tr>
             <!-- spacer bottom -->
@@ -91,8 +90,6 @@ const bufferRowCount = ref(0);
 
 onMounted(() => {
   seventyVh.value = window.innerHeight * 0.7;
-
-  // várjuk, hogy container betöltődjön
   nextTick(() => {
     if (container.value) {
       const height = container.value.offsetHeight;
@@ -108,9 +105,13 @@ onMounted(() => {
       } else {
         bufferRowCount.value = Math.floor(visibleRowCount.value * 0.3); // 30% buffer
       }
-      console.log(`Látható sorok száma: ${visibleRowCount.value}, Buffer sorok száma: ${bufferRowCount.value}`);
+      // Measure column widths from the first row
+      const firstRow = table.querySelector('tbody tr:not(.add-row)');
+      if (firstRow) {
+        const cells = firstRow.querySelectorAll('td');
+        columnWidths.value = Array.from(cells).map(cell => (cell as HTMLElement).offsetWidth || 0);
+      }
     }
-    columnWidths.value = columnRefs.value.map(el => el?.offsetWidth || 0);
   });
 });
 
@@ -133,32 +134,16 @@ const props = defineProps({
 
 const emit = defineEmits(['cell-click', 'buttonClick', 'import', 'export', 'modify', 'delete', 'add']);
 
-import { ref, computed, toRefs, reactive, watch } from 'vue';
+import { ref, computed, toRefs, reactive, watch, watchEffect, onMounted } from 'vue';
 
-// Ensure reactivity for tableData when passed as a ref
 const { currentUser, tableData } = toRefs(props);
 
-// Ensure currentUser is not a promise
-interface User {
-  post?: string;
-}
-
-const resolvedCurrentUser = ref<User | null>(null);
-const jogosult = ref(false);
-
-
-watchEffect(() => {
-  if (currentUser.value instanceof Promise) {
-    currentUser.value.then((resolved) => {
-      resolvedCurrentUser.value = resolved;
-      if (resolvedCurrentUser.value) {
-        console.log(resolvedCurrentUser.value.post);
-      }
-      jogosult.value = !!(resolvedCurrentUser.value && (resolvedCurrentUser.value.post === 'Kampányfőnök' || resolvedCurrentUser.value.post === 'Jelölt'));
-    });
-  }
+// Use a computed property for jogosult based on currentUser
+const jogosult = computed(() => {
+  const user = currentUser.value && typeof currentUser.value === 'object' && 'post' in currentUser.value ? currentUser.value : null;
+  
+  return !!(user && (user.post === 'kampányfőnök' || user.post === 'jelölt'));
 });
-
 
 // State for sorting
 const sortColumn = ref<number | null>(null);
@@ -293,13 +278,6 @@ const columnPercents = computed(() => {
   const total = columnWidths.value.reduce((a, b) => a + b, 0);
   return columnWidths.value.map(w => `${(w / total) * 100}%`);
 });
-const columnRefs = ref<Array<HTMLElement | null>>([]);
-
-function setColumnRef(el: HTMLElement | null) {
-  if (el && !columnRefs.value.includes(el)) {
-    columnRefs.value.push(el);
-  }
-}
 
 </script>
 
@@ -324,6 +302,7 @@ function setColumnRef(el: HTMLElement | null) {
 .table-wrapper {
   overflow-x: auto;
   max-width: 100%;
+  width: 100%;
 }
 
 .actions-container .text{
@@ -360,7 +339,9 @@ function setColumnRef(el: HTMLElement | null) {
   border: 2px solid white;
   padding: 10px;
   border-radius: 8px;
+  max-width: 70vw;
 }
+
 
 .search-bar {
   padding: 8px;
@@ -380,6 +361,7 @@ function setColumnRef(el: HTMLElement | null) {
 .select-filter {
   display: flex;
   flex-direction: column;
+  max-width: 100%;
 }
 
 .select-filter label {
@@ -397,6 +379,7 @@ function setColumnRef(el: HTMLElement | null) {
 
 .custom-table {
   width: 100%;
+  min-width: 100%;
   border-collapse: collapse;
   margin-bottom:5px;
   font-size: 16px;
@@ -405,6 +388,7 @@ function setColumnRef(el: HTMLElement | null) {
   overflow-y: auto;
   display: block;
   table-layout: fixed; /* Ensures columns fill out the space */
+  max-height: 60vh;
 }
 
 .custom-table thead {
@@ -474,6 +458,7 @@ function setColumnRef(el: HTMLElement | null) {
   text-overflow: ellipsis;
   white-space: nowrap; /* Prevents text from wrapping */
   font-size: 1.1rem; /* Adjust font size */
+  width: 100%; /* Ensures the cell takes full width */
 }
 
 .scroll-button:hover {

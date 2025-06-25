@@ -1,36 +1,73 @@
 <template>
   <div v-if="dialog.show" class="dialog-overlay">
-    <div class="dialog-container">
+    <div class="dialog-container" :class="{appear: dialogAnimation == 'appear', disappear: dialogAnimation == 'disappear'}" ref="dialogContainer">
       <div class="dialog-content">
         <h3>{{ dialog.title }}</h3>
         <p>{{ dialog.desc }}</p>
-        <div v-if="dialog.inputs" class="dialog-inputs">
+        <form
+          v-if="dialog.inputs"
+          class="dialog-inputs"
+          @submit.prevent="handleSubmit"
+          ref="formEl"
+        >
           <div v-for="(input, index) in dialog.inputs" :key="index" class="dialog-input-group">
             <label :for="'input-' + index">{{ input.label }}</label>
+
             <template v-if="input.type === 'text'">
-              <input v-model="input.value" :placeholder="input.placeholder" :id="'input-' + index" type="text" class="dialog-input" />
+              <input v-model="input.value" :placeholder="input.placeholder" :id="'input-' + index" type="text" class="dialog-input" :required="input.required" />
             </template>
+
             <template v-else-if="input.type === 'dropdown'">
-              <select v-model="input.value" :id="'input-' + index" class="dialog-input">
-                <option v-for="option in input.dropdownopts" :key="option.value" :value="option.value" :default="option.default">
+              <select v-model="input.value" :id="'input-' + index" class="dialog-input" :required="input.required">
+                <option v-for="option in input.dropdownopts" :key="option.value" :value="option.value">
                   {{ option.value }}
                 </option>
               </select>
             </template>
+
+            <template v-if="input.type === 'file'">
+              <input :required="input.required" type="file" :id="'input-' + index" class="dialog-input" @change="(e) => input.value = e.target.files ? e.target.files[0] : null" :accept="input.accepts" />
+            </template>
           </div>
-        </div>
-        <div class="dialog-buttons">
-          <button v-for="(button, index) in dialog.buttons" :key="index" @click="handleButtonClick(button.value)" :style="{ backgroundColor: button.color, color: button.textcolor }">
-            {{ button.label }}
-          </button>
-        </div>
+
+          <div class="dialog-buttons">
+            <button
+              v-for="(button, index) in dialog.buttons"
+              :key="index"
+              :type="button.type || 'button'"
+              :style="{ backgroundColor: button.color, color: button.textcolor }"
+              @click="button.type !== 'submit' && handleButtonClick(button.value)"
+            >
+              {{ button.label }}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+
+const dialogContainer = ref<HTMLElement | null>(null);
+const dialogAnimation = ref('appear');
+
+const formEl = ref<HTMLFormElement | null>(null);
+
+function handleSubmit(event: SubmitEvent) {
+  const submitter = event.submitter as HTMLButtonElement | null;
+  const value = submitter?.value || 'submit';
+
+  // csak akkor hívjuk meg, ha a form valid
+  if (formEl.value?.checkValidity()) {
+    handleButtonClick(value);
+  } else {
+    // trigger native form hibajelzést
+    formEl.value?.reportValidity();
+  }
+}
 
 const dialog = useState<{
   show: boolean;
@@ -41,13 +78,16 @@ const dialog = useState<{
     type: string;
     placeholder?: string;
     dropdownopts?: Array<{ value: string; default: boolean }>;
-    value?: string;
+    value?: any;
+    required?: boolean;
+    accepts?: string; // for file inputs
   }>;
   buttons: Array<{
     label: string;
     value: string;
     color?: string;
     textcolor?: string;
+    type?: 'submit' | 'button' | 'reset';
   }>;
   resolve?: (value: any) => void;
 }>('dialog', () => ({
@@ -59,19 +99,30 @@ const dialog = useState<{
 }));
 
 const handleButtonClick = (buttonValue: string) => {
-  dialog.value.show = false;
-  dialog.value.resolve?.({ button: buttonValue, inputs: dialog.value.inputs || [] });
-  dialog.value = { show: false, title: '', desc: '', buttons: [], inputs: [] };
+  // Remove any animation class before triggering disappear
+  console.log(buttonValue);
+  
+  dialogAnimation.value = '';
+  void dialogContainer.value?.offsetWidth;
+  dialogAnimation.value = 'disappear';
+  setTimeout(() => {
+    dialog.value.show = false;
+    dialog.value.resolve?.({ button: buttonValue, inputs: dialog.value.inputs || [] });
+    dialog.value = { show: false, title: '', desc: '', buttons: [], inputs: [] };
+    dialogAnimation.value = ''; // reset for next open
+  }, 300); // match the .disappear animation duration
 };
 
 watch(
-  () => dialog.value,
-  (newDialog) => {
-    if (newDialog.title) {
-      dialog.value.show = true;
+  () => dialog.value.show,
+  (show, prevShow) => {
+    if (show && !prevShow) {
+      dialogAnimation.value = 'appear';
+      setTimeout(() => {
+        dialogAnimation.value = '';
+      }, 300);
     }
-  },
-  { deep: true }
+  }
 );
 </script>
 
@@ -97,6 +148,14 @@ watch(
   text-align: center;
   width: 80%;
   max-width: 600px;
+}
+
+.appear {
+  animation: appear 0.3s ease-in-out;
+}
+
+.disappear {
+  animation: appear 0.3s ease-in-out reverse;
 }
 
 .dialog-content {
@@ -163,5 +222,22 @@ watch(
 
 .dialog-buttons button:hover {
   background: #0056b3;
+}
+
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    scale: 0.8;
+    transform: translateY(-20px);
+    rotate: 30deg;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    transform: translateY(0);
+    rotate: 0deg;
+  }
+  
 }
 </style>

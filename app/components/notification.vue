@@ -49,9 +49,22 @@ watch(
         typeof window !== 'undefined' &&
         notif.show
       ) {
-        
-        const config =  JSON.parse(localStorage.getItem('currentUser')).config;
-        console.log(config.notificationsound);
+        let config;
+        if (import.meta.client && localStorage.getItem('currentUser') && typeof(localStorage.getItem('currentUser')) !== null && localStorage.getItem('currentUser') !== 'null') {
+          console.log(localStorage.getItem('currentUser'));
+          
+          try {
+            config  =  JSON.parse(localStorage.getItem('currentUser') || "")?.config;
+            console.log(config.notificationsound);
+          } catch (error) {
+          }
+          
+
+        } else {
+          console.log('No localStorage or currentUser found, using fallback config.');
+          config = { notificationsound: true }; // Fallback for server-side rendering
+        }
+        console.log(config);
         
         if (config.notificationsound) {
           console.log('Notification sound is enabled in user settings.');
