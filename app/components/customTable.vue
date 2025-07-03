@@ -3,7 +3,8 @@
     <div class="action-container">
       <div class="filter-container">
           <input type="text" v-model="searchQuery" placeholder="Keresés..." class="search-bar" />
-          <div class="select-filters">
+          <button v-if="isOnMoible" @click="moreVisible = !moreVisible">{{ moreVisible ? 'kevesebb' : 'több' }}</button>
+          <div class="select-filters" v-if="!isOnMoible || moreVisible">
               <div v-for="(column, index) in tableData.head" :key="index" class="select-filter">
                   <label :for="`filter-${index}`">{{ column.text }}</label>
                   <select :id="`filter-${index}`" v-model="filters[column.value]">
@@ -87,6 +88,12 @@ const showScrollButton = ref(false);
 
 const visibleRowCount = ref(0);
 const bufferRowCount = ref(0);
+
+const isOnMoible = computed(() => {
+  return window.innerWidth < 768; // Adjust the breakpoint as needed
+});
+
+const moreVisible = ref(false);
 
 onMounted(() => {
   seventyVh.value = window.innerHeight * 0.7;
@@ -328,6 +335,7 @@ const columnPercents = computed(() => {
   gap: 10px;
   justify-self: center;
   justify-content: center;
+  margin-top: 20px;
 }
 
 .filter-container {
@@ -544,6 +552,9 @@ const columnPercents = computed(() => {
   .custom-table {
     font-size: 14px;
     max-height: 65vh;
+    width: 100%;
+    height: 100% !important;
+    overflow: auto;
   }
 
   .custom-table th, .custom-table td {

@@ -50,6 +50,7 @@ const tableData = ref({
 });
 
 const customButtons = ref([
+  
 ]);
 
 const handleModify = async (row: any) => {
@@ -74,6 +75,32 @@ const handleModify = async (row: any) => {
   };
   const dialog = await $showDialog(dialogData);
   console.log(dialog);
+  if (dialog.button === 'modify') {
+    const updatedSponsor = {
+      id: row.id,
+      name: dialog.inputs[0]?.value,
+      email: dialog.inputs[1]?.value,
+      phone: dialog.inputs[2]?.value,
+      status: dialog.inputs[3]?.value
+    };
+    
+    loading.value = true;
+    const response = await $fetch<any>('/api/sponsors', {
+      method: 'PATCH',
+      body: updatedSponsor,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token.value}`
+      }
+    });
+    if (response) {
+      reloadData();
+      $notify(`A(z) ${updatedSponsor.name} szponzor sikeresen módosítva!`, 'success');
+    } else {
+      $notify('Hiba történt a szponzor módosításakor.', 'error');
+    }
+    loading.value = false;
+  }
   
 };
 
@@ -285,6 +312,17 @@ div {
   height: 100vh;
   width: 90%;
   justify-self: center;
+}
+
+@media screen and (max-width: 843px) {
+  div {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+  }
+  
 }
 </style>
 

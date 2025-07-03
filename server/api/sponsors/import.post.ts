@@ -30,6 +30,7 @@ export default defineEventHandler(async (event) => {
       console.log('JWT verification successful, starting import...');
       try {
             const form = await readMultipartFormData(event);
+            
     const file = form?.find(f => f.name === 'file');
     if (!file) {
       throw createError({ statusCode: 400, statusMessage: 'No file uploaded' });
@@ -49,14 +50,25 @@ export default defineEventHandler(async (event) => {
         row.values.slice(1).forEach((cell, idx) => {
           rowData[headerRow[idx + 1]] = cell;
         });
-        jsonData.push(rowData);
+        // Only add if it has a name (Cégnév)
+        if (rowData['Cégnév'] && String(rowData['Cégnév']).trim() !== '') {
+          jsonData.push(rowData);
+        }
       });
     }
 
     const formattedData = jsonData.map((entry, index) => ({
       id: index + 1,
       name: entry['Cégnév'] ?? '',
-      email: entry.Email?.text?.toLowerCase() ?? null,
+      email: (
+        typeof entry.Email === 'string'
+          ? entry.Email.toLowerCase()
+          : typeof entry.Email?.text === 'string'
+            ? entry.Email.text.toLowerCase()
+            : typeof entry['Email'] === 'string'
+              ? entry['Email'].toLowerCase()
+              : null
+      ),
       phone: entry['Telefonszám']?.toString() ?? null,
       contact: entry['Kapcsolattartó'] ?? null,
       status: entry.Folyamat ?? '',
