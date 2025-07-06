@@ -34,15 +34,16 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
-      supabaseKey: process.env.SUPABASE_KEY,
       supabaseAPIkey: process.env.SUPABASE_ANON_API_KEY,
     },
+    supabaseKey: process.env.SUPABASE_KEY,
     jwtSecret: process.env.JWT_SECRET,
     secret_header: process.env.SECRET_HEADER,
     pepper: process.env.PEPPER,
     privateKey: process.env.PRIVATE_KEY,
     secretValue: process.env.SECRET_VALUE,
-    emailPass: process.env.APP_PASSWORD
+    emailPass: process.env.APP_PASSWORD,
+    qrSecret: process.env.QR_SECRET,
   },
   
   routeRules: {

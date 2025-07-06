@@ -128,5 +128,26 @@ export const log = {
       console.error('Error in log.warning:', error);
       return;
     }
-  }
+  },
+    infoPublic: async (message: Record<string, any> | string) => {
+    try {
+      const ip = await fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => data.ip);
+      if (typeof message === 'object' && message !== null) {
+        (message as Record<string, any>).level = 'info';
+        (message as Record<string, any>).ip = ip;
+      } else {
+        message = JSON.parse(message);
+        (message as Record<string, any>).level = 'info';
+        (message as Record<string, any>).ip = ip;
+      }
+      message = typeof message === 'object' ? JSON.stringify(message, null, 2) : message;
+      const msg = typeof message === 'object' ? JSON.stringify(message, null, 2) : message + '';
+      sendMessage(msg);
+    } catch (error) {
+      console.error('Error in log.info:', error);
+      return;
+    }
+  },
 }

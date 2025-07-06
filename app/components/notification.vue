@@ -158,7 +158,7 @@ console.log('Rendering notifications:', notifications.value); // Debugging
 
 .slideIn {
   opacity: 1; /* Make the notification visible */
-  transform: translateX(0px); /* Initially out of view */
+  transform: translateX(0px); /* Slide in from right by default */
 }
 
 .slideOut {
@@ -170,5 +170,42 @@ console.log('Rendering notifications:', notifications.value); // Debugging
   font-family: 'Poppins', monospace;
   color: white;
   margin-left: 1vw;
+}
+
+/* --- MOBILE NOTIFICATION STYLE --- */
+@media (max-width: 768px) {
+  .notification-wrapper {
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    padding: 0;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 1000;
+  }
+  .container {
+    width: 95vw;
+    min-width: 0;
+    max-width: 98vw;
+    height: 7.5vh;
+    margin: 0.5vh 0;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    transform: translateY(-100px); /* Slide down from top */
+    transition: all 0.5s cubic-bezier(.4,2,.6,1);
+  }
+  .slideIn {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .slideOut {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+  .message {
+    margin-left: 3vw;
+    font-size: 1.1em;
+  }
 }
 </style>

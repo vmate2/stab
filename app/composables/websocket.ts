@@ -20,7 +20,7 @@ export function useWebSocket(url?: string) {
 
       console.warn(typeof strMessage, strMessage);
       const msg = JSON.parse(strMessage);
-      if (!msg.username || !msg.userId || !msg.title || !msg.type || !msg.level) {
+      if (!msg.title || !msg.type || !msg.level) {
         console.error('Invalid log format:', msg);
         throw createError({
             statusCode: 400,

@@ -49,7 +49,10 @@ model polorendeles {
   name            String
   phone           String
   felirat         String?
+  size            String
   paid            Boolean
+  note            String?
+  createdAt       DateTime @default(now())
 }
 
 model transactions {
@@ -80,4 +83,25 @@ model Log {
   username  String?
   ip        String?
   timestamp DateTime @default(now())
+}
+
+model wheelWin {
+  id        Int      @id @default(autoincrement())
+  type      String
+  amount    Int
+  name      String
+  email     String
+  qrcode    String
+  winID     String   @unique
+  isClaimed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  claimedAt DateTime? @updatedAt
+}
+
+model locations {
+  username  String
+  userID    String @unique
+  longitude Float
+  latitude  Float
+  updatedAt DateTime @updatedAt
 }

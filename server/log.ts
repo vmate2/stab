@@ -16,8 +16,11 @@ export default async () => {
       console.warn('Received message:', message.toString());
       
       const msg = JSON.parse(message.toString());
-      console.log(message.toString());
-      console.log(msg.username.toString(), msg.userId);
+      if (msg.username && msg.userId) {
+        console.log(message.toString());
+        console.log(msg.username.toString(), msg.userId);
+      }
+
       
       const result = await prisma.log.create(
       {

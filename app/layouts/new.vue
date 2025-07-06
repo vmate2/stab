@@ -9,8 +9,7 @@
         <div class="buttonCont" :class="{ activebtn: $route.path.startsWith('/stab/penzugy') }"><NuxtLink to="/stab/penzugy"><svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="22" height="22" fill="white" style="margin-left: 10px; padding-right: 10px; position: relative; top: 2px;"><path d="M20,3H8c-2.21,0-4,1.79-4,4v6c0,2.21,1.79,4,4,4h12c2.21,0,4-1.79,4-4V7c0-2.21-1.79-4-4-4Zm2,10c0,1.1-.9,2-2,2H8c-1.1,0-2-.9-2-2V7c0-1.1,.9-2,2-2h12c1.1,0,2,.9,2,2v6Zm-3,7c0,.55-.45,1-1,1H5c-2.76,0-5-2.24-5-5v-7c0-.55,.45-1,1-1s1,.45,1,1v7c0,1.65,1.35,3,3,3h13c.55,0,1,.45,1,1ZM14,7c-1.65,0-3,1.35-3,3s1.35,3,3,3,3-1.35,3-3-1.35-3-3-3Zm0,4c-.55,0-1-.45-1-1s.45-1,1-1,1,.45,1,1-.45,1-1,1Z"/></svg>Pénzügy</NuxtLink></div>
         <div class="buttonCont" :class="{ activebtn: $route.path.startsWith('/stab/tagok') }"><NuxtLink to="/stab/tagok"><svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="20" height="20" fill="white" style="margin-left: 10px; padding-right: 10px; position: relative; top: 2px;"><path d="M12,16a4,4,0,1,1,4-4A4,4,0,0,1,12,16Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,12,10Zm6,13A6,6,0,0,0,6,23a1,1,0,0,0,2,0,4,4,0,0,1,8,0,1,1,0,0,0,2,0ZM18,8a4,4,0,1,1,4-4A4,4,0,0,1,18,8Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,18,2Zm6,13a6.006,6.006,0,0,0-6-6,1,1,0,0,0,0,2,4,4,0,0,1,4,4,1,1,0,0,0,2,0ZM6,8a4,4,0,1,1,4-4A4,4,0,0,1,6,8ZM6,2A2,2,0,1,0,8,4,2,2,0,0,0,6,2ZM2,15a4,4,0,0,1,4-4A1,1,0,0,0,6,9a6.006,6.006,0,0,0-6,6,1,1,0,0,0,2,0Z"/></svg>Tagok</NuxtLink></div>
         <div class="buttonCont" :class="{ activebtn: $route.path.startsWith('/stab/polorendeles') }"><NuxtLink to="/stab/polorendeles"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="margin-left: 10px; padding-right: 10px; position: relative; top: 2px;" stroke="white"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 7L6 4H9C9 4.39397 9.0776 4.78407 9.22836 5.14805C9.37913 5.51203 9.6001 5.84274 9.87868 6.12132C10.1573 6.3999 10.488 6.62087 10.8519 6.77164C11.2159 6.9224 11.606 7 12 7C12.394 7 12.7841 6.9224 13.1481 6.77164C13.512 6.62087 13.8427 6.3999 14.1213 6.12132C14.3999 5.84274 14.6209 5.51203 14.7716 5.14805C14.9224 4.78407 15 4.39397 15 4H18L21 7L20.5785 11.2152C20.542 11.5801 20.1382 11.7829 19.8237 11.5942L18 10.5V18C18 19.1046 17.1046 20 16 20H8C6.89543 20 6 19.1046 6 18V10.5L4.17629 11.5942C3.86184 11.7829 3.45801 11.5801 3.42152 11.2152L3 7Z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>Pólórendelés</NuxtLink></div>
-        <div class="buttonCont"><NuxtLink to="/stab/test">TESZT</NuxtLink></div>
-        <div @click="send">send</div>
+        <div class="buttonCont" :class="{ activebtn: $route.path.startsWith('/stab/garatools') }"><NuxtLink to="/stab/garatools"><svg viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="margin-left: 10px; padding-right: 10px; position: relative; top: 2px;" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#FFFFFF"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="icomoon-ignore"> </g> <path d="M29.532 25.76l-5.655-5.655 0.754-0.754-0.754-0.754-2.261 2.261-3.771-3.77 4.53-4.532c0.603 0.215 1.234 0.324 1.882 0.324 1.493 0 2.897-0.582 3.954-1.637 1.63-1.631 2.092-4.054 1.178-6.174l-0.311-0.722-2.43 2.43-1.956 0.027 0.026-1.866 2.477-2.477-0.72-0.312c-0.706-0.306-1.457-0.461-2.229-0.461-1.494 0-2.897 0.582-3.952 1.637-1.546 1.545-2.043 3.802-1.311 5.84l-4.529 4.529-6.409-6.408 0.754-0.754-4.145-4.146-2.264 2.261 4.147 4.147 0.753-0.754 6.409 6.408-4.529 4.529c-0.605-0.217-1.239-0.326-1.888-0.326-1.493 0-2.897 0.582-3.953 1.637-1.633 1.632-2.095 4.059-1.176 6.181l0.312 0.72 2.477-2.477 1.865-0.025-0.027 1.956-2.43 2.43 0.722 0.311c0.704 0.303 1.452 0.458 2.221 0.458 1.494 0 2.897-0.581 3.952-1.636 1.544-1.544 2.041-3.799 1.314-5.833l4.532-4.532 3.771 3.769-2.263 2.263 0.754 0.754 0.754-0.754 5.654 5.654c0.503 0.504 1.174 0.781 1.885 0.781s1.381-0.277 1.885-0.781c1.039-1.039 1.039-2.73-0-3.769zM3.899 4.648l0.754-0.753 2.638 2.638-0.754 0.754-2.639-2.639zM11.448 22.456c0.739 1.716 0.364 3.679-0.955 4.999-0.854 0.854-1.989 1.324-3.198 1.324-0.347 0-0.689-0.039-1.021-0.116l1.569-1.569 0.047-3.485-3.394 0.046-1.619 1.619c-0.356-1.51 0.081-3.103 1.208-4.229 0.854-0.854 1.99-1.325 3.199-1.325 0.626 0 1.233 0.125 1.806 0.373l0.333 0.144 10.819-10.819-0.144-0.333c-0.744-1.719-0.37-3.682 0.952-5.004 0.854-0.854 1.99-1.325 3.198-1.325 0.35 0 0.695 0.040 1.030 0.117l-1.618 1.618-0.047 3.394 3.485-0.047 1.57-1.57c0.352 1.507-0.086 3.097-1.209 4.221-0.855 0.854-1.991 1.325-3.2 1.325-0.624 0-1.23-0.125-1.801-0.371l-0.332-0.143-10.821 10.823 0.143 0.332zM28.779 28.775c-0.302 0.302-0.704 0.469-1.131 0.469s-0.829-0.167-1.131-0.469l-5.654-5.654 2.262-2.262 5.655 5.655c0.624 0.624 0.624 1.638 0.001 2.261z" fill="#FFFFFF"> </path> </g></svg>GaraTools</NuxtLink></div>
       </NavMenu>
     </nav>
     <div class="content">
@@ -95,6 +94,8 @@ interface LocalUser {
   username: string
 };
 
+let watchId: number | null = null
+
 
 onMounted(async () => {
   if (!user.value) {
@@ -147,6 +148,31 @@ onMounted(async () => {
       console.log('Current user already exists in localStorage:', localStorage.getItem('currentUser'));
     }
   }
+
+    const L = await import('leaflet')
+    watchId = navigator.geolocation.watchPosition(
+      (pos) => {        
+        const { latitude, longitude } = pos.coords
+        const data = {
+          lat: latitude,
+          lon: longitude,
+          username: currentUser.value?.username || '',
+          userID: currentUser.value?.uuid || ''
+        }
+
+        $fetch('/api/setlocation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${token.value}`
+          },
+          body: data
+        });
+      }
+    )
+
+
+  
 });
 
 
@@ -280,6 +306,8 @@ watchEffect(async() => {
 
   }
 });
+
+
 
 
 
