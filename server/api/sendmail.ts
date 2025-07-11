@@ -39,6 +39,7 @@ async function sendEmailNewUser(body: any) {
     to: body.email,
     subject: body.subject,
     text: body.text,
+    html: body.html
   };
 
   try {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+    <plinko></plinko>
   </div>
 </template>
 
@@ -8,6 +8,8 @@
 definePageMeta({
 layout: 'main'
 });
+
+import plinko from '~/components/plinko.vue';
 </script>
 
 <style>

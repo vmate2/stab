@@ -82,7 +82,28 @@ export default defineEventHandler(async (event) => {
             email: body.email,
             subject: 'Fiók létrehozva - Trefort Stáb',
             text: ` Kedves ${body.name}! \n\n Sikeresen létrehoztuk a felhasználói fiókodat! \n Az alábbi adatokkal tudsz belépni: \n Felhasználónév: ${username} \n Ideiglenes jelszó: ${password} \n\nKérlek, változtasd meg a jelszavadat a bejelentkezés után! \n\n Üdvözlettel: \n Trefort Stáb`,
-        }
+            html: `
+              <div style="background-color:#8B0000; color:white; font-family:Arial, sans-serif; padding:20px; max-width:600px; margin:auto; border:4px solid gold; border-radius:10px;">
+                <h1 style="text-align:center; color:gold; margin-top:0;">🎰 FinalDeal 🎰</h1>
+                <h2 style="text-align:center; color:white; margin:0;">Fiók létrehozva - Trefort Stáb</h2>
+
+                <p style="font-size:16px;">Kedves <strong>${body.name}</strong>!</p>
+
+                <p style="font-size:16px;">Sikeresen létrehoztuk a felhasználói fiókodat. Az alábbi adatokkal tudsz belépni:</p>
+
+                <div style="background-color:black; color:white; padding:15px; border:2px solid gold; border-radius:8px; font-size:16px; margin:20px 0;">
+                  👤 <strong>Felhasználónév:</strong> ${username}<br/>
+                  🔐 <strong>Ideiglenes jelszó:</strong> ${password}
+                </div>
+
+                <p style="font-size:16px; color:#FFD700;"><strong>⚠️ Fontos:</strong> Kérlek, változtasd meg a jelszavadat az első bejelentkezés után!</p>
+
+                <p style="font-size:16px;">Üdvözlettel,<br/>Trefort Stáb</p>
+
+                <p style="font-size:14px; text-align:center; color:white;">© ${new Date().getFullYear()} FinalDeal • Trefort</p>
+              </div>
+            `
+          }
       });
         return {
           status: 200,

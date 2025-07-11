@@ -1,7 +1,13 @@
 import bcrypt from 'bcryptjs';
 import { Prisma, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient;
-export default defineEventHandler(async (event) => {
+
+type PasswordHandlerResponse =
+  | { hashedpass: string }
+  | boolean;
+
+
+export default defineEventHandler(async (event):Promise<PasswordHandlerResponse> => {
   const body = await readBody(event);
   const key = getRequestHeader(event, 'key')
   if (body.type == 'verify') {
@@ -40,7 +46,7 @@ export default defineEventHandler(async (event) => {
   }
 });
 
-async function hashPassword(password: string, pepper: string) {
+async function hashPassword(password: string, pepper: string):Promise<string> {
   const pepperedPassword = password + pepper;
   const hashedPassword = await bcrypt.hashSync(pepperedPassword, 10);
   return hashedPassword;

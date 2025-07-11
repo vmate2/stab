@@ -1,84 +1,61 @@
 import { createDecipheriv, createHash } from 'crypto'
 import { PrismaClient } from '@prisma/client';
+import { checkToken } from '~/composables/defaults';
 
 const p = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  const token:any = event.node.req.headers['token'] || event.node.req.headers['authorization']?.split(' ')[1];
-
-  if (!token) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized: Token is missing',
-    });
-  }
-
-
-    const response = await $fetch('/api/verifyJWT', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+  if(await checkToken(event) === true) {
+          const body = await readBody(event);
+    console.log('Received body:', body);
+    const decryptedBody = decrypt(body) as { winID: string };
+    if (!decryptedBody || typeof decryptedBody !== 'object' || !decryptedBody.winID) {
+      console.error('Decryption failed or invalid body:', body);
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Bad Request: Invalid or missing winID in request body',
+      });
+    }
+    
+    const result = await p.wheelWin.findFirst({
+      where: {
+        winID: decryptedBody.winID
       },
+      select: {
+        isClaimed: true
+      }
     });
-
-    if (response) {
-      const body = await readBody(event);
-      console.log('Received body:', body);
-      const decryptedBody = decrypt(body) as { winID: string };
-
-      if (!decryptedBody || typeof decryptedBody !== 'object' || !decryptedBody.winID) {
-        console.error('Decryption failed or invalid body:', body);
+    if (!result) {
+      console.error('Nincs ilyen nyeremény az azonosítóval:', decryptedBody.winID);
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Not found',
+        message: 'Nincs ilyen nyeremeny az azonositóval!'
+      });
+    } else {
+      if (result.isClaimed) {
+        console.warn('A nyeremény már be lett gyűjtve!:', decryptedBody.winID);
         throw createError({
           statusCode: 400,
-          statusMessage: 'Bad Request: Invalid or missing winID in request body',
-        });
-      }
-      
-      const result = await p.wheelWin.findFirst({
-        where: {
-          winID: decryptedBody.winID
-        },
-        select: {
-          isClaimed: true
-        }
-      });
-
-      if (!result) {
-        console.error('Nincs ilyen nyeremény az azonosítóval:', decryptedBody.winID);
-        throw createError({
-          statusCode: 404,
-          statusMessage: 'Not found',
-          message: 'Nincs ilyen nyeremeny az azonositóval!'
+          statusMessage: 'Win already claimed',
+          message: 'A nyeremény már be lett gyűjtve!'
         });
       } else {
-        if (result.isClaimed) {
-          console.warn('A nyeremény már be lett gyűjtve!:', decryptedBody.winID);
-          throw createError({
-            statusCode: 400,
-            statusMessage: 'Win already claimed',
-            message: 'A nyeremény már be lett gyűjtve!'
-          });
-        } else {
-        console.log('Decrypting data for winID:', decryptedBody.winID);
-
-          //store change
-
-          await p.wheelWin.update({
-            where: {
-              winID: decryptedBody.winID
-            },
-            data: {
-              isClaimed: true
-            }
-          });
-
-        return decryptedBody;
-        }
+      console.log('Decrypting data for winID:', decryptedBody.winID);
+        //store change
+        await p.wheelWin.update({
+          where: {
+            winID: decryptedBody.winID
+          },
+          data: {
+            isClaimed: true
+          }
+        });
+      return decryptedBody;
       }
-
     }
-
+  }
+    
 
 })
 

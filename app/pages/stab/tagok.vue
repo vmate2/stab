@@ -51,6 +51,9 @@ const handleCustomButtonClick = (buttonName:any) => {
     case 'sendemails':
       //handleSendEmails();
       break;
+    case 'resetpass':
+      handleResetPasswords();
+      break;
     default:
       console.log('Unknown button clicked');
       console.error('Unknown button clicked! \n Cannot handle this button click.');
@@ -263,7 +266,7 @@ const handleAdd = async () => {
       return;
     }
     loading.value = false;
-    $notify('Sikeres módosítás', 'success');
+    $notify('Sikeres létrehozás', 'success');
     reloadData();
   } else {
     loading.value = false;
@@ -302,7 +305,10 @@ async function reloadData() {
     layoutData.value.users = data.value.users;
     tableData.value.body = layoutData.value.users.map((user: any) => ({
       ...user,
-      paidcash: `${user.paidcash ?? 0} ft`,
+      paidcash: {
+        value: `${user.paidcash ?? 0} ft`,
+        bgColor: (user.paidcash ?? 0) >= 15000 ? 'green' : 'red'
+      }
     }));
     console.log('Adatok frissítve:', tableData.value.body);
     
@@ -326,15 +332,22 @@ const tableData = ref({
   ],
   body: layoutData.value.users.map((user: any) => ({
     ...user,
-    paidcash: `${user.paidcash ?? 0} ft`,
+    paidcash: {
+      value: `${user.paidcash ?? 0} ft`,
+      bgColor: (user.paidcash ?? 0) >= 15000 ? 'green' : 'red'
+    }
   }))
 });
+
+console.log(tableData.value.body);
+
 
 
 
 const customButtons = ref([
   { name: 'editcash', label: 'Stabcash módosítása' },
-  { name: 'sendemails', label: 'Köremail küldése' }
+  { name: 'sendemails', label: 'Köremail küldése' },
+  { name: 'resetpass', label: 'Jelszó visszaállítása'}
 ]);
 
 const handleDelete = async (row: any) => {
@@ -376,6 +389,95 @@ const handleDelete = async (row: any) => {
   }
 };
 
+const handleResetPasswords = async () => {
+  const users = layoutData.value.users;
+
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[^a-zA-Z])[a-zA-Z[^a-zA-Z]]{8,}$/;
+
+  let inputs = users.map((user: any) => ({
+    label: user.name,
+    type: 'text',
+    placeholder: 'Új jelszó',
+    value: '',
+    textcolor: '#000'
+  }));
+
+  while (true) {
+    const result = await $showDialog({
+      title: 'Jelszavak visszaállítása',
+      desc: 'Add meg az új jelszavakat az egyes felhasználókhoz!',
+      inputs,
+      buttons: [
+        { label: 'Mégse', value: 'cancel', color: '#f00', textcolor: '#fff' },
+        { label: 'Mentés', value: 'save', color: '#0f0', textcolor: '#000' }
+      ]
+    });
+
+    if (result.button !== 'save') {
+      console.log('Password reset canceled.');
+      return;
+    }
+
+    let valid = true;
+    const invalidIndices: number[] = [];
+
+    for (let i = 0; i < result.inputs.length; i++) {
+      const value = result.inputs[i]?.value?.trim();
+      if (value && !passwordRegex.test(value)) {
+        inputs[i].textcolor = '#f00'; // Megjelölés pirossal
+        inputs[i].value = value;
+        invalidIndices.push(i);
+        valid = false;
+      } else {
+        inputs[i].textcolor = '#000'; // Reset szín, ha érvényes
+      }
+    }
+
+    if (!valid) {
+      $notify('Hibás jelszavak! Legalább 8 karakter, 1 nagybetű és 1 szimbólum szükséges.', 'error');
+      continue; // újradialóg
+    }
+
+    // Minden jelszó valid
+    for (let i = 0; i < users.length; i++) {
+      const newPass = result.inputs[i]?.value?.trim();
+      if (!newPass) continue;
+
+      const { data, error } = await useFetch('/api/users/resetpass', {
+        method: 'PATCH',
+        body: {
+          uuid: users[i].uuid,
+          password: newPass
+        },
+        headers: {
+          authorization: `Bearer ${token.value}`
+        }
+      });
+
+      if (error.value) {
+        $notify(`Hiba történt ${users[i].name} jelszavának módosításakor`, 'error');
+        console.error(error.value);
+        return;
+      }
+
+      console.log(`Jelszó módosítva: ${users[i].name}`);
+      if (data.value) {
+      console.log('modosított jelszo:', data.value)
+      }
+
+      log.modification({
+        title: 'Password reset',
+        type: 'password',
+        data: {
+          user: users[i].name
+        }
+      });
+    }
+
+    $notify('Sikeres jelszó visszaállítás', 'success');
+    break;
+  }
+};
 
 
 </script>

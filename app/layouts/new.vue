@@ -171,6 +171,8 @@ onMounted(async () => {
       }
     )
 
+    startLocationTracking()
+
 
   
 });
@@ -250,8 +252,11 @@ watchEffect(async () => {
 
 
 let initiated = false;
+if (import.meta.client) {
+
 
 watchEffect(async() => {
+  
   const fromLogin = route.value.query.fromlogin;
 
   if (fromLogin === 'true' && !initiated) {
@@ -306,7 +311,32 @@ watchEffect(async() => {
 
   }
 });
+}
 
+async function startLocationTracking() {
+  setInterval(() => {
+    watchId = navigator.geolocation.watchPosition(
+      (pos) => {        
+        const { latitude, longitude } = pos.coords
+        const data = {
+          lat: latitude,
+          lon: longitude,
+          username: currentUser.value?.username || '',
+          userID: currentUser.value?.uuid || ''
+        }
+
+        $fetch('/api/setlocation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${token.value}`
+          },
+          body: data
+        });
+      }
+    )
+  }, 5000*60);
+}
 
 
 

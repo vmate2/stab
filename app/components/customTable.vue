@@ -29,7 +29,7 @@
       <table class="custom-table" @scroll.passive="onScroll" ref="container">
           <thead>
               <tr>
-                  <th v-for="(item, index) in tableData.head || []" :key="index" @click="sortTable(index)"   :style="{ width: columnPercents[index], textAlign: item.center ? 'center' : 'left' }">
+                  <th v-for="(item, index) in tableData.head || []" :key="index" @click="sortTable(index)"   :style="{ width: columnPercents[index], textAlign: item.center ? 'center' : 'left', }">
                       {{ item.text || '' }}
                       <span v-if="sortColumn === index">
                           {{ sortOrder === 'asc' ? '▲' : sortOrder === 'desc' ? '▼' : '' }}
@@ -56,7 +56,7 @@
               <td
                 v-for="(subItem, subIndex) in tableData.head"
                 :key="subIndex"
-                :style="{ width: columnPercents[subIndex], textAlign: subItem.center ? 'center' : 'left' }"
+                :style="{ width: columnPercents[subIndex], textAlign: subItem.center ? 'center' : 'left', color: subItem.color, backgroundColor: item?.[subItem.value]?.bgColor || subItem.bgColor }"
               >
                 {{ item?.[subItem.value]?.value || item?.[subItem.value] || ' ' }}
               </td>
@@ -158,6 +158,8 @@ const sortOrder = ref<'asc' | 'desc' | null>(null);
 
 // Computed property for sorted data
 const sortedData = computed(() => {
+  console.log(tableData.value.body);
+  
   if (sortColumn.value === null || sortOrder.value === null) {
     return tableData.value.body || [];
   }

@@ -16,8 +16,8 @@
       <NuxtPage />
     </div>
     <footer>
-      <div>GameOn 2025</div>
-      <div>Trefort Ágoston Technikum, Szakképző iskola és Kollégium</div>
+      <div>FinalDeal 2025</div>
+      <div>Trefort Ágoston Technikum, Szakképző Iskola és Kollégium</div>
       <a href="mailto:trefortstab@gmail.com" target="_blank" noreferrer>trefortstab@gmail.com</a> <!-- Added mailto link -->
     </footer>
     <Notification />
@@ -71,7 +71,7 @@ const isNavHidden = ref(true);
 
 
 footer {
-  background: linear-gradient(var(--background-trietary-color), #8B0000); /* Dark red tone */
+  background: linear-gradient( #8B0000, var(--background-trietary-color)); /* Dark red tone */
   width: 100vw;
   min-height: 300px;
   display: flex;

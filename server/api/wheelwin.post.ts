@@ -185,15 +185,36 @@ async function sendQRcode(qrcode:any, data: any) {
 
     Üdvözlettel,
     FinalDeal Trefort`,
-      html: `
-        <p>Kedves ${data.name},</p>
-        <p>Gratulálunk! Nyereményed a Trefort Stáb kerékből:</p>
-        <p><strong>Típus:</strong> ${data.type}<br/>
-        <strong>Mennyiség:</strong> ${data.amount}</p>
-        <p>A nyereményed beváltásához mutasd fel az alábbi QR kódot a GaraCity-ben (Szent István tér) a FinalDeal stáb bódéjában:</p>
-        <p><img src="cid:qr-code" alt="QR kód" /></p>
-        <p>Üdvözlettel,<br/>FinalDeal Trefort</p>
-      `,
+    html: `
+      <div style="background-color:#8B0000; color:white; font-family:Arial, sans-serif; padding:20px; max-width:600px; margin:auto; border:4px solid gold; border-radius:10px;">
+        <h1 style="text-align:center; color:gold; margin-top:0;">🎰 FinalDeal 🎰</h1>
+        <h2 style="text-align:center; color:white; margin:0;">Trefort Szerencsekerék</h2>
+      
+        <p style="font-size:16px;">Kedves <strong>${data.name}</strong>,</p>
+      
+        <p style="font-size:16px;">
+          Gratulálunk! Nyereményed a <strong>Trefort Stáb</strong> kerékből:
+        </p>
+      
+        <div style="background-color:black; color:white; padding:15px; border:2px solid gold; border-radius:8px; font-size:16px; margin:20px 0;">
+          🎁 <strong>Típus:</strong> ${data.type}<br/>
+          🎯 <strong>Mennyiség:</strong> ${data.amount}
+        </div>
+      
+        <p style="font-size:16px;">
+          A nyereményed beváltásához mutasd fel az alábbi QR kódot a <strong>GaraCity</strong> (Szent István tér) területén a 
+          <strong>FinalDeal stáb</strong> bódéjánál:
+        </p>
+      
+        <div style="text-align:center; margin:20px 0;">
+          <img src="cid:qr-code" alt="QR kód" style="width:200px; height:200px; border:4px solid darkgreen; border-radius:12px;" />
+        </div>
+      
+        <p style="font-size:16px; text-align:center; color:gold;">🎲 Sok szerencsét és jó játékot kíván a FinalDeal és a Trefort!</p>
+      
+        <p style="font-size:14px; text-align:center; color:white;">© ${new Date().getFullYear()} FinalDeal • Trefort</p>
+      </div>
+    `,
       attachments: [
         {
           filename: 'qr_code.png',
@@ -240,17 +261,4 @@ function encrypt(data: object): string {
     iv: iv.toString('base64'),
     data: encrypted,
   })
-}
-
-function decrypt(payload: string): object | null {
-  const { iv, data } = JSON.parse(payload)
-
-  const key = createHash('sha256')
-    .update(useRuntimeConfig().qrSecret)
-    .digest()
-
-  const decipher = createDecipheriv('aes-256-cbc', key, Buffer.from(iv, 'base64'))
-  let decrypted = decipher.update(data, 'base64', 'utf8')
-  decrypted += decipher.final('utf8')
-  return JSON.parse(decrypted)
 }
