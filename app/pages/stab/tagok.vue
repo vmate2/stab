@@ -392,7 +392,9 @@ const handleDelete = async (row: any) => {
 const handleResetPasswords = async () => {
   const users = layoutData.value.users;
 
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[^a-zA-Z])[a-zA-Z[^a-zA-Z]]{8,}$/;
+  
+
+  console.log('Testcase', passwordRegex.test('Nyenye200!'))
 
   let inputs = users.map((user: any) => ({
     label: user.name,
@@ -423,13 +425,17 @@ const handleResetPasswords = async () => {
 
     for (let i = 0; i < result.inputs.length; i++) {
       const value = result.inputs[i]?.value?.trim();
-      if (value && !passwordRegex.test(value)) {
-        inputs[i].textcolor = '#f00'; // Megjelölés pirossal
+      console.log(value);
+      
+      if (value && !passwordRegex.test(value) && value !== '') {
+        inputs[i].color = '#f00'; // Megjelölés pirossal
         inputs[i].value = value;
         invalidIndices.push(i);
+        console.log(invalidIndices);
+        
         valid = false;
       } else {
-        inputs[i].textcolor = '#000'; // Reset szín, ha érvényes
+        inputs[i].color = '#000'; // Reset szín, ha érvényes
       }
     }
 
@@ -446,6 +452,8 @@ const handleResetPasswords = async () => {
       const { data, error } = await useFetch('/api/users/resetpass', {
         method: 'PATCH',
         body: {
+          name: users[i].name,
+          email: users[i].email,
           uuid: users[i].uuid,
           password: newPass
         },

@@ -1,4 +1,3 @@
-import { createDecipheriv, createHash } from 'crypto'
 import { PrismaClient } from '@prisma/client';
 const p = new PrismaClient();
 
@@ -6,7 +5,7 @@ const p = new PrismaClient();
 export const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const phoneRegex = /^(?:\+36|06)?\s?(?:20|30|31|50|70)\s?\d{3}\s?\d{4}$/
 export const nameRegex = /^[a-záéíóöőúüűA-ZÁÉÍÓÖŐÚÜŰ]+(?:[-\s][a-záéíóöőúüűA-ZÁÉÍÓÖŐÚÜŰ]+)*$/
-export const passwordRegex = /^(?=.*[A-Z])(?=.*[^a-zA-Z])[a-zA-Z[^a-zA-Z]]{8,}$/;
+export const passwordRegex = /^(?=.*[A-Z])(?=.*[^a-zA-Z]).{8,}$/;
 
 
 

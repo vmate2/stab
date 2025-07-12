@@ -43,6 +43,7 @@ export default defineNuxtConfig({
     privateKey: process.env.PRIVATE_KEY,
     secretValue: process.env.SECRET_VALUE,
     emailPass: process.env.APP_PASSWORD,
+    zohomailPass: process.env.ZOHO_PASSWORD,
     qrSecret: process.env.QR_SECRET,
   },
   
