@@ -178,7 +178,7 @@ const hideLore = () => {
   loreCont.value?.classList.add('slideOut')
   setTimeout(() => {
           loreContBig.value?.classList.add('blurOut')
-  }, 100);
+  }, 500);
 
 
   setTimeout(() => {
