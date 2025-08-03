@@ -198,16 +198,16 @@ let leiras;
 
     <h3>Szervezeti felépítésünk</h3>
     <ul>
-      <li><strong>Vezetőség</strong> – koordinálja a kampány egészét, képviseli a csapatot és felel a stratégiai döntésekért.</li>
-      <li><strong>Kommunikációs csoport</strong> – a vizuális megjelenésért, közösségi médiás jelenlétért és az üzenet világos átadásáért felel.</li>
-      <li><strong>Projektcsapat</strong> – a gyakorlati megvalósításban, eseményszervezésben és a közösség bevonásában játszik kulcsszerepet.</li>
+      <li><strong>Vezetőség</strong> - koordinálja a kampány egészét, képviseli a csapatot és felel a stratégiai döntésekért.</li>
+      <li><strong>Kommunikációs csoport</strong> - a vizuális megjelenésért, közösségi médiás jelenlétért és az üzenet világos átadásáért felel.</li>
+      <li><strong>Projektcsapat</strong> - a gyakorlati megvalósításban, eseményszervezésben és a közösség bevonásában játszik kulcsszerepet.</li>
     </ul>
 
     <h3>Három fő kampánycélunk</h3>
     <ol>
-      <li><strong>Közösségépítés</strong> – erős, nyitott és támogató közösséget szeretnénk formálni, ahol mindenki hangja számít.</li>
-      <li><strong>Részvétel ösztönzése</strong> – minél több embert szeretnénk bevonni a programjainkba és döntéshozatali folyamatainkba.</li>
-      <li><strong>Fenntarthatóság és fejlődés</strong> – hosszú távú, valódi eredményeket hozó megoldásokat keresünk.</li>
+      <li><strong>Közösségépítés</strong> - erős, nyitott és támogató közösséget szeretnénk formálni, ahol mindenki hangja számít.</li>
+      <li><strong>Részvétel ösztönzése</strong> - minél több embert szeretnénk bevonni a programjainkba és döntéshozatali folyamatainkba.</li>
+      <li><strong>Fenntarthatóság és fejlődés</strong> - hosszú távú, valódi eredményeket hozó megoldásokat keresünk.</li>
     </ol>
 
     <h3>Témavilágunk</h3>
@@ -224,7 +224,7 @@ let leiras;
 
     <h3>Szponzoraink</h3>
     <p>
-      A kampányt jelenleg <strong>${data.value?.sponsorCount || '0'} szponzor</strong> támogatja, akik értékeinkkel és célkitűzéseinkkel egyetértve segítik a munkánkat – nemcsak anyagilag, hanem erkölcsileg is.
+      A kampányt jelenleg <strong>${data.value?.sponsorCount || '0'} szponzor</strong> támogatja, akik értékeinkkel és célkitűzéseinkkel egyetértve segítik a munkánkat - nemcsak anyagilag, hanem erkölcsileg is.
     </p>
   </section>
   `;

@@ -19,7 +19,9 @@
 <script lang="ts" setup>
 
 definePageMeta({
-  layout: 'main'
+  layout: 'main',
+  title: 'Főoldal',
+  description: 'Egy csodás weboldal'
 });
 
 import wheelspin from '~/components/wheelspin.vue';

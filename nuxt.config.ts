@@ -2,7 +2,6 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-08',
   devtools: { enabled: true },
 
-  // modules: ['@nuxthub/core'],  //! Remove if not needed
 
   nitro: {
     experimental: {
@@ -12,15 +11,32 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      title: 'FinalDeal - Trefort',
       meta: [
-        { name: 'description', content: '33. Garaboncás napok és diáknapos Trefort stáb weboldala.' },
+        { name: 'description', content: 'A 33. Garabonciás Napokon induló FinalDeal csapat hivatalos weboldala - programok, csapattagok, információk a BSZC Trefort képviseletében.' },
+        { name: 'og:description', content: '33. Garaboncás napok és diáknapos Trefort stáb weboldala.' },
+         { name: 'og:title', content: 'FinalDeal - Trefort' },
+         { name: 'og:image', content: 'https://finaldeal.hu/img/finaldeallogo.png' },
         { name: 'robots', content: 'index, follow' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { charset: 'utf-8' },
-        { name: 'author', content: 'Varga Máté' }
+        { name: 'author', content: 'Varga Máté' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/img/finaldeallogo.ico' },
       ],
       script: [
-        { src: "https://www.google.com/recaptcha/enterprise.js", defer: true }
+        { src: "https://www.google.com/recaptcha/enterprise.js", defer: true },
+        {
+          type: 'application/ld+json',
+          tagPosition: 'head',
+          textContent: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "url": "https://finaldeal.hu", // Your domain
+            "logo": "https://finaldeal.hu/img/finaldeallogo.png" // URL to your logo image (host it publicly)
+          }),
+        }
       ]
     }
   },

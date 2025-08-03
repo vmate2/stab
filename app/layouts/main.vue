@@ -16,7 +16,7 @@
       <NuxtPage />
     </div>
     <footer>
-      <div>FinalDeal 2025</div>
+      <div>© FinalDeal 2025</div>
       <div>Trefort Ágoston Technikum, Szakképző Iskola és Kollégium</div>
       <a href="mailto:trefortstab@gmail.com" target="_blank" noreferrer>trefortstab@gmail.com</a> <!-- Added mailto link -->
     </footer>
