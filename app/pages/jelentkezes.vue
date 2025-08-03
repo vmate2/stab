@@ -159,7 +159,6 @@ const autoResize = (event: Event) => {
 import { onMounted, popScopeId } from 'vue';
 import { ref, nextTick } from 'vue';
 import { onBeforeUnmount, watch } from 'vue';
-import { UNABLE_TO_FIND_POSTINSTALL_TRIGGER_JSON_SCHEMA_ERROR } from '@prisma/client/scripts/postinstall.js';
 
 // Ref to control the visibility of the popup
 const popupVisible = ref(false);
