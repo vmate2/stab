@@ -11,6 +11,7 @@
         @delete="handleDelete"
         @import="handleImport"
         @export="handleExport"
+        @button-click="handleButtonClick"
       />
     </client-only>
   </div>
@@ -35,8 +36,14 @@ const { $showDialog } = useNuxtApp();
 const loading = ref(false);
 
 const layoutData: any = inject('layoutData');
+const selectedSponsors = useState('selectedSponsor', () => null)
+
 
 const sponsors = ref(layoutData.value.sponsors);
+selectedSponsors.value = sponsors.value
+  .filter(s => s.email) // csak azok, akiknek van emailjük
+  .map(s => ({ name: s.name, email: s.email })) // csak name és email
+
 console.log(sponsors.value);
 
 const tableData = ref({
@@ -50,8 +57,16 @@ const tableData = ref({
 });
 
 const customButtons = ref([
-  
+  { name: 'emailmanager', label: 'E-mailek kezelése' }
 ]);
+
+const handleButtonClick = (type:string) => {
+  if (type === 'emailmanager') {
+    navigateTo('./szponzorok/mailmanager', )
+  }
+  
+}
+
 
 const handleModify = async (row: any) => {
   const dialogData = {

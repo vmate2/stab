@@ -71,7 +71,7 @@ const isNavHidden = ref(true);
 
 
 footer {
-  background: linear-gradient( #8B0000, var(--background-trietary-color)); /* Dark red tone */
+  background: linear-gradient( var(--background-trietary-color), #8B0000); /* Dark red tone */
   width: 100vw;
   min-height: 300px;
   display: flex;
@@ -92,6 +92,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .navBarLogo {

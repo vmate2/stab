@@ -8,14 +8,26 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   
   const token:any = event.node.req.headers['token'] || event.node.req.headers['authorization']?.split(' ')[1];
+  console.log(token);
   
   if (!token) {
+    
     throw createError({
       statusCode: 401,
       statusMessage: 'Unauthorized: Token is missing',
     });
   }
-  const payload = await useDecodeJWT(token)
+
+    let payload;
+    try {
+        payload = await useDecodeJWT(token)
+    } catch (error) {
+      console.error(error);
+      
+    }
+
+
+  
   
   if (!payload) {
     throw createError({

@@ -96,7 +96,7 @@ interface LocalUser {
 
 let watchId: number | null = null
 
-
+  const lastcalledfetch = ref(Date.now())
 onMounted(async () => {
   if (!user.value) {
     navigateTo('/login'); //ONLINE MODE
@@ -149,6 +149,8 @@ onMounted(async () => {
     }
   }
 
+
+
     const L = await import('leaflet')
     watchId = navigator.geolocation.watchPosition(
       (pos) => {        
@@ -159,15 +161,18 @@ onMounted(async () => {
           username: currentUser.value?.username || '',
           userID: currentUser.value?.uuid || ''
         }
+        if ((Date.now() - lastcalledfetch.value) < 10000 ) {
+          $fetch('/api/setlocation', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'authorization': `Bearer ${token.value}`
+            },
+            body: data
+          });
+          lastcalledfetch.value = Date.now()
+        }
 
-        $fetch('/api/setlocation', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'authorization': `Bearer ${token.value}`
-          },
-          body: data
-        });
       }
     )
 

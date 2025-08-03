@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Email" ADD COLUMN     "to" TEXT,
+ALTER COLUMN "from" DROP NOT NULL;

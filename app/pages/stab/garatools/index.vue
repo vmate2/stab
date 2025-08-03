@@ -64,5 +64,10 @@ definePageMeta({
   background-size: cover;
   background-position: center;
 }
+.card:nth-child(2) {
+    background-image: url('public/img/locator.jpg');
+  background-size: cover;
+  background-position: center;
+}
 
 </style>

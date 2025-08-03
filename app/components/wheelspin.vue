@@ -280,7 +280,7 @@ function spin() {
           desc: 'Gratulálunk! Nyertél egy fagylalt kupont az Adria Fagylaltozóba! \n Írd be a neved és e-mail címed, hogy elküldhessük a kupont.',
           inputs: [
             { label: 'Név', type: 'text', value: '', placeholder: 'Írd be a neved' },
-            { label: 'E-mail', type: 'text', value: '', placeholder: 'Írd be az e-mail címed' }
+            { label: 'E-mail', type: 'email', value: '', placeholder: 'Írd be az e-mail címed' }
           ],
           buttons: [
             { label: 'Küldés', value: 'submit', color: '#4CAF50', textcolor: '#FFFFFF', required: true, type: 'submit' },
@@ -304,7 +304,7 @@ function spin() {
               desc: 'Gratulálunk! Nyertél egy kulcstartót! \n Írd be a neved és e-mail címed, hogy elküldhessük a nyereményed QR kódját.',
               inputs: [
                 { label: 'Név', type: 'text', value: '', placeholder: 'Írd be a neved' },
-                { label: 'E-mail', type: 'text', value: '', placeholder: 'Írd be az e-mail címed' }
+                { label: 'E-mail', type: 'email', value: '', placeholder: 'Írd be az e-mail címed' }
               ],
               buttons: [
                 { label: 'Küldés', value: 'submit', color: '#4CAF50', textcolor: '#FFFFFF', required: true , type: 'submit'},
@@ -330,7 +330,7 @@ function spin() {
               desc: `Gratulálunk! Nyertél ${segmentLabels[index]}-et! \n Írd be a neved és e-mail címed, hogy elküldhessük a nyereményed QR kódját.`,
               inputs: [
                 { label: 'Név', type: 'text', value: '', placeholder: 'Írd be a neved', required: true },
-                { label: 'E-mail', type: 'text', value: '', placeholder: 'Írd be az e-mail címed', required: true }
+                { label: 'E-mail', type: 'email', value: '', placeholder: 'Írd be az e-mail címed', required: true }
               ],
               buttons: [
                 { label: 'Küldés', value: 'submit', color: '#4CAF50', textcolor: '#FFFFFF', type: 'submit' },
@@ -354,7 +354,7 @@ function spin() {
           desc: 'Gratulálunk! Nyertél egy XIXO teát! \n Írd be a neved és e-mail címed, hogy elküldhessük a nyereményed QR kódját.',
           inputs: [
             { label: 'Név', type: 'text', value: '', placeholder: 'Írd be a neved', required: true},
-            { label: 'E-mail', type: 'text', value: '', placeholder: 'Írd be az e-mail címed', required: true}
+            { label: 'E-mail', type: 'email', value: '', placeholder: 'Írd be az e-mail címed', required: true}
           ],
           buttons: [
             { label: 'Küldés', value: 'submit', color: '#4CAF50', textcolor: '#FFFFFF', type: 'submit' },

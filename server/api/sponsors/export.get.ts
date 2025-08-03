@@ -72,17 +72,6 @@ export default defineEventHandler(async (event) => {
       worksheet.getRow(1).font = { bold: true };
       worksheet.getCell('E1').alignment = { horizontal: 'left' };
 
-      data.forEach((entry) => {
-        worksheet.addRow({
-          name: entry.name,
-          phone: entry.phone,
-          email: entry.email,
-          contact: entry.contact,
-          status: entry.status,
-          desc: entry.desc,
-          type: entry.type
-        });
-      });
 
       const buffer = await workbook.xlsx.writeBuffer();
       event.node.res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -105,3 +94,5 @@ export default defineEventHandler(async (event) => {
   }
 
 })
+
+

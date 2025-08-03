@@ -81,6 +81,8 @@ const setNewData = async () => {
   }
   
   if (Object.keys(errors.value).length > 0) return;
+  console.log(  currentUser.value.accessToken);
+  
 
   const response = await $fetch('/api/users/', {
     method: 'PATCH',

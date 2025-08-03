@@ -5,7 +5,7 @@
       <span class="tooltip">Összes stábpénz.</span>
     </div>
     <div style="color: green; text-shadow: black 2px 2px; font-family: 'Courier New', Courier, monospace; margin-right: 15px; cursor: default; position: relative;" class="paidStabcash">
-      {{ paidStabcash + 'ft' }}
+      {{ ownbalance + 'ft' }}
       <span class="tooltip">Fizetett stábpénz.</span>
     </div>
     <client-only>
@@ -59,13 +59,19 @@ link.value = `/stab/user/${props.profile.uuid}`;
 
 const { $supabase } = useNuxtApp();
 const balance = ref<string>('0');
+const ownbalance = ref<string>('0');
 
 // Store channel ref for cleanup
 const channel = ref<any>(null);
-
+const channel2 = ref<any>(null);
 // Első betöltés adatbázisból
 onMounted(async () => {
-  const { data, error } = await $supabase
+  checkOwnBalance()
+  checkStabBalance()
+});
+
+async function checkStabBalance() {
+    const { data, error } = await $supabase
     .from('stabcash')
     .select('balance')
     .eq('id', 1)
@@ -90,7 +96,36 @@ onMounted(async () => {
         }
       )
       .subscribe();
-});
+}
+
+async function checkOwnBalance() {
+  const { data, error } = await $supabase
+    .from('stabtagok')
+    .select('paidcash')
+    .eq('uuid', profile.value.uuid)
+    .single();
+
+  if (data) {
+    ownbalance.value = data.paidcash.toString();
+  }
+
+  channel2.value = $supabase
+    .channel('realtime:stabtagok')
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'stabtagok',
+        filter: `uuid=eq.${profile.value.uuid}`, // szűrés UUID szerint
+      },
+      (payload) => {
+        ownbalance.value = payload.new.paidcash.toString(); // javítva: `balance` helyett `paidcash`
+      }
+    )
+    .subscribe();
+}
+
 
 // Cleanup channel on unmount
 onBeforeUnmount(() => {

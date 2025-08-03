@@ -25,3 +25,62 @@ export const checkToken = async (event: any) => {
   return true;
 }
 
+export function animateCounter(
+  update: (value: number) => void,
+  target: number,
+  duration: number = 2000 // teljes idő ms-ben
+) {
+  const start = performance.now();
+
+  function easeOut(t: number) {
+    // easeOutCubic: t^3 visszafelé
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function step(currentTime: number) {
+    const elapsed = currentTime - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easeOut(progress);
+    const current = Math.round(eased * target);
+    update(current);
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+import { ref, onMounted, onBeforeUnmount, type Ref } from 'vue'
+
+export function useOnScreen(target: Ref<HTMLElement | null>, options?: IntersectionObserverInit) {
+  const isVisible = ref(false)
+  const hasBeenVisible = ref(false)
+  let observer: IntersectionObserver | null = null
+
+  const observe = () => {
+    if (!target.value) return
+
+    observer = new IntersectionObserver(([entry]:any) => {
+      isVisible.value = entry.isIntersecting
+      
+    if (isVisible.value) {hasBeenVisible.value = true};
+      console.log(hasBeenVisible.value);
+    }, options)
+
+    observer.observe(target.value)
+    
+  }
+
+  onMounted(() => {
+    if (target.value) observe()
+  })
+
+  onBeforeUnmount(() => {
+    if (observer && target.value) observer.unobserve(target.value)
+    observer?.disconnect()
+  })
+
+  return {isVisible, hasBeenVisible}
+}

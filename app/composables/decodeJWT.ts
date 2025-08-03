@@ -8,7 +8,7 @@ import { jwtVerify  } from 'jose';
  */
 export const useDecodeJWT = async (accessToken:string) => {
   try {
-    const secretKey = new TextEncoder().encode(useRuntimeConfig().public.jwtSecret);
+    const secretKey = new TextEncoder().encode(useRuntimeConfig().jwtSecret);
     const { payload } = await jwtVerify(accessToken, secretKey);
     
     return payload;

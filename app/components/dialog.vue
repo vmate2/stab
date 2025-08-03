@@ -16,6 +16,9 @@
             <template v-if="input.type === 'text'">
               <input v-model="input.value" :placeholder="input.placeholder" :id="'input-' + index" type="text" class="dialog-input" :required="input.required" />
             </template>
+            <template v-if="input.type === 'email'">
+              <input v-model="input.value" :placeholder="input.placeholder" :id="'input-' + index" type="email" class="dialog-input" :required="input.required" />
+            </template>
 
             <template v-else-if="input.type === 'dropdown'">
               <select v-model="input.value" :id="'input-' + index" class="dialog-input" :required="input.required">

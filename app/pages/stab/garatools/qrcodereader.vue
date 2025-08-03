@@ -74,6 +74,8 @@ onMounted(async () => {
   codeReader = new BrowserQRCodeReader()
   try {
     const devices = await BrowserQRCodeReader.listVideoInputDevices()
+    console.log(devices);
+    
     if (!devices.length) {
       hasCamera.value = false
       return
