@@ -1,6 +1,6 @@
 <template>
   <div class="dayTracker">{{ currentDay + 'i programtáblázat' }}</div>
-  <div class="timetable-container">
+  <div class="timetable-container" @click="handleOutsideClick">
     <div class="timetable">
       <div class="timetable-time-column">
         <div v-for="hour in hours" :key="hour" class="timetable-hour">
@@ -59,7 +59,16 @@ interface Program {
 }
 
 
-
+function handleOutsideClick(event: MouseEvent) {
+  const target = event.target as HTMLElement
+  if (
+    showSidebar.value &&
+    !target.closest('.program-block') &&
+    !target.closest('.sidebar')
+  ) {
+    closeSidebar()
+  }
+}
 
 
 const getDay = () => {
@@ -299,14 +308,17 @@ onMounted(() => {
   width: 0;
   height: 100%;
   overflow: hidden;
-  background: #330000;
+  background: #1a0000;
   color: #fff8f0;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.4);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.6);
   transition: width 0.3s ease, padding 0.3s ease;
   z-index: 1000;
   padding: 0;
   width: 320px;
   transition: all 0.3s ease;
+  border-left: 2px solid #990000;
+  backdrop-filter: blur(5px);
+
 }
 
 
@@ -316,6 +328,23 @@ onMounted(() => {
 
 .sidebar-content {
   margin-top: 2rem;
+  padding: 1rem;
+  background: #2d0000;
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-content h2 {
+  margin-bottom: 1rem;
+  color: #ffb400;
+}
+
+
+
+.sidebar-content p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
 }
 
 .close-button {

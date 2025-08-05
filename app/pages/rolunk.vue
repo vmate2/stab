@@ -82,6 +82,9 @@
       <div v-html="lore" style="font-family: 'Montserrat', sans-serif;font-weight: 700;color: gold;"></div>
     </div>
   </div>
+  <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;">
+    <div style="color: white; font-size: 4rem; align-self: center; justify-self: center; font-family: Georgia, 'Times New Roman', Times, serif;">Átdolgozás alatt...</div>
+  </div>
 </template>
 
 <script lang="ts" setup>

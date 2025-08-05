@@ -10,7 +10,7 @@ const prisma = new PrismaClient()
 const wait = (ms: number) => new Promise(res => setTimeout(res, ms))
 
 export default defineEventHandler(async () => {
-  const szponzorok = await prisma.tesztszponzorok.findMany({
+  const szponzorok = await prisma.szponzorok.findMany({
     where: {
       sentFirstLetter: false,
       email: {
@@ -35,20 +35,20 @@ export default defineEventHandler(async () => {
       let sponsortypePlainText = '';
       switch (s.type) {
         case 'money':
-          sponsortype = '<p>Kampányunk megvalósításához <strong>pénzbeli támogatást</strong> szeretnénk igényelni. Ez segítene fedezni a kampányunk költségeit, mint például a <strong>plakátok</strong>, <strong>díszletelemek</strong> elkészítését, a rendezvényen felszolgált <strong>ételeket</strong>, illetve az egyéb kampányprogramjaink <strong>alapanyagainak</strong> költségét.</p>'
-          sponsortypePlainText = 'Kampányunk megvalósításához pénzbeli támogatást szeretnénk igényelni. Ez segítene fedezni a kampányunk költségeit, mint például a plakátok, díszletelemek elkészítését, a rendezvényen felszolgált ételeket illetve az egyéb kampányprogramjaink alapanyagainak költségét.';
+          sponsortype = '<p>Kampányunk megvalósításához <strong>pénzbeli támogatást</strong> szeretnénk kérni. Ez segítene fedezni a kampányunk költségeit, mint például a <strong>plakátok</strong>, <strong>díszletelemek</strong> elkészítését, a rendezvényen felszolgált <strong>ételeket</strong>, illetve az egyéb kampányprogramjaink <strong>alapanyagainak</strong> költségét.</p>'
+          sponsortypePlainText = 'Kampányunk megvalósításához pénzbeli támogatást szeretnénk kérni. Ez segítene fedezni a kampányunk költségeit, mint például a plakátok, díszletelemek elkészítését, a rendezvényen felszolgált ételeket illetve az egyéb kampányprogramjaink alapanyagainak költségét.';
           break;
         case 'money, giftcard':
-          sponsortype = '<p>Kampányunk megvalósításához szeretnénk <strong>pénzbeli támogatást</strong>, <strong>levásárolható összegű utalványt</strong> vagy <strong>kisebb értékű ajándékutalványt</strong> igényelni.</p><p>A pénzbeli támogatás segítene fedezni kampányunk költségeit, mint például a <strong>díszletelemek</strong>, valamint a rendezvény során felszolgált <strong>étel</strong> és <strong>ital</strong> biztosítását.</p><p>Az <strong>ajándékutalványokat</strong> a kampány során tartott programokon osztanánk ki az azokon résztvevő diákok számára.</p>'
-          sponsortypePlainText = 'Kampányunk megvalósításához szeretnénk pénzbeli támogatást, levásárolható összegű utalványt vagy kisebb értékű ajándékutalványt igényelni, a pénzbeli támogatás a kampányunk költségét fedezni mint például a díszletelemeket, a rendezvény során felszolgált ételt / italt. Az ajándékutalványokat a kampány során tartott programokon osztanánk ki az azokon résztvevő diákok számára. ';
+          sponsortype = '<p>Kampányunk megvalósításához szeretnénk <strong>pénzbeli támogatást</strong>, <strong>levásárolható összegű utalványt</strong> vagy <strong>kisebb értékű ajándékutalványt</strong> kérni.</p><p>A pénzbeli támogatás segítene fedezni kampányunk költségeit, mint például a <strong>díszletelemek</strong>, valamint a rendezvény során felszolgált <strong>étel</strong> és <strong>ital</strong> biztosítását.</p><p>Az <strong>ajándékutalványokat</strong> a kampány során tartott programokon osztanánk ki az azokon résztvevő diákok számára.</p>'
+          sponsortypePlainText = 'Kampányunk megvalósításához szeretnénk pénzbeli támogatást, levásárolható összegű utalványt vagy kisebb értékű ajándékutalványt kérni, a pénzbeli támogatás a kampányunk költségét fedezni mint például a díszletelemeket, a rendezvény során felszolgált ételt / italt. Az ajándékutalványokat a kampány során tartott programokon osztanánk ki az azokon résztvevő diákok számára. ';
         break;
         case 'money, item':
-          sponsortype = '<p>Kampányunk megvalósításához szeretnénk <strong>pénzbeli</strong> és/vagy <strong>tárgyi támogatást</strong> igényelni.</p><p>A pénzbeli támogatás segítene fedezni kampányunk költségeit, mint például a <strong>díszletelemek</strong>, valamint a rendezvény során felszolgált <strong>étel</strong> és <strong>ital</strong> biztosítását.</p><p>A kisebb értékű tárgyi támogatás pedig segítene a kampányprogramok megrendezésében és a díszletben.</p>'
-          sponsortypePlainText = 'Kampányunk megvalósításához szeretnénk pénzbeli és/vagy tárgyi támogatást igényelni, a pénzbeli támogatás a kampányunk költségét fedezni mint például a díszletelemeket, a rendezvény során felszolgált ételt / italt. A kisebb értékű tárgyi támogatás pedig segítene a kampányprogramok megrendezésében és a díszletben.';
+          sponsortype = '<p>Kampányunk megvalósításához szeretnénk <strong>pénzbeli</strong> és/vagy <strong>tárgyi támogatást</strong> kérni.</p><p>A pénzbeli támogatás segítene fedezni kampányunk költségeit, mint például a <strong>díszletelemek</strong>, valamint a rendezvény során felszolgált <strong>étel</strong> és <strong>ital</strong> biztosítását.</p><p>A kisebb értékű tárgyi támogatás pedig segítene a kampányprogramok megrendezésében és a díszletben.</p>'
+          sponsortypePlainText = 'Kampányunk megvalósításához szeretnénk pénzbeli és/vagy tárgyi támogatást kérni, a pénzbeli támogatás a kampányunk költségét fedezni mint például a díszletelemeket, a rendezvény során felszolgált ételt / italt. A kisebb értékű tárgyi támogatás pedig segítene a kampányprogramok megrendezésében és a díszletben.';
           break;
           case 'item':
-            sponsortype = '<p>Kampányunk megvalósításához szeretnénk <strong>tárgyi támogatást</strong> igényelni.</p><p>A kisebb értékű tárgyi támogatás segítene a kampányprogramok megrendezésében és a díszletben.</p>'
-            sponsortypePlainText = 'Kampányunk megvalósításához szeretnénk tárgyi támogatást igényelni, a kisebb értékű tárgyi támogatás segítene a kampányprogramok megrendezésében és a díszletben.';
+            sponsortype = '<p>Kampányunk megvalósításához szeretnénk <strong>tárgyi támogatást</strong> kérni.</p><p>A kisebb értékű tárgyi támogatás segítene a kampányprogramok megrendezésében és a díszletben.</p>'
+            sponsortypePlainText = 'Kampányunk megvalósításához szeretnénk tárgyi támogatást kérni, a kisebb értékű tárgyi támogatás segítene a kampányprogramok megrendezésében és a díszletben.';
             break;
         default:
           console.error('Wrong or no type!')
@@ -62,7 +62,7 @@ export default defineEventHandler(async () => {
         messageId,
         subject: `Támogatási megkeresés – ${s.name}`,
             html: `
-<!DOCTYPE html>
+            <!DOCTYPE html>
               <html lang="hu">
               <head>
                 <meta charset="UTF-8" />
@@ -77,7 +77,7 @@ export default defineEventHandler(async () => {
 
                   <div style="margin-bottom:30px;line-height:1.6;">
                     <p style="color:#f8f8f8;">Szeretnénk megkeresni Önöket szponzori együttműködés céljából a <span style="font-size:1.1em;font-weight:bold;color:#ffe44d;">2025. szeptember 28. és október 3.</span> között megrendezésre kerülő <a href="https://garabonciasnapok.hu" target="_blank" style="color:#f1b100;text-decoration:none;">Békéscsabai Garabonciás Napok</a> kapcsán, amely Magyarország legnagyobb középiskolás fesztiválja.</p>
-                    <p>A rendezvényen <strong>1992</strong> óta Békéscsaba <strong>legnagyobb legnagyobb</strong> mérettetik meg magukat, melyen közel <strong>ezer</strong> diák vesz részt a város több pontján szervezett kulturális és szórakoztató programokon.</p>
+                    <p>A rendezvényen <strong>1992</strong> óta Békéscsaba <strong>legnagyobb középiskolái</strong> mérettetik meg magukat, közel <strong>ezer</strong> diák vesz részt  a város több pontján szervezett kulturális és szórakoztató programokon.</p>
                   </div>
 
                   <h2 style="color:#f1b100;text-align:center;font-family:Arial,sans-serif;margin-top:40px;border-bottom:2px solid #f1b100;padding-bottom:8px;">Rólunk</h2>
@@ -194,14 +194,14 @@ export default defineEventHandler(async () => {
       batch.map(async (emailData) => {
         try {
           await transporter.sendMail({
-            from: process.env.GMAIL_USER,
+            from: 'FinalDeal | Trefort <trefortstab@gmail.com>',
             to: emailData.email,
             subject: emailData.subject,
             html: emailData.html,
             text: emailData.text,
           })
 
-          await prisma.tesztszponzorok.update({
+          await prisma.szponzorok.update({
             where: { id: emailData.id },
             data: { sentFirstLetter: true },
           })
