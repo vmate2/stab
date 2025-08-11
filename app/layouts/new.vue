@@ -208,12 +208,13 @@ provide('layoutData', layoutData);
 watchEffect(() => {
   if (data.value && user.value) {
     
+    console.log(data.value.sponsors);
     
     layoutData.value = {
       users: data.value.users || [],
       sponsors: (data.value.sponsors || []).map((s: any) => ({
         ...s,
-        success: s.status ?? s.success ?? '',
+        success: s.status ?? s.success ?? ''
       })),
       polorendeles: data.value.polorendeles || []
     };

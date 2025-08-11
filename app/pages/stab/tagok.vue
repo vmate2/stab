@@ -165,7 +165,7 @@ const handleModify = async (row: any) => {
       return;
     }
 
-    if (!['stábtag', 'kampányfőnök', 'jelölt'].includes(post.toLowerCase())) {
+    if (!['stábtag', 'kampányfőnök', 'kisfőnök', 'jelölt'].includes(post.toLowerCase())) {
       $notify('Kérlek helyesen add meg a pozíciót!', 'error');
       return;
     }
@@ -223,14 +223,13 @@ const handleAdd = async () => {
       return;
     }
 
-    if (!['stábtag', 'kampányfőnök', 'jelölt'].includes(post.toLowerCase())) {
+    if (!['stábtag', 'kisfőnök', 'kampányfőnök', 'jelölt'].includes(post.toLowerCase())) {
       $notify('Kérlek helyesen add meg a pozíciót!', 'error');
       loading.value = false;
       return;
     }
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const phoneRegex = /^(?:\+36|06)(?:20|30|31|50|70)[0-9]{7}$/;
+
 
     if (!emailRegex.test(email) || !phoneRegex.test(phone)) {
       $notify('Kérlek helyesen add meg az e-mail címet és telefonszámot!', 'error');
@@ -393,8 +392,6 @@ const handleResetPasswords = async () => {
   const users = layoutData.value.users;
 
   
-
-  console.log('Testcase', passwordRegex.test('Nyenye200!'))
 
   let inputs = users.map((user: any) => ({
     label: user.name,

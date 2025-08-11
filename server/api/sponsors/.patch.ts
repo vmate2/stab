@@ -34,6 +34,7 @@ export default defineEventHandler(async (event) => {
           status: body.status,
           email: body.email || null,
           phone: body.phone || null,
+          type: body.type
         }
       });
       return result;

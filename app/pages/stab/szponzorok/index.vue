@@ -52,6 +52,7 @@ const tableData = ref({
     { text: 'E-mail', value: 'email' },
     { text: 'Telefonszám', value: 'phone' },
     { text: 'Státusz', value: 'status', center: true},
+    { text: 'Típus', value: 'type'}
   ],
   body: sponsors.value
 });
@@ -81,7 +82,12 @@ const handleModify = async (row: any) => {
         { value: '✔️', default: row.status === '✔️' },
         { value: '❌', default: row.status === '❌' },
         { value: '⏳', default: row.status === '⏳' }
-      ] }
+      ] },
+      { label: 'Típus', type: 'dropdown', value: row.sentFirstLetter, dropdownopts: [
+        { value: 'money', default: row.type === 'money' },
+        { value: 'item', default: row.type === 'item' },
+        { value: 'money, giftcard', default: row.type === 'money, giftcard'}
+      ]}
     ],
     buttons: [
       { label: 'Módosítás', value: 'modify', color: '#4CAF50', textcolor: '#FFFFFF' },
@@ -96,7 +102,8 @@ const handleModify = async (row: any) => {
       name: dialog.inputs[0]?.value,
       email: dialog.inputs[1]?.value,
       phone: dialog.inputs[2]?.value,
-      status: dialog.inputs[3]?.value
+      status: dialog.inputs[3]?.value,
+      type: dialog.inputs[4]?.value
     };
     
     loading.value = true;

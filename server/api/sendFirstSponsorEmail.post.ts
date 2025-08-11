@@ -16,6 +16,7 @@ export default defineEventHandler(async () => {
       email: {
         not: null,
       },
+      status: '❌'
     },
   })
 
@@ -48,7 +49,7 @@ export default defineEventHandler(async () => {
           break;
           case 'item':
             sponsortype = '<p>Kampányunk megvalósításához szeretnénk <strong>tárgyi támogatást</strong> kérni.</p><p>A kisebb értékű tárgyi támogatás segítene a kampányprogramok megrendezésében és a díszletben.</p>'
-            sponsortypePlainText = 'Kampányunk megvalósításához szeretnénk tárgyi támogatást kérni, a kisebb értékű tárgyi támogatás segítene a kampányprogramok megrendezésében és a díszletben.';
+            sponsortypePlainText = 'Kampányunk megvalósításához szeretnénk tárgyi támogatást kérni, a támogatás segítene a kampányprogramok megrendezésében és a díszletben.';
             break;
         default:
           console.error('Wrong or no type!')
@@ -203,7 +204,9 @@ export default defineEventHandler(async () => {
 
           await prisma.szponzorok.update({
             where: { id: emailData.id },
-            data: { sentFirstLetter: true },
+            data: { sentFirstLetter: true,
+                    status: '⏳'
+                  },
           })
           console.log('ELKÜLDVE: ', emailData.to)
 
