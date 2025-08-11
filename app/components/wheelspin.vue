@@ -161,8 +161,8 @@ const textRadius = 170
 const segmentAngle = 360 / segmentCount
 const colors = ['red', 'black', 'red', 'black', 'red', 'green', 'red', 'black', 'red', 'black']
 const segmentLabels = [
-  'Pörgess újra...', 'Fagylalt kupon', '1000 Chip', '500 Chip', 'Kulcstartó',
-  '5000 Chip', '200 Chip', 'Pörgess újra...', 'XIXO tea (330ml)', 'Sajnos nem nyert!'
+  'Pörgess újra...', 'Fagylalt kupon', '1000 Zseton', '500 Zseton', 'Kulcstartó',
+  '5000 Zseton', '200 Zseton', 'Pörgess újra...', 'XIXO tea (330ml)', 'Sajnos nem nyert!'
 ]
 
 
@@ -326,7 +326,7 @@ function spin() {
               chipWinSound.play()
             const dialogData = {
               show: true,
-              title: 'Chip-et nyertél!',
+              title: 'Zseton-et nyertél!',
               desc: `Gratulálunk! Nyertél ${segmentLabels[index]}-et! \n Írd be a neved és e-mail címed, hogy elküldhessük a nyereményed QR kódját.`,
               inputs: [
                 { label: 'Név', type: 'text', value: '', placeholder: 'Írd be a neved', required: true },

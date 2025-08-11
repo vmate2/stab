@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "https://kaszino.finaldeal.hu/*"
+  to = "https://finaldeal.hu/kaszino/"
+  status = 301
+  force = true
