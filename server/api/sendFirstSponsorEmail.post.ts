@@ -61,7 +61,7 @@ export default defineEventHandler(async () => {
         id: s.id,
         email: s.email!,
         messageId,
-        subject: `Támogatási megkeresés – ${s.name}`,
+        subject: `Támogatási megkeresés - ${s.name}`,
             html: `
             <!DOCTYPE html>
               <html lang="hu">

@@ -3,7 +3,7 @@ import { useAuth } from '~/composables/useAuth'; // Import your composable for a
 
 export default defineNuxtRouteMiddleware(async (to) => {
   // Only apply this middleware to routes under /stab/
-  if (!to.path.startsWith('/stab')) { //! WHEN DEPLOYED CHECK FOR !to.path.startsWith('/stab') !\\ 
+  if (!to.path.startsWith('/stab')) {
     return;
   }
 

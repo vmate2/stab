@@ -135,3 +135,28 @@ model Email {
   opened    Boolean  @default(false)
   to        String?
 }
+
+model kaszinoUser {
+  id              Int      @id @default(autoincrement())
+  fullName        String
+  email           String   @unique
+  username        String   @unique
+  password        String
+  uuid            String   @unique
+  createdAt       DateTime @default(now()) 
+  modifiedAt      DateTime @updatedAt
+  zseton          Int      @default(0)
+}
+
+model programok {
+    id            Int     @id @default(autoincrement())
+    title         String 
+    startTime     String
+    duration      String
+    location      String?
+    description   String?
+    createdAt     DateTime  @default(now())
+    modifiedAt    DateTime @updatedAt
+    beosztva      Json?
+    day           String
+}

@@ -94,6 +94,8 @@ const rawPrograms = ref<Program[]>([
   { name: 'Tánc2', start: '21:00', end: '23:00', location: 'Aula' },
   { name: 'Progi', start: '08:10', end: '10:00', location: '104-es terem' },
   { name: 'Progik', start: '11:47', end: '13:00', location: '1204-es terem' },
+  { name: 'Progik', start: '19:30', end: '21:00', location: '1204-es terem' },
+  { name: 'Progik24254', start: '17:00', end: '21:00', location: '1204-es terem' },
 ])
 
 

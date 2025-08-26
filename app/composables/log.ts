@@ -1,4 +1,4 @@
-import '@/composables/websocket'
+import { useWebSocket } from '@/composables/websocket'
 
 const {sendMessage, onMessage, socket} = useWebSocket()
 

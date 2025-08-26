@@ -2,7 +2,7 @@
   <div class="container">
     <NuxtLink class="card" to="./garatools/qrcodereader" ref="card">QR kód olvasó</NuxtLink>
     <NuxtLink class="card" to="./garatools/locator" ref="card">Lokátor</NuxtLink>
-    <NuxtLink class="card" to="./garatools/qrcodereader" ref="card">Placeholder</NuxtLink>
+    <NuxtLink class="card" to="./garatools/programeditor" ref="card">Programok</NuxtLink>
 
   </div>
 </template>
@@ -69,5 +69,12 @@ definePageMeta({
   background-size: cover;
   background-position: center;
 }
+.card:nth-child(3) {
+    background-image: url('public/img/programtable.svg');
+  background-size: cover;
+  background-position: center;
+}
+
+
 
 </style>

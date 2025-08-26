@@ -7,11 +7,10 @@ const prisma = new PrismaClient();
 
 export default defineNitroPlugin(async() => {
 
-  await syncEmails();
 
   setInterval(async() => {
     await syncEmails()
-  }, 5000*60);
+  }, 30000*60);
 });
 
 

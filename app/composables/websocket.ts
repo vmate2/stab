@@ -18,7 +18,6 @@ export function useWebSocket(url?: string) {
     try {
       const strMessage = typeof message === 'string' ? message : JSON.stringify(message)
 
-      console.warn(typeof strMessage, strMessage);
       const msg = JSON.parse(strMessage);
       if (!msg.title || !msg.type || !msg.level) {
         console.error('Invalid log format:', msg);
@@ -31,7 +30,6 @@ export function useWebSocket(url?: string) {
 
       if (socket.readyState === WebSocket.OPEN) {
         const reply = socket.send(strMessage)
-        console.warn('WebSocket message sent:', reply);
         
       } else {
         console.warn('WebSocket not open:', socket.readyState)

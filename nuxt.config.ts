@@ -51,6 +51,7 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseAPIkey: process.env.SUPABASE_ANON_API_KEY,
+      encryptionKey: process.env.ENCRYPTION_KEY
     },
     supabaseKey: process.env.SUPABASE_KEY,
     jwtSecret: process.env.JWT_SECRET,
@@ -61,10 +62,13 @@ export default defineNuxtConfig({
     emailPass: process.env.APP_PASSWORD,
     zohomailPass: process.env.ZOHO_PASSWORD,
     qrSecret: process.env.QR_SECRET,
+    refreshSecret: process.env.REFRESH_TOKEN_SECRET,
   },
 
   routeRules: {
     '/stab/**': { appMiddleware: 'auth' }, // Apply auth middleware to all /stab/ routes
+    '/kaszino': { appMiddleware: 'casinoauth'},
+    '/kaszino/games/**': { appMiddleware: 'casinoauth'}
   },
 
   css: [
@@ -72,7 +76,8 @@ export default defineNuxtConfig({
   ],
 
   imports: {
-    dirs: ['types'] // Ensure Nuxt loads custom types
+    dirs: ['types'], // Ensure Nuxt loads custom types
+
   },
 
   plugins: [
