@@ -1,7 +1,7 @@
 <template>
   <div class="dayTracker">{{ currentDay + 'i programtáblázat' }}</div>
   <div class="timetable-container" @click="handleOutsideClick">
-    <div class="timetable">
+    <div class="timetable" :style="timetableStyle">
       <div class="timetable-time-column">
         <div v-for="hour in hours" :key="hour" class="timetable-hour">
           {{ hour }}:00
@@ -15,12 +15,12 @@
             :key="index"
             class="program-block"
             :class="{ 'active-program': isRunning(program) }"
-            :style="getProgramStyle(program.start, program.end)"
+            :style="getProgramStyle(program.startTime, program.duration)"
             @click="openProgram(program)"
           >
-            <div class="program-title">{{ program.name }}</div>
+            <div class="program-title">{{ program.title }}</div>
             <div class="program-details">
-              <div class="program-time">{{ program.start }}-{{ program.end }}</div>
+              <div class="program-time">{{ program.startTime }}-{{ addDuration(program.startTime, program.duration) }}</div>
               <div class="program-location">{{ program.location }}</div>
             </div>
           </div>
@@ -33,8 +33,8 @@
     <div class="sidebar" :class="{ visible: showSidebar }">
       <button class="close-button" @click="closeSidebar">×</button>
       <div v-if="selectedProgram" class="sidebar-content">
-        <h2>{{ selectedProgram.name }}</h2>
-        <p><strong>Idő:</strong> {{ selectedProgram.start }} - {{ selectedProgram.end }}</p>
+        <h2>{{ selectedProgram.title }}</h2>
+        <p><strong>Idő:</strong> {{ selectedProgram.startTime }} - {{ addDuration(selectedProgram.startTime, selectedProgram.duration) }}</p>
         <p><strong>Helyszín:</strong> {{ selectedProgram.location }}</p>
         <p v-if="selectedProgram.description"><strong>Leírás:</strong> {{ selectedProgram.description }}</p>
       </div>
@@ -45,17 +45,20 @@
 
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 
-setPageLayout('main')
+definePageMeta({
+    layout: 'main'
+})
 
 
 interface Program {
-  name: string
-  start: string
-  end: string
+  title: string
+  startTime: string
+  duration: string
   location: string
   description?: string
+  day?: string
 }
 
 
@@ -71,12 +74,23 @@ function handleOutsideClick(event: MouseEvent) {
 }
 
 
-const getDay = () => {
-  const days = ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat']
-  return days[new Date().getDay()]
+const daysList = ['LIKE','Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök']
+const currentIndex = ref(0)
+const currentDay = computed(() => daysList[currentIndex.value])
+const daySuffix = computed(() => {
+  const i = currentIndex.value
+  return i >= 0 && i <= 5 ? `${i}.nap` : ''
+})
+
+function prevDay() {
+  if (currentIndex.value > 0) currentIndex.value -= 1
+  distributePrograms()
 }
 
-const currentDay = ref(getDay())
+function nextDay() {
+  if (currentIndex.value < daysList.length - 1) currentIndex.value += 1
+  distributePrograms()
+}
 
 
 const timetableStartHour = 7
@@ -86,23 +100,24 @@ const totalMinutes = (timetableEndHour - timetableStartHour) * 60
 const hours = Array.from({ length: timetableEndHour - timetableStartHour }, (_, i) => i + timetableStartHour)
 
 const rawPrograms = ref<Program[]>([
-  { name: 'Megnyitó', start: '08:00', end: '09:00', location: 'Aula', description: 'Ünnepélyes megnyitó beszédek.' },
-  { name: 'Robotika', start: '08:30', end: '10:00', location: '101-es terem', description: 'Robotépítés workshop' },
-  { name: 'Kvíz', start: '09:00', end: '11:30', location: '202-es terem', description: 'Általános műveltségi kvíz csapatoknak' },
-  { name: 'Koncert', start: '20:00', end: '22:30', location: 'Színpad', description: 'Esti koncert a tornateremben' },
-  { name: 'Tánc', start: '21:00', end: '23:00', location: 'Színházterem' },
-  { name: 'Tánc2', start: '21:00', end: '23:00', location: 'Aula' },
-  { name: 'Progi', start: '08:10', end: '10:00', location: '104-es terem' },
-  { name: 'Progik', start: '11:47', end: '13:00', location: '1204-es terem' },
-  { name: 'Progik', start: '19:30', end: '21:00', location: '1204-es terem' },
-  { name: 'Progik24254', start: '17:00', end: '21:00', location: '1204-es terem' },
 ])
 
+// minute->px mapping used by programeditor
+function minuteToPx(minutes: number) {
+  return minutes * (14.75 / 15) // ~0.9833 px/min
+}
+
+const timetableStyle = computed(() => ({ minHeight: `${minuteToPx(totalMinutes)}px` }))
 
 
-const {data: programData} = await useFetch('/api/getProgramsPublic',{
-    method: 'get'
+
+const {data: programData} = await useFetch('/api/programok',{
+  method: 'get'
 })
+
+// Re-run distribution when API data arrives or when day changes
+watch(programData, () => distributePrograms())
+watch(currentIndex, () => distributePrograms())
 
 const selectedProgram = ref<Program | null>(null)
 const showSidebar = ref(false)
@@ -119,26 +134,116 @@ function closeSidebar() {
 function isRunning(program: Program): boolean {
   const now = new Date()
   const nowMinutes = now.getHours() * 60 + now.getMinutes()
-  return parseTime(program.start) <= nowMinutes && nowMinutes < parseTime(program.end)
+  const startM = parseTime(program.startTime)
+  const endM = parseTime(addDuration(program.startTime, program.duration))
+  return startM <= nowMinutes && nowMinutes < endM
 }
 
 const columns = ref<Program[][]>([])
 
 function parseTime(str: string): number {
-  const [h, m] = str.split(':').map(Number)
+  if (!str) return 0
+  const parts = String(str).split(':').map(Number)
+  const h = parts[0] ?? 0
+  const m = parts[1] ?? 0
   return h * 60 + m
+}
+
+function addMinutesToTime(start: string, mins: number) {
+  const total = parseTime(start) + mins
+  const h = Math.floor(total / 60)
+  const m = total % 60
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+}
+
+function durationToMinutes(duration: any) {
+  if (duration === undefined || duration === null) return 0
+  if (typeof duration === 'number') return Math.max(0, Math.floor(duration))
+  const s = String(duration).trim()
+  if (/^\d+$/.test(s)) return Number(s)
+  if (/^\d{1,2}:\d{2}$/.test(s)) {
+    const [h, m] = s.split(':').map(Number)
+    return (h || 0) * 60 + (m || 0)
+  }
+  return 0
+}
+
+function addDuration(start: string, duration: string | number) {
+  const dur = durationToMinutes(duration)
+  return addMinutesToTime(start, dur)
 }
 
 // Szétosztja a programokat nem átfedő oszlopokba
 function distributePrograms() {
-  const sorted = [...rawPrograms.value].sort((a, b) => parseTime(a.start) - parseTime(b.start))
+  // prefer API data when available, fall back to local rawPrograms
+  const source = (programData && programData.value && Array.isArray(programData.value)) ? programData.value : rawPrograms.value
+  const selectedDay = daysList[currentIndex.value]
+
+  // normalize source: if a program has `duration` (minutes), compute its `end` time string
+  // helper: find time-like strings anywhere in the object
+  const timeRegex = /\b([01]?\d|2[0-3]):[0-5]\d\b/
+  function findTimesInObj(obj: any) {
+    const found: string[] = []
+    for (const k of Object.keys(obj)) {
+      const v = obj[k]
+      if (typeof v === 'string') {
+        const m = v.match(timeRegex)
+        if (m) found.push(m[0])
+        // also handle ranges like '08:00-10:00'
+        const range = v.match(/([01]?\d|2[0-3]:[0-5]\d)\s*-\s*([01]?\d|2[0-3]:[0-5]\d)/)
+        if (range) {
+          if (typeof range[1] === 'string') found.push(range[1])
+          if (typeof range[2] === 'string') found.push(range[2])
+        }
+      }
+    }
+    return found
+  }
+
+  const normalized = (source as any[]).map(p => {
+    const title = p.title || p.name || p.event || p.program || ''
+    const location = p.location || p.room || p.place || p.helyszin || p.venue || ''
+    const desc = p.description || p.desc || p.leiras || ''
+
+    const start = p.startTime || p.start || p.starts_at || p.time || '00:00'
+    let duration: any = null
+    if (p.duration !== undefined && p.duration !== null) duration = p.duration
+    else if (p.end || p.ends_at) {
+      const endStr = p.end || p.ends_at
+      const durMins = Math.max(0, parseTime(endStr) - parseTime(start))
+      duration = `${String(Math.floor(durMins / 60)).padStart(2,'0')}:${String(durMins % 60).padStart(2,'0')}`
+    } else {
+      const times = findTimesInObj(p)
+      if (times.length >= 2 && times[0] && times[1]) {
+        const durMins = Math.max(0, parseTime(times[1]) - parseTime(times[0]))
+        duration = `${String(Math.floor(durMins / 60)).padStart(2,'0')}:${String(durMins % 60).padStart(2,'0')}`
+      }
+    }
+
+    return {
+      title,
+      startTime: start,
+      duration: duration || '00:00',
+      location,
+      description: desc,
+      day: p.day,
+    }
+  })
+
+  const filtered = normalized.filter((p: any) => {
+    if (!p.day) return selectedDay === 'LIKE'
+    return p.day === selectedDay
+  })
+
+  const sorted = [...filtered].sort((a, b) => parseTime(a.startTime) - parseTime(b.startTime))
   const cols: Program[][] = []
 
   sorted.forEach(program => {
     let placed = false
     for (const col of cols) {
       const last = col[col.length - 1]
-      if (parseTime(program.start) >= parseTime(last.end)) {
+      if (!last) continue
+      if (parseTime(program.startTime) >= parseTime(addDuration(last.startTime, last.duration))) {
         col.push(program)
         placed = true
         break
@@ -151,12 +256,15 @@ function distributePrograms() {
 }
 
 // Programok pozíciója (függőleges helyzet és magasság)
-function getProgramStyle(start: string, end: string) {
-  const top = parseTime(start) - timetableStartHour * 60
-  const height = parseTime(end) - parseTime(start)
+function getProgramStyle(startTime: string, duration: string | number) {
+  const startMinutes = parseTime(startTime)
+  const endTime = addDuration(startTime, duration)
+  const endMinutes = parseTime(endTime)
+  const topMinutes = startMinutes - timetableStartHour * 60
+  const heightMinutes = Math.max(0, endMinutes - startMinutes)
   return {
-    top: `${top}px`,
-    height: `${height - 2}px`,
+    top: `${minuteToPx(topMinutes)}px`,
+    height: `${minuteToPx(heightMinutes) - 2}px`,
   }
 }
 
@@ -166,7 +274,7 @@ function updateCurrentTimeLine() {
   const now = new Date()
   const currentMinutes = now.getHours() * 60 + now.getMinutes()
   const clamped = Math.max(timetableStartHour * 60, Math.min(currentMinutes, timetableEndHour * 60))
-  currentTimeLineStyle.value.top = `${clamped - timetableStartHour * 60}px`
+  currentTimeLineStyle.value.top = `${minuteToPx(clamped - timetableStartHour * 60)}px`
 }
 
 onMounted(() => {

@@ -5,7 +5,6 @@ const p = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  console.log('here');
   
   const authHeader = event.node.req.headers['authorization'] || '';
   
@@ -17,6 +16,8 @@ export default defineEventHandler(async (event) => {
   }
   try {
     const body = await readBody(event);
+    console.warn(body);
+    
     const data = await p.programok.update({
       where: {id: body.id},
       data: {
