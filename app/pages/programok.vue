@@ -1,6 +1,20 @@
 <template>
-  <div class="dayTracker">{{ currentDay + 'i programtáblázat' }}</div>
-  <div class="timetable-container" @click="handleOutsideClick">
+  <div class="dayTracker" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+    <button class="dayArrow left" @click="prevDay">‹</button>
+
+    <transition :name="swipeDirection === 'left' ? 'day-swipe-left' : 'day-swipe-right'" mode="out-in">
+      <div :key="currentDay" class="dayTitle">
+        {{ currentDay }} <span v-if="daySuffix">({{ daySuffix }})</span>
+      </div>
+    </transition>
+
+    <button class="dayArrow right" @click="nextDay">›</button>
+  </div>
+  <div 
+    class="timetable-container" 
+    :class="{ 'no-click': showSidebar }"
+    @click="handleOutsideClick"
+  >
     <div class="timetable" :style="timetableStyle">
       <div class="timetable-time-column">
         <div v-for="hour in hours" :key="hour" class="timetable-hour">
@@ -30,7 +44,10 @@
     </div>
 
     <!-- Sidebar -->
-    <div class="sidebar" :class="{ visible: showSidebar }">
+  <div class="sidebar"
+       :class="{ visible: showSidebar }"
+       @touchstart.stop="handleSidebarTouchStart"
+       @touchend.stop="handleSidebarTouchEnd">
       <button class="close-button" @click="closeSidebar">×</button>
       <div v-if="selectedProgram" class="sidebar-content">
         <h2>{{ selectedProgram.title }}</h2>
@@ -73,7 +90,7 @@ function handleOutsideClick(event: MouseEvent) {
   }
 }
 
-
+const swipeDirection = ref<'left' | 'right'>('left')
 const daysList = ['LIKE','Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök']
 const currentIndex = ref(0)
 const currentDay = computed(() => daysList[currentIndex.value])
@@ -83,13 +100,19 @@ const daySuffix = computed(() => {
 })
 
 function prevDay() {
-  if (currentIndex.value > 0) currentIndex.value -= 1
-  distributePrograms()
+  if (currentIndex.value > 0) {
+    swipeDirection.value = 'right' // jobbra animáció
+    currentIndex.value -= 1
+    distributePrograms()
+  }
 }
 
 function nextDay() {
-  if (currentIndex.value < daysList.length - 1) currentIndex.value += 1
-  distributePrograms()
+  if (currentIndex.value < daysList.length - 1) {
+    swipeDirection.value = 'left' // balra animáció
+    currentIndex.value += 1
+    distributePrograms()
+  }
 }
 
 
@@ -278,11 +301,62 @@ function updateCurrentTimeLine() {
 }
 
 onMounted(() => {
-  distributePrograms()
-  updateCurrentTimeLine()
-  const interval = setInterval(updateCurrentTimeLine, 60000)
-  onUnmounted(() => clearInterval(interval))
-})
+  const today = new Date();
+  const month = today.getMonth() + 1; // 0-index miatt
+  const day = today.getDate();
+
+  if (month === 9 && day === 28) currentIndex.value = 1; // Vasárnap 1.nap
+  else if (month === 9 && day === 29) currentIndex.value = 2; // Hétfő 2.nap
+  else if (month === 9 && day === 30) currentIndex.value = 3; // Kedd 3.nap
+  else if (month === 10 && day === 1) currentIndex.value = 4; // Szerda 4.nap
+  else if (month === 10 && day === 2) currentIndex.value = 5; // Csütörtök 5.nap
+  else currentIndex.value = 0; // LIKE
+
+  distributePrograms();
+  updateCurrentTimeLine();
+  const interval = setInterval(updateCurrentTimeLine, 60000);
+  onUnmounted(() => clearInterval(interval));
+});
+
+
+const touchStartX = ref(0)
+const touchEndX = ref(0)
+
+function handleTouchStart(e: TouchEvent) {
+  touchStartX.value = e.changedTouches[0].screenX
+}
+
+function handleTouchEnd(e: TouchEvent) {
+  touchEndX.value = e.changedTouches[0].screenX
+  handleSwipe()
+}
+
+function handleSwipe() {
+  const deltaX = touchEndX.value - touchStartX.value
+  if (Math.abs(deltaX) > 50) { 
+    if (deltaX > 0) prevDay()
+    else nextDay()
+  }
+}
+
+const sidebarTouchStartX = ref(0)
+const sidebarTouchEndX = ref(0)
+
+function handleSidebarTouchStart(e: TouchEvent) {
+  sidebarTouchStartX.value = e.changedTouches[0].screenX
+}
+
+function handleSidebarTouchEnd(e: TouchEvent) {
+  sidebarTouchEndX.value = e.changedTouches[0].screenX
+  handleSidebarSwipe()
+}
+
+function handleSidebarSwipe() {
+  const deltaX = sidebarTouchEndX.value - sidebarTouchStartX.value
+  if (deltaX > 50) { // jobbra húzás
+    closeSidebar()  
+  }
+}
 
 </script>
 
@@ -314,12 +388,12 @@ onMounted(() => {
 
 
 .timetable-hour {
-  height: 59px; /* 1 óra = 60px */
+  height: 58px; /* 1 óra = 60px */
   font-size: 0.8rem;
   border-bottom: 1px dashed #440000;
   display: flex;
   color: #ffcccc;
-  align-items: flex-start;
+  align-items: center; /* center vertically so label aligns with program rows */
   justify-content: center;
   overflow: hidden;
 }
@@ -345,25 +419,24 @@ onMounted(() => {
   color: #fff8f0;
   padding: 4px;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: clamp(0.7rem, 1.2vw, 1rem); /* kisebb képernyőn kisebb */
   font-weight: bold;
   text-align: center;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
   border: 1px solid gold;
-    display: flex;  
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
 }
-
 .active-program {
   background: linear-gradient(135deg, #ffd700, #ff8c00); /* arany-narancs */
   color: #4b0000; /* mély bordó szöveg */
   border: 1px solid #fff;
   box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.8); /* aranyló fény */
   transition: all 0.3s ease;
-}
+} 
 
 .active-program .program-title {
   font-weight: 900;
@@ -401,6 +474,15 @@ onMounted(() => {
   .program-details {
     display: none;
   }
+  .timetable-container {
+    width: 85%; /* keskenyebb, hogy ne lógjon le */
+  }
+
+  .dayTracker {
+    font-size: 1.8rem; /* kisebb, hogy mobilon elférjen */
+    padding: 0.5rem;
+    margin-top: 60px;
+  }
 }
 
 .program-time {
@@ -428,7 +510,7 @@ onMounted(() => {
   transition: all 0.3s ease;
   border-left: 2px solid #990000;
   backdrop-filter: blur(5px);
-
+  pointer-events: auto;
 }
 
 
@@ -466,17 +548,60 @@ onMounted(() => {
   border: none;
   color: #fff;
   cursor: pointer;
+  align-self: flex-start;
+  width: 30px;
+  
 }
 
 .dayTracker {
   position: relative;
-  top: 0;
   background: #330000;
   color: #ffd700;
   padding: 0.5rem 1rem;
   font-weight: bold;
-  font-size: 3rem;
+  font-size: clamp(1.8rem, 2vw + 1rem, 3rem); /* automatikusan skálázódik */
   border-bottom: 2px solid #990000;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  touch-action: pan-y; /* engedi a horizontális swipe-ot */
+  user-select: none;
 }
+
+.dayArrow {
+  background: none;
+  border: none;
+  color: #ffd700;
+  font-size: 2.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  transition: color 0.3s;
+}
+
+.dayArrow:hover {
+  color: #ffcc00;
+}
+
+
+.program-title {
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+}
+
+.day-swipe-left-enter-from { transform: translateX(100%); opacity: 0; }
+.day-swipe-left-leave-to { transform: translateX(-100%); opacity: 0; }
+
+/* Jobbra animálás */
+.day-swipe-right-enter-from { transform: translateX(-100%); opacity: 0; }
+.day-swipe-right-leave-to { transform: translateX(100%); opacity: 0; }
+
+.day-swipe-left-enter-active,
+.day-swipe-left-leave-active,
+.day-swipe-right-enter-active,
+.day-swipe-right-leave-active {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+
 </style>
