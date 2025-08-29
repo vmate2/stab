@@ -105,6 +105,7 @@
           <div class="edit-buttons">
             <button class="save-btn" @click.stop="saveEdits">Mentés</button>
             <button class="cancel-btn" @click.stop="cancelEdits">Mégse</button>
+            <button class="delete-btn" @click.stop="deleteProgram">Törlés</button>
           </div>
         </template>
       </div>
@@ -122,6 +123,27 @@ const {$notify} = useNuxtApp()
 definePageMeta({
     layout: 'new'
 })
+
+const deleteProgram = async() => {
+
+  const response = await $fetch('/api/programok', {
+    method: 'DELETE',
+    headers: {
+      'authorization' : `Bearer ${useCookie('token').value}`
+    },
+    body: {
+      id: selectedProgram.value.id
+    }
+  })
+
+  if (response.success) {
+    $notify('sikeres törlés', 'success')
+  } else {
+    $notify('Sikertelen törlés', 'error')
+  }
+  distributePrograms()
+
+}
 
 async function saveEdits() {
   if (!selectedProgram.value) return
@@ -792,7 +814,8 @@ onMounted(() => {
 
 .edit-btn,
 .save-btn,
-.cancel-btn {
+.cancel-btn,
+.delete-btn {
   padding: 8px 14px;
   border: none;
   border-radius: 6px;
@@ -816,9 +839,15 @@ onMounted(() => {
   color: #fff;
 }
 
+.delete-btn {
+  background-color: red;
+  color: #fff;
+}
+
 .edit-btn:hover,
 .save-btn:hover,
-.cancel-btn:hover {
+.cancel-btn:hover,
+.delete-btn:hover {
   opacity: 0.9;
 }
 

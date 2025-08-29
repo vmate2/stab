@@ -9,8 +9,7 @@
     </client-only>
   </div>
   <div v-if="!showSpin" class="container">
-    <button @click="resetSpinDebug">reset spin</button>
-    <div class="welcomeText">Üdvözöl a <strong>Trefort <span>FinalDeal</span></strong> stábja!</div>
+    <div class="welcomeText"><strong><span>FinalDeal <u>| </u></span>Trefort</strong></div>
     <div class="introText">A 2025-ös Békéscsabai Garabonciás napokon mi képviseljük a <span>Trefort Ágoston Technikumot</span>. <br> Szereténk az idei <span>Garán</span> felejthetetlen élményeket nyújtani számotokra! <br>Idén teljesen <span>nyílt lapokkal</span> indulunk, tehát majdnem minden adatot megtaláltok rólunk, itt a weboldalon. <br>Ha felkeltettük az érdeklődésed csekkold le a <span><NuxtLink to="/rolunk">Rólunk</NuxtLink></span> oldalt is!</div>
     <div></div>
   </div>
@@ -137,7 +136,7 @@ const generateRequestId = (win:any) => {
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   min-height: 65vh;
   padding: 2vh 4vw;
@@ -146,71 +145,27 @@ const generateRequestId = (win:any) => {
 }
 
 .welcomeText {
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  color: black;
-  background: linear-gradient(145deg, #b8860b, #ffd700);
-  padding: 1.5rem 2.5rem;
-  border-radius: 20px;
-  box-shadow:
-    0 0 15px rgba(255, 215, 0, 0.8),
-    0 0 25px rgba(255, 0, 0, 0.3),
-    inset 0 0 20px rgba(255, 255, 255, 0.4);
-  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.7);
-  transition: transform 0.3s ease;
-}
-
-.welcomeText:hover {
-  transform: scale(1.03);
-}
-
-.welcomeText span {
-  color: #8b0000;
-  text-shadow: 1px 1px 2px #000000;
-}
-
-.introText {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-  color: #eee;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  max-width: 60ch;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-  line-height: 1.6;
+  font-family: 'Orbitron';
+  font-size: 4rem;
+  color: rgb(175, 158, 0);
   text-shadow: 2px 2px black;
 }
 
-.introText span {
-  color: rgb(20, 107, 0);
-  text-shadow: 1px 1px black;
+.welcomeText strong {
+  color: darkgreen;
+}
+.welcomeText strong span {
+  color: red;
 }
 
-.introText a {
-  font-style: italic;
-}
-
-
-
-
-@media screen and (max-width: 600px) {
-  .container {
-    margin-top: 8vh;
-    padding: 1rem;
-    gap: 1.5rem;
-  }
-
-  .welcomeText {
-    font-size: clamp(1.6rem, 6vw, 2.7rem);
-    padding: 1rem 1.5rem;
-  }
-
-  .introText {
-    font-size: clamp(1rem, 4.5vw, 1.3rem);
-    padding: 0.75rem 1rem;
-  }
+.welcomeText strong span u {
+  color: white;
 }
 
 
+.introText {
+  color: rgb(128, 104, 0);
+  text-shadow: 2px 2px black;
+  font-size: 1.4rem;
+}
 </style>
