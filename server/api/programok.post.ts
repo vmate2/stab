@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
         description: body.description,
         startTime: body.startTime,
         duration: body.duration,
-        location: body.duration,
+        location: body.location,
         beosztva: body.beosztva,
         day: body.day
       }

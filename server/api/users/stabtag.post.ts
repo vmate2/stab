@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   // Get the token from the request headers (it can be in 'Authorization' or 'token')
   const token:any = event.node.req.headers['token'] || event.node.req.headers['authorization']?.split(' ')[1];
-
+  console.log( event.node.req.headers['authorization']?.split(' ')[1]);
+  
   if (!token) {
     throw createError({
       statusCode: 401,

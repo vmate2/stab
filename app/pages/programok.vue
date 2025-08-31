@@ -22,7 +22,8 @@
         </div>
       </div>
 
-      <div class="timetable-program-columns">
+      
+      <div class="timetable-program-columns" v-if="loading === 'success' && columns.length">
         <div v-for="(column, colIndex) in columns" :key="colIndex" class="timetable-program-column">
           <div
             v-for="(program, index) in column"
@@ -34,13 +35,28 @@
           >
             <div class="program-title">{{ program.title }}</div>
             <div class="program-details">
-              <div class="program-time">{{ program.startTime }}-{{ addDuration(program.startTime, program.duration) }}</div>
+              <div class="program-time">{{ program.startTime }} - {{ addDuration(program.startTime, program.duration) }}</div>
               <div class="program-location">{{ program.location }}</div>
             </div>
           </div>
         </div>
-        <div class="current-time-line" :style="currentTimeLineStyle" />
+        <div class="current-time-line" :style="currentTimeLineStyle"/>
       </div>
+
+      <!-- Skeleton/placeholder, ha még nem jött meg az adat -->
+      <div class="timetable-program-columns" v-else>
+        <div class="timetable-program-column">
+          <div class="program-block skeleton" v-for="n in 3" :key="n" :style="{ top: `${n*120}px`, height: '118px' }">
+            <div class="program-title">Betöltés...</div>
+            <div class="program-details">
+              <div class="program-time">xx:xx - xx:xx</div>
+              <div class="program-location">Betöltés...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
 
     <!-- Sidebar -->
@@ -134,9 +150,12 @@ const timetableStyle = computed(() => ({ minHeight: `${minuteToPx(totalMinutes)}
 
 
 
-const {data: programData} = await useFetch('/api/programok',{
+const {data: programData, status: loading, } = await useFetch('/api/programok',{
   method: 'get'
 })
+
+console.log(loading.value);
+
 
 // Re-run distribution when API data arrives or when day changes
 watch(programData, () => distributePrograms())
@@ -422,7 +441,7 @@ function handleSidebarSwipe() {
   font-size: clamp(0.7rem, 1.2vw, 1rem); /* kisebb képernyőn kisebb */
   font-weight: bold;
   text-align: center;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 3px 3px 5px 6px rgba(0, 0, 0, 0.6);
   box-sizing: border-box;
   border: 1px solid gold;
   display: flex;
@@ -586,7 +605,9 @@ function handleSidebarSwipe() {
 
 
 .program-title {
-  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  font-size: clamp(0.85rem, 1.5vw, 2rem);
+  text-shadow: 2px 2px black;
+  filter: drop-shadow(5px 5px 10px rgba(173, 192, 0, 0.8));
 }
 
 .day-swipe-left-enter-from { transform: translateX(100%); opacity: 0; }
@@ -603,5 +624,56 @@ function handleSidebarSwipe() {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+
+@media (max-width: 768px) {
+  .tap-hint {
+    text-align: center;
+    color: #ffcc00;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  .program-block::after {
+  content: "›";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.6);
+  }
+  .program-block {
+    animation: subtlePulse 3s infinite;
+  }
+  .program-block:active {
+  filter: brightness(1.2);
+  transform: scale(0.98);
+  transition: transform 0.1s, filter 0.1s;
+}
+}
+
+@keyframes subtlePulse {
+  0% { box-shadow: 0 0 0px rgba(255, 215, 0, 0.0); }
+  50% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+  100% { box-shadow: 0 0 0px rgba(255, 215, 0, 0.0); }
+}
+
+.program-skeletons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton {
+  height: 60px;
+  background: linear-gradient(90deg, #2c2c2c 25%, #3a3a3a 37%, #2c2c2c 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
 
 </style>

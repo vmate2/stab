@@ -64,6 +64,7 @@
         
           <label>Helyszín</label>
           <input class="edit-input" v-model="selectedProgram.location" />
+          <p>{{ selectedProgram.location }}</p>
         
           <label>Leírás</label>
           <textarea class="edit-textarea" v-model="selectedProgram.description" />
@@ -124,6 +125,33 @@ definePageMeta({
     layout: 'new'
 })
 
+onMounted(async () => {
+  const data = await $fetch('/api/programok', {
+    headers: { authorization: `Bearer ${useCookie('token').value}` }
+  })
+  rawPrograms.value = (data || []).map((p: any, idx: number) => ({
+    id: p.id ?? idx + 1, // Use existing id or fallback to index+1
+    title: p.title,
+    startTime: p.startTime,
+    duration: p.duration,
+    location: p.location ?? '',
+    description: p.description ?? '',
+    beosztva: p.beosztva ?? [],
+    day: p.day
+  }))
+  console.log(data);
+    const response = await $fetch('/api/stabtagok.names', {
+      method: 'GET',
+      headers: {
+        'authorization' : `Bearer ${useCookie('token').value}`
+      }
+    })
+    staffNames.value = response || []
+    console.log(response);
+    
+  distributePrograms()
+})
+
 const deleteProgram = async() => {
 
   const response = await $fetch('/api/programok', {
@@ -147,7 +175,8 @@ const deleteProgram = async() => {
 
 async function saveEdits() {
   if (!selectedProgram.value) return
-
+  console.log(selectedProgram.value);
+  
   const res = await $fetch(`/api/programok`, {
     method: 'PATCH',
     headers: { authorization: `Bearer ${useCookie('token').value}` },
@@ -161,6 +190,8 @@ async function saveEdits() {
     console.log(res);
     
     $notify('Sikeres mentés!', 'success')
+  } else {
+    $notify('Sikertelen mentés!', 'error')
   }
 }
 
@@ -241,32 +272,7 @@ const rawPrograms = ref<Program[]>([])
 
 const staffNames = ref<string[]>([])
 const open = ref(false)
-onMounted(async () => {
-  const data = await $fetch('/api/programok', {
-    headers: { authorization: `Bearer ${useCookie('token').value}` }
-  })
-  rawPrograms.value = (data || []).map((p: any, idx: number) => ({
-    id: p.id ?? idx + 1, // Use existing id or fallback to index+1
-    title: p.title,
-    startTime: p.startTime,
-    duration: p.duration,
-    location: p.location ?? '',
-    description: p.description ?? '',
-    beosztva: p.beosztva ?? [],
-    day: p.day
-  }))
-  console.log(data);
-    const response = await $fetch('/api/stabtagok.names', {
-      method: 'GET',
-      headers: {
-        'authorization' : `Bearer ${useCookie('token').value}`
-      }
-    })
-    staffNames.value = response || []
-    console.log(response);
-    
-  distributePrograms()
-})
+
 
 const availableNames = computed(() =>
   staffNames.value.filter(name => !selectedProgram.value.beosztva.includes(name.name))
@@ -404,6 +410,8 @@ function onPointerUp() {
 }
 
 function openProgram(program: Program) {
+  console.log(program);
+  
   selectedProgram.value = program
   showSidebar.value = true
 }
@@ -545,6 +553,7 @@ onMounted(() => {
   flex: 1;
   display: flex;
   position: relative;
+  touch-action: none;
 }
 
 .timetable-grid {

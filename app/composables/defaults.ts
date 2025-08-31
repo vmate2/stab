@@ -12,6 +12,7 @@ export const validateUserData = (email: string, phone: string, name: string): bo
 }
 
 export const checkToken = async (event: any) => {
+  
   const token = event.node.req.headers['token'] || event.node.req.headers['authorization']?.split(' ')[1]
     || (() => { throw createError({ statusCode: 401, statusMessage: 'Hozzaferes megtagadva: Hianyzo token!' }) })();
 
@@ -19,7 +20,8 @@ export const checkToken = async (event: any) => {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
   }) || (() => { throw createError({ statusCode: 401, statusMessage: 'Hozzaferes megtagadva: Hibas token!' }) })();
-
+  console.log('RETURNUNG TRUE');
+  
   return true;
 }
 
