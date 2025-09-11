@@ -151,6 +151,8 @@ watch(
   text-align: center;
   width: 80%;
   max-width: 600px;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .appear {

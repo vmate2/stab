@@ -238,7 +238,6 @@ function spin() {
       const segmentFloatIndex = adjustedDeg / segmentAngle
       let index = Math.floor(segmentFloatIndex)
       selectedIndex.value = index
-      spinning.value = false
 
       // Animate arrow bounce
       arrowBounce.value = true
@@ -260,6 +259,7 @@ function spin() {
             { label: 'Pörgetés', value: 'spin', color: '#4CAF50', textcolor: '#FFFFFF' }
           ]
         }
+        spinning.value = false
         $showDialog(dialogData).then((result: any) => {
           if (result.button === 'spin') {
             spin() // Trigger another spin
@@ -373,6 +373,7 @@ function spin() {
             { label: 'Rendben', value: 'ok', color: '#4CAF50', textcolor: '#FFFFFF' }
           ]
         }
+        
         $showDialog(dialogData).then((result: any) => {
           if (result.button === 'ok') {
             emit('dontShow');
@@ -441,6 +442,7 @@ function validateEmail(email: string): boolean {
   position: fixed;
   flex-direction: column;
   transition: all 0.3s ease-in-out;
+  z-index: 1000;
 }
 
 .wheel-container {

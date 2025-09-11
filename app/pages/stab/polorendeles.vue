@@ -7,6 +7,7 @@
     @add="handleAdd"
     @modify="handleModify"
     @delete="handleDelete"
+    @export="handleExport"
     >
     </custom-table>
   </client-only>
@@ -194,9 +195,10 @@ const handleAdd = async () => {
     const result = await $showDialog(dialogData);
     if (result.button === 'submit') {
       try {
-        await $fetch(`/api/polorendeles/${order.id}/delete`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'authorization': `Bearer ${useCookie('token').value}` }
+        const response = await $fetch(`/api/polorendeles`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'authorization': `Bearer ${useCookie('token').value}` },
+          body: {id: order.id}
         });
         log.modification({
           title: 'Pólórendelés törlése',
@@ -204,6 +206,8 @@ const handleAdd = async () => {
           message: `Pólórendelés törölve: ${order.name}`,
           data: order
         });
+        console.log(response);
+        
         $notify("Pólórendelés sikeresen törölve!", "success");
         layoutData.value.polorendeles = layoutData.value.polorendeles.filter((o: any) => o.id !== order.id);
         refreshTable();
@@ -219,6 +223,28 @@ const handleAdd = async () => {
       paid: order.paid ? 'Igen' : 'Nem',
     }));
   };
+
+const handleExport = async () => {
+  const response = await fetch('/api/polorendelesexport', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token.value}`
+    },
+  });
+
+  const blob = await response.blob();
+  console.log(blob);
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'polorendeles.xlsx';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  
+  // You can now use the blob, e.g., to trigger a file download
+};
 
 </script>
 

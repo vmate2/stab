@@ -16,14 +16,14 @@ export default defineNuxtConfig({
         { name: 'description', content: 'A 33. Garabonciás Napokon induló FinalDeal csapat hivatalos weboldala - programok, csapattagok, információk a BSZC Trefort képviseletében.' },
         { name: 'og:description', content: '33. Garaboncás napok és diáknapos Trefort stáb weboldala.' },
          { name: 'og:title', content: 'FinalDeal - Trefort' },
-         { name: 'og:image', content: 'https://finaldeal.hu/img/finaldeallogo.png' },
+         { name: 'og:image', content: 'https://finaldeal.hu/img/logo.svg' },
         { name: 'robots', content: 'index, follow' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { charset: 'utf-8' },
         { name: 'author', content: 'Varga Máté' },
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/img/finaldeallogo.ico' },
+        { rel: 'icon', type: 'image/x-icon', href: '/img/logo.ico' },
       ],
       script: [
         { src: "https://www.google.com/recaptcha/enterprise.js", defer: true },
@@ -34,7 +34,7 @@ export default defineNuxtConfig({
             "@context": "https://schema.org",
             "@type": "Organization",
             "url": "https://finaldeal.hu", // Your domain
-            "logo": "https://finaldeal.hu/img/finaldeallogo.png" // URL to your logo image (host it publicly)
+            "logo": "https://finaldeal.hu/img/logo.svg" // URL to your logo image (host it publicly)
           }),
         }
       ]

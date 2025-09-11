@@ -1,5 +1,35 @@
 <template>
-  <div>
+  <div class="landing">
+    <!-- Floating background suits -->
+    <div class="suit">♠</div>
+    <div class="suit">♥</div>
+    <div class="suit">♦</div>
+    <div class="suit">♣</div>
+
+    <!-- Title -->
+    <h1 class="title">
+      <span>F</span>
+      <span>I</span>
+      <span>N</span>
+      <span>A</span>
+      <span>L</span>
+      <span>D</span>
+      <span>E</span>
+      <span>A</span>
+      <span>L</span>
+    </h1>
+    <h2 class="title2">
+      <span>A</span>
+      <span>33.</span>
+      <span>Garabonciás</span>
+      <span>napok</span>
+      <span>Trefortos</span>
+      <span>stábja.</span>
+    </h2>
+
+    <!-- Call-to-action -->
+    <button class="cta-btn" @click="navigateTo('/rolunk')">Rólunk</button>
+  </div>
     <client-only>
     <wheelspin v-if="showSpin"
       @dontShow="handleDontShow"
@@ -7,20 +37,157 @@
       :disappear="disappear"
     />
     </client-only>
-  </div>
-  <div v-if="!showSpin" class="container">
-    <div class="welcomeText"><strong><span>FinalDeal <u>| </u></span>Trefort</strong></div>
-    <div class="introText">A 2025-ös Békéscsabai Garabonciás napokon mi képviseljük a <span>Trefort Ágoston Technikumot</span>. <br> Szereténk az idei <span>Garán</span> felejthetetlen élményeket nyújtani számotokra! <br>Idén teljesen <span>nyílt lapokkal</span> indulunk, tehát majdnem minden adatot megtaláltok rólunk, itt a weboldalon. <br>Ha felkeltettük az érdeklődésed csekkold le a <span><NuxtLink to="/rolunk">Rólunk</NuxtLink></span> oldalt is!</div>
-    <div></div>
-  </div>
 </template>
+
+<style>
+/* RESET */
+.landing, .landing * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.landing {
+  width: 100%;
+  height: 100%;
+}
+
+.landing {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--background-trietary-color);
+  color: #fff;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Floating card suits background */
+.suit {
+  position: absolute;
+  font-size: 2.5rem;
+  opacity: 0.15;
+  animation: float 12s infinite linear;
+  user-select: none;
+  pointer-events: none;
+}
+
+@keyframes float {
+  from { transform: translateY(100vh) rotate(0deg); }
+  to { transform: translateY(-20vh) rotate(360deg); }
+}
+
+.suit:nth-child(1) { left: 10%; animation-duration: 14s; }
+.suit:nth-child(2) { left: 30%; animation-duration: 11s; }
+.suit:nth-child(3) { left: 55%; animation-duration: 15s; }
+.suit:nth-child(4) { left: 80%; animation-duration: 12s; }
+
+/* Casino Title with slot effect */
+.title {
+  font-size: clamp(2rem, 8vw, 5rem);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.title2 {
+  font-size: clamp(0.1rem, 2vw, 1.3rem);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.title span {
+  display: inline-block;
+  animation: slot 1s ease forwards;
+  transform: translateY(-100%);
+}
+
+.title2 span {
+  display: inline-block;
+  animation: slot 1s ease forwards;
+  transform: translateY(-100%);
+}
+
+.title2 span:nth-child(even) {
+  animation-delay: 0.2s;
+}
+.title2 span:nth-child(odd) {
+  animation-delay: 0.4s;
+}
+
+.title span:nth-child(odd) {
+  animation-delay: 0.2s;
+}
+.title span:nth-child(even) {
+  animation-delay: 0.4s;
+}
+
+@keyframes slot {
+  0% { transform: translateY(-100%); opacity: 0; }
+  60% { transform: translateY(20%); opacity: 1; }
+  100% { transform: translateY(0); }
+}
+
+/* Glow button */
+.cta-btn {
+  margin-top: 2rem;
+  padding: 1rem 2.5rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(45deg, #b22222, #ffcc00);
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out, box-shadow 0.3s;
+  z-index: 2;
+}
+
+.cta-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #ffcc00, 0 0 40px #ff0000;
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+  .title {
+    font-size: 2.5rem;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+  .title2 {
+    font-size: 1rem;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+  .cta-btn {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+  }
+}
+</style>
 
 <script lang="ts" setup>
 
 definePageMeta({
   layout: 'main',
   title: 'Főoldal',
-  description: 'Egy csodás weboldal'
+  description: '33. Garabonciás napokon a Trefort Ágoston iskola stábja, a FinalDeal. Jelölt: Madai Isvtván Richárd, Kampányfőnökök: Varga Máté, Rafael Nóra, Petrás Áron Richárd. Témavilág: kaszinó, szín: Bordó. '
 });
 
 import wheelspin from '~/components/wheelspin.vue';
@@ -81,7 +248,7 @@ async function handleWin(event: any) {
 
 
   const {data, status, error} = await useFetch('/api/wheelwin', {
-    method: 'POST',
+    method: 'post',
     headers: {
       'Content-Type': 'application/json',
       'X-Request-Id': `${generateRequestId(event)}`,
@@ -125,47 +292,4 @@ const generateRequestId = (win:any) => {
   const timestamp = now.toISOString().replace(/[-:.]/g, '');
   return win.amount ? `req-${timestamp}-${win.type}-${win.amount}`: `req-${timestamp}-${win.type}-noamount`;
 };
-
-
-
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Orbitron:wght@600&display=swap');
-
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  min-height: 65vh;
-  padding: 2vh 4vw;
-  gap: 2rem;
-  text-align: center;
-}
-
-.welcomeText {
-  font-family: 'Orbitron';
-  font-size: 4rem;
-  color: rgb(175, 158, 0);
-  text-shadow: 2px 2px black;
-}
-
-.welcomeText strong {
-  color: darkgreen;
-}
-.welcomeText strong span {
-  color: red;
-}
-
-.welcomeText strong span u {
-  color: white;
-}
-
-
-.introText {
-  color: rgb(128, 104, 0);
-  text-shadow: 2px 2px black;
-  font-size: 1.4rem;
-}
-</style>

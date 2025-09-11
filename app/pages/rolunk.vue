@@ -8,10 +8,9 @@
           <span class="slot" v-for="(ch, i) in titleChars" :key="i" :style="{animationDelay: `${i * 80}ms`}" >{{ ch }}</span>
         </h1>
         <p class="subtitle">
-          Iskolai csapatunk a <strong>Békéscsabai Garabonciás napok</strong> versenyén - elegáns kaszinóhangulat, fegyelmezett szervezés, barátságos stáb.
-        
+          „A <strong>sors lapjait</strong> nem <strong>te osztod -</strong> de <strong>te</strong> döntöd el, hogyan <strong>játszod meg.”</strong>
         </p>
-        <button class="cta" @click="scrollTo('#intro')">Belépés a lobbyba</button>
+        <button class="cta" @click="scrollTo('#intro')">Tovább</button>
       </div>
     </header>
 
@@ -61,7 +60,7 @@
 
     <!-- STATISTICS / DASHBOARD -->
     <section class="stats section">
-      <h2 class="section-title">Statisztika <span class="en">/ Stats</span></h2>
+      <h2 class="section-title">Statisztika </h2>
 
       <!-- Mobile carousel -->
       <div class="stats-carousel">
@@ -91,13 +90,13 @@
     </div>
   </div>
   <transition name="fade">
-  <div v-if="activeBio" class="bio-modal" @click.self="closeBio">
+  <div v-if="activeBio" class="bio-modal" @click.self="closeBio" >
     <div class="bio-content card">
       <div class="bio-text">
         <h3 class="bio-name">{{ activeBio.name }}</h3>
         <p class="bio-blurb">{{ activeBio.blurb || 'No description yet.' }}</p>
       </div>
-      <div class="bio-image">
+      <div class="bio-image" :class="activeBio.suit">
         <img :src="activeBio.image" :alt="activeBio.name" />
       </div>
     </div>
@@ -113,7 +112,7 @@ definePageMeta({
 const titleChars = Array.from('FinalDeal')
 
 
-const activeBio = ref<null | { name: string, blurb: string, image: string }>(null)
+const activeBio = ref<null | { name: string, blurb: string, image: string, suit: string }>(null)
 
 function openBio(member: any) {
   activeBio.value = member
@@ -124,67 +123,69 @@ function closeBio() {
 
 // Dummy data
 const assets = reactive({
-  teamPhoto: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1600&auto=format&fit=crop',
+  teamPhoto: '/img/placeholder_group.jpeg',
 })
 
 const candidate = reactive({
   name: 'Madai István Richárd',
   image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1000&auto=format&fit=crop',
+  suit: 'ace',
+  blurb: 'szeretem a férfiakat'
 })
 
 const managers = reactive([
   {
     name: 'Varga Máté',
     image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=1000&auto=format&fit=crop',
-    suit: 'spade',
+    suit: 'spades',
     blurb: 'Logisztika és ütemezés mester – minden a helyén.',
   },
   {
     name: 'Rafael Nóra',
     image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1000&auto=format&fit=crop',
-    suit: 'heart',
+    suit: 'hearts',
     blurb: 'Kommunikáció, szponzorok, jó hangulat – mindig mosolyog.',
   },
   {
     name: 'Petrás Áron Richárd',
     image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1000&auto=format&fit=crop',
-    suit: 'diamond',
+    suit: 'diamonds',
+    blurb: 'Technika és színpad – tiszta hang, tiszta kép.',
+  },
+    {
+    name: 'Varga Attila',
+    image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1000&auto=format&fit=crop',
+    suit: 'clubs',
     blurb: 'Technika és színpad – tiszta hang, tiszta kép.',
   },
 ])
 
 // Stats
-const stats = reactive({
-  sponsors: 10,
-  staff: 25,
-  income: 1200000,
-  expenses: 80000,
-  balance: 40000,
-})
+
 
 // Icons as inline SVG for a casino vibe
 const statList = reactive({
-  sponsors: { label: 'Szponzorok / Sponsors', icon: `
+  sponsors: { label: 'Szponzorok', icon: `
     <svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <circle cx="12" cy="12" r="9" fill="currentColor" opacity="0.18"/>
       <circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
       <text x="12" y="16" text-anchor="middle" font-size="10" fill="currentColor">FD</text>
     </svg>` },
-  staff: { label: 'Stáb / Staff', icon: `
+  staff: { label: 'Stáb', icon: `
     <svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z" fill="currentColor"/>
     </svg>` },
-  income: { label: 'Bevétel / Income', icon: `
+  income: { label: 'Bevétel', icon: `
     <svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2"/>
       <text x="12" y="14" text-anchor="middle" font-size="10" fill="currentColor">$</text>
     </svg>` },
-  expenses: { label: 'Kiadás / Expenses', icon: `
+  expenses: { label: 'Kiadás', icon: `
     <svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M19 7l-7 10-4-4-3 3" stroke="currentColor" stroke-width="2" fill="none"/>
       <circle cx="19" cy="7" r="2" fill="currentColor"/>
     </svg>` },
-  balance: { label: 'Egyenleg / Balance', icon: `
+  balance: { label: 'Egyenleg', icon: `
     <svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M3 12h18" stroke="currentColor" stroke-width="2"/>
       <circle cx="8" cy="12" r="3" fill="currentColor"/>
@@ -200,6 +201,22 @@ const animated = reactive({
   expenses: 0,
   balance: 0,
 })
+
+const {data: publicData} = await useFetch('/api/publicData', {
+  method: 'GET',
+})
+
+const stats = reactive({
+  sponsors: publicData.value?.sponsorCount,
+  staff: publicData.value?.stabtagCount,
+  income: publicData.value?.income,
+  expenses: publicData.value?.expense,
+  balance: 40000,
+})
+
+
+console.log(publicData.value);
+
 
 const hasAnimated = ref(false)
 
@@ -252,6 +269,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: 'CC';
+  src: url('/fonts/card_characters.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 /* THEME */
 :root {
   --fd-red: #8B0000;            /* dark red */
@@ -356,6 +380,12 @@ onMounted(() => {
 
 }
 
+@media screen and (min-width:1000px) {
+  .candidate img {
+    max-width: 30vw;
+  }
+}
+
 /* Flip cards */
 .flip { perspective: 1200px; }
 .flip-inner { position: relative; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2,.8,.2,1); border-radius: 18px; overflow: hidden; }
@@ -368,9 +398,11 @@ onMounted(() => {
 .role { margin: 4px 0 0; opacity: .9; }
 .chip { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--fd-red); background: radial-gradient(circle at 30% 30%, #fff 0 28%, #e8e8e8 29% 60%, #c0c0c0 61% 100%); border: 5px solid #b80000; box-shadow: inset 0 0 12px rgba(0,0,0,.25), 0 6px 16px rgba(0,0,0,.45); }
 .suit { font-size: 56px; line-height: 1; color: var(--fd-gold); text-shadow: 0 0 15px rgba(212,175,55,.35); }
-.suit[data-suit="heart"] { color: #ff4d4d; }
-.suit[data-suit="diamond"] { color: #ff6b6b; }
-.suit[data-suit="spade"] { color: #b0b6ff; }
+.suit[data-suit="heart"] { color: #ff0000; }
+.suit[data-suit="diamond"] { color: #ff0000; }
+.suit[data-suit="spade"] { color: #000000; }
+.suit[data-suit="spade"] { color: #000000; }
+.suit[data-suit="ace"] { color: #ff0000; }
 
 /* STATS */
 .stats { display: grid; gap: 12px; }
@@ -435,7 +467,7 @@ onMounted(() => {
 }
 
 /* Arrow overlay on mobile */
-.card:not(.bio-image)::after {
+.card:not(.bio-image, .intro-text, .intro-photo, .stat)::after {
   content: "⬇";
   position: absolute;
   bottom: 10px;
@@ -454,7 +486,7 @@ onMounted(() => {
   .card {
     position: relative;
   }
-  .card:not(.bio-image)::after {
+  .card:not(.bio-image, .intro-text, .intro-photo, .stat)::after {
     position: relative;
     width: 100%;
     align-items: center;
@@ -569,7 +601,6 @@ onMounted(() => {
   height: 100%;
   object-fit: contain;
   border-radius: 12px;
-  margin-bottom: 16px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.4);
 }
 
@@ -633,21 +664,82 @@ onMounted(() => {
   width: auto;         /* width scales proportionally */
   max-width: 100%;     /* never exceed container width */
   object-fit: contain; /* keep aspect ratio */
-  border-radius: 0 18px 18px 0;
-  box-shadow: inset 0 0 12px rgba(0,0,0,0.4), 0 6px 24px rgba(0,0,0,0.5);
+  border-radius: 18px;
+  background-color: white;
   transition: transform 0.3s ease;
+  box-shadow: none;
+}
+
+.bio-image::before {
+  content: '';
+  color: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  opacity: 1;
+  font-size: 50px;
+  z-index: 10000;
+  padding: 0;
+  transform: translateY(-70%) translateX(0%);
+  z-index: 100;
+}
+
+.bio-image::after {
+  content: '';
+  color: black;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: block;
+  opacity: 1;
+  font-size: 50px;
+  z-index: 10000;
+  padding: 0;
+  transform: translateY(55%) translateX(0%);
+}
+
+.hearts::after,.hearts::before {
+  content: '♥';
+  color: red;
+}
+
+.spades::after, .spades::before {
+  content: '♠';
+}
+
+.diamonds::after, .diamonds::before {
+  content: '♦';
+  color: red;
+}
+
+.clubs::after, .clubs::before {
+  content: '♣';
+}
+
+.ace::after, .ace::before {
+  font-family: 'CC', sans-serif;
+  content: 'A';
 }
 
 .bio-image {
+  position: relative;
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 12px;
-  border-radius: 0 18px 18px 0;
-  background: radial-gradient(circle at center, rgba(139,0,0,0.3), rgba(0,0,0,0.7));
+  border-radius: 12px;
   background-blend-mode: overlay;
   overflow: hidden;
+  border: 1px solid white;
+  border-top-width: 35px;
+  border-bottom-width: 35px;
+  border-left-width: 15px;
+  border-right-width: 15px;
+  background-color: white;
+  z-index: 9;
+  overflow: visible;
 }
 
 .bio-image img:hover {
@@ -661,7 +753,7 @@ onMounted(() => {
     flex-direction: column;
   }
   .bio-image img {
-    border-radius: 0 0 18px 18px;
+    border-radius: 18px 18px 18px 18px;
     max-height: 70vh;
   }
 }

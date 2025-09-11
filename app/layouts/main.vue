@@ -4,11 +4,11 @@
     <nav class="nav" :class="{'hiddenNav': isNavHidden}">
       <svg @click="isNavHidden = !isNavHidden" :class="{'hiddenClose': isNavHidden}" class="openClose" fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-10 -10 120.00 120.00" enable-background="new 0 0 100 100" xml:space="preserve" transform="matrix(1, 0, 0, -1, 0, 0)rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="4.4"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M17.563,30.277h0.012c0,1.245,1.004,2.254,2.246,2.267v0.002h60.359v-0.001c1.248-0.006,2.259-1.018,2.259-2.268h0.01 l0-10.459h0c-0.002-1.251-1.017-2.265-2.269-2.265l0,0H19.821v0c0,0,0,0,0,0c-1.253,0-2.269,1.017-2.269,2.269 c0,0.039,0.01,0.076,0.012,0.115L17.563,30.277z"></path> <path d="M80.179,42.504L80.179,42.504H19.821v0c0,0,0,0,0,0c-1.253,0-2.269,1.017-2.269,2.269c0,0.039,0.01,0.076,0.012,0.115 l0,10.34h0.012c0,1.245,1.004,2.254,2.246,2.267v0.002h60.359v-0.001c1.248-0.006,2.259-1.018,2.259-2.268h0.01l0-10.459h0 C82.446,43.518,81.431,42.504,80.179,42.504z"></path> <path d="M80.179,67.454L80.179,67.454H19.821l0,0c0,0,0,0,0,0c-1.253,0-2.269,1.017-2.269,2.269c0,0.039,0.01,0.076,0.012,0.115 l0,10.34h0.012c0,1.245,1.004,2.254,2.246,2.267v0.002h60.359v-0.001c1.248-0.006,2.259-1.019,2.259-2.269h0.01l0-10.459h0 C82.446,68.468,81.431,67.454,80.179,67.454z"></path> </g> </g></svg>
       <nuxt-link to="/" class="navBarLogo link">
-        <img class="navBarLogo" src="public/img/stablogo.jpg" alt="logo">
+        <img class="navBarLogo" src="public/img/logo-nobg.png" alt="logo">
       </nuxt-link>
       <nuxt-link class="link" to="/rolunk" :class="{'activeLink': useRoute().path === '/rolunk' || useRoute().path === '/rolunk/' }">Rólunk</nuxt-link>
       <nuxt-link class="link" to="/programok" :class="{'activeLink': useRoute().path === '/programok' || useRoute().path === '/programom/' }" >Programok</nuxt-link>
-      <nuxt-link class="link" to="/jelentkezes" :class="{'activeLink': useRoute().path === '/jelentkezes' || useRoute().path === '/jelentkezes/' }" >Jelentkezés</nuxt-link>
+      <nuxt-link class="link" to="/kaszino" :class="{'activeLink': useRoute().path === '/kaszino' || useRoute().path === '/rolunk/' }">Kaszinó</nuxt-link>
       <nuxt-link class="link rightAlign" to="/login" :class="{'activeLink': useRoute().path === '/login' || useRoute().path === '/login/' }" >Bejelentkezés</nuxt-link>
       <div class="closeBtn">X</div>
     </nav>
@@ -96,8 +96,8 @@ footer {
 }
 
 .navBarLogo {
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
   border-radius: 20%;
 }
 
