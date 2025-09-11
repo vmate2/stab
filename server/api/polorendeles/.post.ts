@@ -29,6 +29,7 @@ export default defineEventHandler(async (event) => {
           data: {
             name: body.name,
             phone: body.phone || null,
+            type: body.type,
             felirat: body.felirat || null,
             size: body.size,
             paid: body.paid || false,
@@ -52,6 +53,7 @@ export default defineEventHandler(async (event) => {
 
     }
   } catch (e: any) {
+    console.error(e)
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal Server Error',

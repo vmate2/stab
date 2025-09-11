@@ -64,6 +64,7 @@ model tesztszponzorok {
 model polorendeles {
   id              Int      @id @default(autoincrement())
   name            String
+  type            String
   phone           String
   felirat         String?
   size            String

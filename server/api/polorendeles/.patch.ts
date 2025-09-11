@@ -33,6 +33,7 @@ export default defineEventHandler(async (event) => {
             name: body.name,
             phone: body.phone || null,
             felirat: body.felirat || null,
+            type: body.type,
             size: body.size,
             paid: body.paid || false,
             note: body.note || null

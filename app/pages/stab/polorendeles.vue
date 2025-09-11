@@ -53,7 +53,10 @@ const handleAdd = async () => {
     inputs: [
       { label: 'Név', model: 'name', type: 'text', placeholder: 'Nagy Miska', required: true },
       { label: 'Telefonszám', model: 'phone', type: 'text', placeholder: '+36301112222', required: true },
-      { label: 'Póló méret', model: 'size', type: 'dropdown', dropdownopts: [
+      { label: 'Póló/Pulcsi', model: 'type', type: 'dropdown', dropdownopts: [
+         { value: 'Póló', default: true }, { value: 'Pulcsi', default: false }
+        ], required: true},
+      { label:  `Méret`, model: 'size', type: 'dropdown', dropdownopts: [
         { value: 'S'}, { value: 'M', default: true }, { value: 'L' }, { value: 'XL' }, { value: 'XXL' }
       ], required: true },
       { label: 'Felirat', model: 'felirat', type: 'text' },
@@ -75,10 +78,11 @@ const handleAdd = async () => {
       const newOrder = {
         name: result.inputs[0].value,
         phone: result.inputs[1].value,
-        size: result.inputs[2].value,
-        felirat: result.inputs[3].value || null,
-        paid: result.inputs[4].value === 'Igen',
-        comment: result.inputs[5].value || null,
+        type: result.inputs[2].value,
+        size: result.inputs[3].value,
+        felirat: result.inputs[4].value || null,
+        paid: result.inputs[5].value === 'Igen',
+        note: result.inputs[6].value || null,
       };
       const errorMsg = validate(newOrder);
       if (errorMsg) {
@@ -126,6 +130,9 @@ const handleAdd = async () => {
       inputs: [
         { label: 'Név', model: 'name', type: 'text', value: order.name, placeholder: 'Nagy Miska', required: true },
         { label: 'Telefonszám', model: 'phone', type: 'text', value: order.phone, placeholder: '+36301112222', required: true },
+        { label: 'Póló/Pulcsi', model: 'type', type: 'dropdown', value: order.type, dropdownopts: [
+          { value: 'Póló', default: order.type === 'Póló' }, { value: 'Pulcsi', default: order.type === 'Pulcsi' }
+        ], required: true},
         { label: 'Póló méret', model: 'size', type: 'dropdown', value: order.size, dropdownopts: [
           { value: 'S', default: order.size === 'S'}, { value: 'M', default: order.size === 'M' }, { value: 'L', default: order.size === 'L' }, { value: 'XL', default: order.size === 'XL' }, { value: 'XXL', default: order.size === 'XXL' }
         ], required: true },
@@ -147,10 +154,11 @@ const handleAdd = async () => {
         ...order,
         name: result.inputs[0].value,
         phone: result.inputs[1].value,
-        size: result.inputs[2].value,
-        felirat: result.inputs[3].value || null,
-        paid: result.inputs[4].value === 'Igen',
-        comment: result.inputs[5].value || null,
+        type: result.inputs[2].value,
+        size: result.inputs[3].value,
+        felirat: result.inputs[4].value || null,
+        paid: result.inputs[5].value === 'Igen',
+        note: result.inputs[6].value || null,
       };
       const errorMsg = validate(updatedOrder);
       if (errorMsg) {
