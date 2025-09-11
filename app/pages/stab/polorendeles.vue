@@ -90,7 +90,7 @@ const handleAdd = async () => {
         return showDialogWithValidation();
       }
       try {
-        await $fetch('/api/polorendeles', {
+        const savedOrder = await $fetch('/api/polorendeles', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'authorization': `Bearer ${useCookie('token').value}` },
           body: newOrder
@@ -102,7 +102,7 @@ const handleAdd = async () => {
           data: newOrder
         });
         $notify("Pólórendelés sikeresen mentve!", "success");
-        layoutData.value.polorendeles.push(newOrder);
+        layoutData.value.polorendeles.push(savedOrder);
         refreshTable();
       } catch (error) {
         $notify("Hiba történt a pólórendelés mentésekor.", "error");
@@ -219,18 +219,33 @@ const handleAdd = async () => {
         $notify("Pólórendelés sikeresen törölve!", "success");
         layoutData.value.polorendeles = layoutData.value.polorendeles.filter((o: any) => o.id !== order.id);
         refreshTable();
+        
       } catch (error) {
         $notify("Hiba történt a pólórendelés törlésekor.", "error");
       }
     }
   };    
 
-  const refreshTable = () => {
-    tableData.value.body = layoutData.value.polorendeles.map(order => ({
-      ...order,
-      paid: order.paid ? 'Igen' : 'Nem',
-    }));
-  };
+const refreshTable = async () => {
+  let orders = await $fetch('/api/polorendeles', {
+    method: 'GET',
+    headers: { 'authorization': `Bearer ${useCookie('token').value}` }
+  });
+
+  // Biztosítsuk, hogy mindig tömb legyen
+  if (!Array.isArray(orders)) {
+    orders = orders ? [orders] : [];
+  }
+
+  layoutData.value.polorendeles = orders;
+
+  tableData.value.body = orders.map(order => ({
+    ...order,
+    paid: order.paid ? 'Igen' : 'Nem',
+  }));
+};
+
+refreshTable()
 
 const handleExport = async () => {
   const response = await fetch('/api/polorendelesexport', {
