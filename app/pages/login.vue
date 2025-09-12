@@ -1,9 +1,9 @@
 <template>
   <div class="loginCont">
-    <form class="login" @submit.prevent="login()">
+    <form class="login" @submit.prevent="login()" method="post" action="#" >
       <div class="group" id="usernameGroup"  aria-autocomplete="both" style="display: flex;">
         <div class="inputGroup">
-          <input required="" type="text" class="input" v-model="username" autocomplete="username" id="username" name="username">
+          <input required="" type="text" class="input" v-model="username" autocomplete="username" id="username">
           <span class="highlight"></span>
           <span class="bar"></span>
           <label>Felhasználónév</label>
@@ -12,7 +12,7 @@
       </div>
       <div class="group" id="passwordGroup"  aria-autocomplete="both" style="display: flex;" >
         <div class="inputGroup">
-          <input required="" :type="inputType" class="input" v-model="password" autocomplete="current-password" id="password" name="password">
+          <input required="" :type="inputType" class="input" v-model="password" autocomplete="current-password" id="password">
           <span class="highlight"></span>
           <span class="bar"></span>
           <label>Jelszó</label>
@@ -76,7 +76,7 @@ async function login() {
     };
     const response = await useFetch('/api/login', {
       method: 'POST',
-      body
+      body: body
     });
 
     if (response.error.value) $notify(response.error.value || 'An unknown error occurred', 'warning');

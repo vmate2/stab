@@ -57,7 +57,7 @@ const handleAdd = async () => {
          { value: 'Póló', default: true }, { value: 'Pulcsi', default: false }
         ], required: true},
       { label:  `Méret`, model: 'size', type: 'dropdown', dropdownopts: [
-        { value: 'S'}, { value: 'M', default: true }, { value: 'L' }, { value: 'XL' }, { value: 'XXL' }
+        { value: 'S'}, { value: 'M', default: true }, { value: 'L' }, { value: 'XL' }, { value: '2XL' }, { value: '3XL' }
       ], required: true },
       { label: 'Felirat', model: 'felirat', type: 'text' },
       { label: 'Fizetve', model: 'paid', type: 'dropdown', dropdownopts: [
@@ -134,7 +134,7 @@ const handleAdd = async () => {
           { value: 'Póló', default: order.type === 'Póló' }, { value: 'Pulcsi', default: order.type === 'Pulcsi' }
         ], required: true},
         { label: 'Póló méret', model: 'size', type: 'dropdown', value: order.size, dropdownopts: [
-          { value: 'S', default: order.size === 'S'}, { value: 'M', default: order.size === 'M' }, { value: 'L', default: order.size === 'L' }, { value: 'XL', default: order.size === 'XL' }, { value: 'XXL', default: order.size === 'XXL' }
+          { value: 'S', default: order.size === 'S'}, { value: 'M', default: order.size === 'M' }, { value: 'L', default: order.size === 'L' }, { value: 'XL', default: order.size === 'XL' }, { value: '2XL', default: order.size === '2FXL' }, { value: '3XL', default: order.size === '3XL' }
         ], required: true },
         { label: 'Felirat', model: 'felirat', type: 'text', value: order.felirat || '' },
         { label: 'Fizetve', model: 'paid', type: 'dropdown', value: order.paid ? 'Igen' : 'Nem', dropdownopts: [
