@@ -115,7 +115,7 @@ const handleAdd = async () => {
   const validate = (order: any) => {
     const nameRegex = /^([A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]+\s){1,}[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]+$/;
     const phoneRegex = /^(\+36|06)\d{8,9}$/;
-    const sizeRegex = /^(S|M|L|XL|XXL)$/;
+    const sizeRegex = /^(S|M|L|XL|2XL|3XL)$/;
     if (!nameRegex.test(order.name.trim())) return 'Hibás név formátum!';
     if (!phoneRegex.test(order.phone.trim())) return 'Hibás telefonszám!';
     if (!sizeRegex.test(order.size)) return 'Hibás méret!';
@@ -134,7 +134,7 @@ const handleAdd = async () => {
           { value: 'Póló', default: order.type === 'Póló' }, { value: 'Pulcsi', default: order.type === 'Pulcsi' }
         ], required: true},
         { label: 'Póló méret', model: 'size', type: 'dropdown', value: order.size, dropdownopts: [
-          { value: 'S', default: order.size === 'S'}, { value: 'M', default: order.size === 'M' }, { value: 'L', default: order.size === 'L' }, { value: 'XL', default: order.size === 'XL' }, { value: '2XL', default: order.size === '2FXL' }, { value: '3XL', default: order.size === '3XL' }
+          { value: 'S', default: order.size === 'S'}, { value: 'M', default: order.size === 'M' }, { value: 'L', default: order.size === 'L' }, { value: 'XL', default: order.size === 'XL' }, { value: '2XL', default: order.size === '2XL' }, { value: '3XL', default: order.size === '3XL' }
         ], required: true },
         { label: 'Felirat', model: 'felirat', type: 'text', value: order.felirat || '' },
         { label: 'Fizetve', model: 'paid', type: 'dropdown', value: order.paid ? 'Igen' : 'Nem', dropdownopts: [

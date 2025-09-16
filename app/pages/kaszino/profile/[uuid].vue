@@ -1,14 +1,22 @@
 <template>
-		<div class="profileDetails">
-			<h2 class="profileTitle">Profil</h2>
-			<div v-if="user" class="profileInfo">
-				<div class="infoRow"><span class="label">Teljes név:</span> <span>{{ user.fullName }}</span></div>
-				<div class="infoRow"><span class="label">E-mail:</span> <span>{{ user.email }}</span></div>
-				<div class="infoRow"><span class="label">Felhasználónév:</span> <span>{{ user.username }}</span></div>
-				<div class="infoRow"><span class="label">Egyenleg:</span> <span>{{ user.balance }}</span></div>
-			</div>
-			<div v-else class="profileInfo loading">Betöltés...</div>
-		</div>
+	<div class="mainBg">
+		<nav>
+      <ul>
+        <li>
+          <NuxtLink :to="`/kaszino/profile/${user?.uuid}`">Adataim</NuxtLink>
+        </li>
+        <li>
+          <NuxtLink :to="`/kaszino/profile/${user?.uuid}/stats`">Statisztika</NuxtLink>
+        </li>
+        <li v-if="isOwnProfile" style="color: red;">
+          <NuxtLink :to="`/kaszino/profile/${user?.uuid}/torles`" style="color: red;">Törlés</NuxtLink>
+        </li>
+      </ul>
+		</nav>
+		<section>
+      <NuxtPage />
+    </section>
+	</div>
 </template>
 
 <script lang="ts" setup>
@@ -17,10 +25,68 @@ definePageMeta({
 	layout: 'casino'
 })
 
+const route = useRoute();
+
 import { useCurrentUser } from '@/composables/currentUser'
 const { user, loading, error, fetchCurrentUser, fetchUser } = useCurrentUser()
-onMounted(async () => {
-	await fetchCurrentUser()
+
+const routeUuid = computed(() => route.params.uuid as string | undefined)
+import { ref, watch } from 'vue'
+const loggedUser = ref<any>(null)
+
+async function loadProfile() {
+  // do not clear existing `user` immediately — keep current UI until we have a new profile
+  loading.value = true
+  try {
+    const loggedInUser = await fetchCurrentUser().catch(() => null)
+    loggedUser.value = loggedInUser || null
+
+    const targetUuid = routeUuid.value || loggedUser.value?.uuid
+    if (targetUuid) {
+      const fetched = await fetchUser(targetUuid).catch(() => null)
+      if (fetched) {
+        // fetchUser already assigns into `user`, but ensure the ref is set
+        user.value = fetched
+      } else {
+        // if fetch failed but the requested uuid equals the logged-in user, keep loggedUser in UI
+        if (loggedUser.value && loggedUser.value.uuid === targetUuid) {
+          user.value = loggedUser.value
+        } else {
+          // otherwise clear user to indicate not found
+          user.value = null
+        }
+      }
+    }
+  } finally {
+    loading.value = false
+      if (!isOwnProfile.value) {
+    console.log('Not own profile, setting loading to false')
+    loading.value = false
+    navigateTo('/kaszino')
+  }
+  }
+
+  // debug
+  console.log('fetched profile:', user.value)
+  console.log('isOwnProfile:', isOwnProfile.value)
+  console.log('routeUuid:', routeUuid.value)
+}
+
+onMounted(() => {
+  void loadProfile()
+})
+
+// react to route changes (client-side navigation) and reload the profile
+watch(routeUuid, (newVal, oldVal) => {
+  if (newVal !== oldVal) void loadProfile()
+})
+
+// helper that indicates if the profile belongs to the current logged-in user
+const isOwnProfile = computed(() => {
+  // if routeUuid exists, compare it to the logged-in user's uuid
+  if (routeUuid.value) return loggedUser.value?.uuid === routeUuid.value
+  // if no route param, compare the fetched profile (user) to the logged-in user
+  return !!loggedUser.value && user.value?.uuid === loggedUser.value.uuid
 })
 </script>
 
@@ -28,130 +94,91 @@ onMounted(async () => {
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
 
 .mainBg {
-	background-color: rgb(70, 0, 0);
-	top: 0;
-	left: 0;
-	width: 100dvw;
-	height: 100dvh;
-	position: fixed;
-	overflow: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
 }
-.topBar {
-	width: 100dvw;
-	height: 10%;
-	background-color: rgb(39, 39, 39);
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
+
+
+
+section {
+  flex: 1;             /* a maradék helyet kitölti */
+  height: 90vh;
 }
-.profileContainer {
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	padding-right: 1rem;
-	cursor: pointer;
+
+
+
+nav {
+  flex: 0 1 15%;
+  max-width: 15%;
+  min-width: 180px; /* olvasható legyen kisebb kijelzőn is */
+  background: linear-gradient(180deg, #2a2a2a, #181818);
+  height: 90vh;
+  border-right: 2px solid #5a1d1a; /* bordó csík */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: 2rem;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.4);
 }
-.username {
-	padding: 0.3rem 0.6rem;
-	border-radius: 6px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-family: 'Montserrat', sans-serif;
-	color: white;
-	font-weight: 600;
-	font-size: 1.5rem;
-	letter-spacing: 0.5px;
-	text-shadow: 3px 3px black;
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
-.profilePic {
-	width: 50px;
-	height: 50px;
-	background-color: darkred;
-	border-radius: 50%;
-	border: 2px solid black;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	overflow: hidden;
+
+nav a {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #ddd;
+  padding: 12px 20px;
+  margin: 4px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
 }
-.balanceCont {
-	width: 150px;
-	height: 40px;
-	background-color: rgba(0, 0, 0, 0.4);
-	border: 1px solid black;
-	border-radius: 16px;
-	box-shadow: inset 2px 2px 3px 1px black;
-	display: flex;
-	align-items: center;
+
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
 }
-.balance {
-	font-family: 'Montserrat', sans-serif;
-	color: rgb(226, 226, 226);
-	font-weight: 600;
-	font-size: 1.3rem;
-	letter-spacing: 0.5px;
-	margin-left: 5%;
+
+nav a:active {
+  background-color: #5a1d1a; /* bordó a stáb színével (#420C09-hoz közel) */
+  color: #fff;
+  font-weight: 700;
 }
-.tokenSVG {
-	width: 40px;
-	height: 40px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+
+nav ul li {
+  margin: 4px 0;
 }
-.title {
-	font-family: 'Montserrat', sans-serif;
-	color: white;
-	font-weight: 600;
-	font-size: 1.5rem;
-	letter-spacing: 0.5px;
+
+nav ul li a {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #ddd;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
 }
-.title > span { color: green; }
-.title { color: red; }
-.title > strong { color: gold; }
-.settings { width: 35px; height: 35px; margin-left: 1%; cursor: pointer; }
-.profileDetails {
-	margin: 3% auto;
-	width: 90%;
-	max-width: 500px;
-	background: rgba(0,0,0,0.4);
-	border-radius: 16px;
-	box-shadow: 2px 2px 10px 4px black;
-	padding: 2rem;
-	color: white;
-	font-family: 'Montserrat', sans-serif;
+
+nav ul li a:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
 }
-.profileTitle {
-	color: gold;
-	font-size: 2rem;
-	font-weight: 700;
-	margin-bottom: 1.5rem;
-	text-align: center;
-	text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+
+nav ul li a:active {
+  background-color: #5a1d1a;
+  color: #fff;
+  font-weight: 700;
 }
-.profileInfo {
-	display: flex;
-	flex-direction: column;
-	gap: 1.2rem;
-	font-size: 1.2rem;
-}
-.infoRow {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	background: rgba(255,255,255,0.05);
-	border-radius: 8px;
-	padding: 0.7rem 1.2rem;
-}
-.label {
-	color: gold;
-	font-weight: 600;
-}
-@media screen and (max-width: 600px) {
-	.title { display: none; }
-	.profileDetails { padding: 1rem; font-size: 1rem; }
-	.profileTitle { font-size: 1.3rem; }
-}
+
+
 </style>

@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="frameContent">
-      <NuxtPage />
+      <slot></slot>
     </div>
   </div>
   <notification></notification>
@@ -38,9 +38,9 @@ onMounted(async () => {
   await fetchCurrentUser()
 })
 const router = useRouter()
-function goToProfile() {
+async function goToProfile() {
   if (!user.value) return
-  router.push(`/kaszino/profile/${user.value.uuid}`)
+  await navigateTo(`/kaszino/profile/${user.value.uuid}` )
 }
 
 const settings = ref()
